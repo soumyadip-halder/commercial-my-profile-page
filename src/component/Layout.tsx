@@ -90,8 +90,8 @@ function Layout(props: LayoutProps) {
     setOpen(!open);
   };
   const handleClick = (url: string) => {
-    console.log(url);
     history.push(url);
+    handleDrawerToggle();
   };
   const history = useHistory();
   const location = useLocation();
