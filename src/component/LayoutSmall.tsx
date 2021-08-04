@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Header from "./Header";
 import {
+  Collapse,
   Divider,
   Drawer,
   IconButton,
@@ -17,13 +17,18 @@ import qlik from "../assets/qlik.jpeg";
 import key from "../assets/key.jpg";
 import morrisons from "../assets/morrisons.png";
 import { useHistory, useLocation } from "react-router-dom";
+import { commercialdash } from "../Data/Data";
+import IconExpandLess from "@material-ui/icons/ExpandLess";
+import IconExpandMore from "@material-ui/icons/ExpandMore";
+import SidepanelSmall from "./SidepanelSmall";
+import HeaderSmall from "./HeaderSmall";
 
 interface LayoutProps {
   children: JSX.Element | JSX.Element[];
 }
 
-const drawerWidth = 150;
-const drawerWidthShift = 150;
+const drawerWidth = 250;
+const drawerWidthShift = 250;
 
 const useStyles = makeStyles((theme) => ({
   height: theme.mixins.toolbar,
@@ -47,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
     height: "100px",
     objectFit: "contain",
   },
+  text: {
+    color: theme.palette.primary.main,
+  },
   logo: {
     width: 40,
     height: 40,
@@ -69,8 +77,9 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
   },
   listItemText: {
-    fontWeight: "bold",
     fontSize: "0.7em",
+    fontWeight: "bold",
+    color: theme.palette.primary.main,
   },
   hover: {
     color: theme.palette.primary.main,
@@ -84,9 +93,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Layout(props: LayoutProps) {
+function LayoutSmall(props: LayoutProps) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [openCol, setOpenCol] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
@@ -101,51 +120,60 @@ function Layout(props: LayoutProps) {
       text: "Commercial Dashboard",
       icon: <img src={morrisons} alt="" className={classes.logo} />,
       path: "/Commercial/dashboard",
+      more: commercialdash,
     },
     {
       text: "Promotion & Funding",
       icon: <img src={morrisons} alt="" className={classes.logo} />,
       path: "/promofunding",
+      more: [],
     },
     {
       text: "Retail Price Change",
       icon: <img src={morrisons} alt="" className={classes.logo} />,
       path: "/retailprice",
+      more: [],
     },
     {
       text: "Range Amendment",
       icon: <img src={morrisons} alt="" className={classes.logo} />,
       path: "/rangeamend",
+      more: [],
     },
     {
       text: "Supplier Portal",
       icon: <img src={stibo} alt="" className={classes.logo} />,
       path: "/supplierport",
+      more: [],
     },
     {
       text: "Product Portal",
       icon: <img src={stibo} alt="" className={classes.logo} />,
       path: "/productport",
+      more: [],
     },
     {
       text: "Analytics",
       icon: <img src={qlik} alt="" className={classes.logo} />,
       path: "/analytics",
+      more: [],
     },
     {
       text: "User Configuration",
       icon: <img src={key} alt="" className={classes.logo} />,
       path: "/userconfig",
+      more: [],
     },
   ];
 
   return (
     <div>
-      <Header
+      <HeaderSmall
         toggledraw={handleDrawerToggle}
         open={open}
         drawWidth={drawerWidth}
       />
+
       <Drawer
         className={classes.drawer}
         variant="persistent"
@@ -156,7 +184,7 @@ function Layout(props: LayoutProps) {
         onKeyDown={handleDrawerToggle}
       >
         <div className={`${classes.height} ${classes.setup}`}>
-          <Typography variant="subtitle2" align="right">
+          <Typography variant="subtitle2" align="center">
             Menu Items
           </Typography>
           <IconButton onClick={handleDrawerToggle} edge="end">
@@ -165,32 +193,60 @@ function Layout(props: LayoutProps) {
         </div>
         <Divider />
         <List>
-          {menuItems.map((menu) => (
-            <ListItem
-              key={menu.text}
-              button
-              onClick={() => handleClick(menu.path)}
-              className={
-                location.pathname === menu.path
-                  ? `${classes.hover} ${classes.active}`
-                  : classes.hover
-              }
-            >
-              <ListItemIcon>{menu.icon}</ListItemIcon>
-              <ListItemText
-                primary={menu.text}
-                classes={{ primary: classes.listItemText }}
-              />
-            </ListItem>
-          ))}
+          {menuItems.map((menu, index) => {
+            if (menu.more.length === 0) {
+              return (
+                <ListItem
+                  key={menu.text}
+                  button
+                  onClick={() => handleClick(menu.path)}
+                  className={
+                    location.pathname === menu.path
+                      ? `${classes.hover} ${classes.active}`
+                      : classes.hover
+                  }
+                >
+                  <ListItemIcon>{menu.icon}</ListItemIcon>
+                  <ListItemText
+                    primary={menu.text}
+                    classes={{ primary: classes.listItemText }}
+                  />
+                </ListItem>
+              );
+            }
+            return (
+              <List key={menu.text}>
+                <ListItem
+                  onClick={() => {
+                    const arr = [...openCol];
+                    arr[index] = !arr[index];
+                    setOpenCol(arr);
+                  }}
+                  button /*className={classes.link}*/
+                >
+                  <ListItemIcon>{menu.icon}</ListItemIcon>
+                  <ListItemText
+                    classes={{ primary: classes.listItemText }}
+                    primary={menu.text}
+                  />
+                  <ListItemIcon>
+                    {openCol[index] ? <IconExpandLess /> : <IconExpandMore />}
+                  </ListItemIcon>
+                </ListItem>
+                <Collapse in={openCol[index]} timeout="auto" unmountOnExit>
+                  <Divider />
+                  <SidepanelSmall />
+                </Collapse>
+              </List>
+            );
+          })}
         </List>
       </Drawer>
       <div className={classes.height} />
-      <div className={open ? classes.modwidth : classes.fullwidth}>
-        {props.children}
-      </div>
+      <br />
+      <div>{props.children}</div>
     </div>
   );
 }
 
-export default Layout;
+export default LayoutSmall;

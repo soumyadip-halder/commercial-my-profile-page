@@ -7,7 +7,8 @@ import {
   ListItemText,
   makeStyles,
   Paper,
-  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import { commercialdash, commercialtask } from "../Data/Data";
@@ -28,6 +29,17 @@ const useStyles = makeStyles((theme) => ({
   },
   text: {
     color: theme.palette.primary.main,
+    fontWeight: "bold",
+    //wordWrap: "break-word",
+    [theme.breakpoints.down("md")]: {
+      fontSize: "0.8em",
+    },
+    [theme.breakpoints.between("md", "lg")]: {
+      fontSize: "0.9em",
+    },
+  },
+  textList: {
+    wordWrap: "break-word",
   },
   active: {
     backgroundColor: theme.palette.secondary.light,
@@ -42,6 +54,8 @@ function Sidepanel() {
   const history = useHistory();
   const location = useLocation();
   const [open, setOpen] = useState(true);
+  const theme = useTheme();
+  const active = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleCollapse = () => {
     setOpen(!open);
@@ -67,15 +81,31 @@ function Sidepanel() {
         </List>
         <Divider />
         <List>
-          <ListItem onClick={handleCollapse} button className={classes.link}>
-            <ListItemText
-              classes={{ primary: classes.text }}
-              primary={commercialdash[1].title}
-            />
-            <ListItemIcon>
-              {open ? <IconExpandLess /> : <IconExpandMore />}
-            </ListItemIcon>
-          </ListItem>
+          {active ? (
+            <>
+              <ListItem className={classes.link}>
+                <ListItemText
+                  classes={{ primary: classes.text }}
+                  primary={commercialdash[1].title}
+                />
+              </ListItem>
+              <ListItem onClick={handleCollapse} button>
+                <ListItemIcon>
+                  {open ? <IconExpandLess /> : <IconExpandMore />}
+                </ListItemIcon>
+              </ListItem>
+            </>
+          ) : (
+            <ListItem onClick={handleCollapse} button className={classes.link}>
+              <ListItemText
+                classes={{ primary: classes.text }}
+                primary={commercialdash[1].title}
+              />
+              <ListItemIcon>
+                {open ? <IconExpandLess /> : <IconExpandMore />}
+              </ListItemIcon>
+            </ListItem>
+          )}
         </List>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Divider />
@@ -91,10 +121,12 @@ function Sidepanel() {
                 button
                 onClick={() => history.push(task.url)}
               >
-                <ListItemText>
-                  <Typography variant="caption" color="primary">
-                    {task.title}
-                  </Typography>
+                <ListItemText
+                  classes={{ primary: `${classes.text} ${classes.textList}` }}
+                >
+                  {/* <Typography variant="caption" color="primary"> */}
+                  {task.title}
+                  {/* </Typography> */}
                 </ListItemText>
               </ListItem>
             ))}

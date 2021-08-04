@@ -35,14 +35,17 @@ blockquote:last-child {
 }
 
 strong {
-  font-family: MorrisonsAgenda; 
+  font-family: MorrisonsAgenda;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
 }
 
-input, textarea, select, button {
-  font-family: MorrisonsAgenda; 
+input,
+textarea,
+select,
+button {
+  font-family: MorrisonsAgenda;
   font-weight: 300;
   font-stretch: normal;
   font-style: normal;

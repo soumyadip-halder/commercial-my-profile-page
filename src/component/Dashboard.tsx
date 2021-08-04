@@ -55,7 +55,7 @@ function Dashboard() {
       </Typography>
       <Grid container>
         {dashboard.map((dash, index) => (
-          <Grid item xl={6} lg={6} md={6} sm={12} xs={12} key={index}>
+          <Grid item xl={6} lg={6} md={6} sm={6} xs={12} key={index}>
             <Card className={classes.card}>
               <CardHeader
                 title={dash.title}
@@ -75,54 +75,56 @@ function Dashboard() {
                 <Grid container>
                   <Grid item>
                     <table>
-                      <tr>
-                        <td>
-                          <Typography variant="body2" color="primary">
-                            {dash.statuscomplete}
-                          </Typography>
-                        </td>
-                        <td>
-                          <Typography
-                            variant="body2"
-                            color="primary"
-                            className={
-                              dash.statuscompleteval >= "90%"
-                                ? `${classes.bold} ${classes.color90}`
-                                : dash.statuscompleteval >= "60%"
-                                ? `${classes.bold} ${classes.color80}`
-                                : `${classes.bold} ${classes.color60}`
-                            }
-                          >
-                            {dash.statuscompleteval[0] === "0"
-                              ? dash.statuscompleteval.substring(1)
-                              : dash.statuscompleteval}
-                          </Typography>
-                        </td>
-                        <td />
-                        <td />
-                        <td>
-                          <Typography variant="body2" color="primary">
-                            {dash.reworkcomplete}
-                          </Typography>
-                        </td>
-                        <td>
-                          <Typography
-                            variant="body2"
-                            color="primary"
-                            className={
-                              dash.reworkcompleteval <= "10%"
-                                ? `${classes.bold} ${classes.color90}`
-                                : dash.reworkcompleteval <= "20%"
-                                ? `${classes.bold} ${classes.color80}`
-                                : `${classes.bold} ${classes.color60}`
-                            }
-                          >
-                            {dash.reworkcompleteval[0] === "0"
-                              ? dash.reworkcompleteval.substring(1)
-                              : dash.reworkcompleteval}
-                          </Typography>
-                        </td>
-                      </tr>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <Typography variant="body2" color="primary">
+                              {dash.statuscomplete}
+                            </Typography>
+                          </td>
+                          <td>
+                            <Typography
+                              variant="body2"
+                              color="primary"
+                              className={
+                                dash.statuscompleteval >= "90%"
+                                  ? `${classes.bold} ${classes.color90}`
+                                  : dash.statuscompleteval >= "60%"
+                                  ? `${classes.bold} ${classes.color80}`
+                                  : `${classes.bold} ${classes.color60}`
+                              }
+                            >
+                              {dash.statuscompleteval[0] === "0"
+                                ? dash.statuscompleteval.substring(1)
+                                : dash.statuscompleteval}
+                            </Typography>
+                          </td>
+                          <td />
+                          <td />
+                          <td align="right">
+                            <Typography variant="body2" color="primary">
+                              {dash.reworkcomplete}
+                            </Typography>
+                          </td>
+                          <td align="right">
+                            <Typography
+                              variant="body2"
+                              color="primary"
+                              className={
+                                dash.reworkcompleteval <= "10%"
+                                  ? `${classes.bold} ${classes.color90}`
+                                  : dash.reworkcompleteval <= "20%"
+                                  ? `${classes.bold} ${classes.color80}`
+                                  : `${classes.bold} ${classes.color60}`
+                              }
+                            >
+                              {dash.reworkcompleteval[0] === "0"
+                                ? dash.reworkcompleteval.substring(1)
+                                : dash.reworkcompleteval}
+                            </Typography>
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   </Grid>
                 </Grid>
@@ -130,22 +132,24 @@ function Dashboard() {
               <Divider />
               <CardContent>
                 <table width="100%">
-                  {dash.data.map((dashdata, index) => (
-                    <tr key={index}>
-                      <td>
-                        <Typography variant="body2" color="primary">
-                          {dashdata.data}
-                        </Typography>
-                      </td>
-                      <td align="right">
-                        <Typography variant="body2" color="primary">
-                          <Link href="#" to="#">
-                            {dashdata.value}
-                          </Link>
-                        </Typography>
-                      </td>
-                    </tr>
-                  ))}
+                  <tbody>
+                    {dash.data.map((dashdata, index) => (
+                      <tr key={index}>
+                        <td>
+                          <Typography variant="body2" color="primary">
+                            {dashdata.data}
+                          </Typography>
+                        </td>
+                        <td align="right">
+                          <Typography variant="body2" color="primary">
+                            <Link href="#" to="#">
+                              {dashdata.value}
+                            </Link>
+                          </Typography>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </CardContent>
             </Card>

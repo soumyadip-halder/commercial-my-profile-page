@@ -4,11 +4,16 @@ import {
   makeStyles,
   Typography,
   Divider,
+  IconButton,
+  Badge,
 } from "@material-ui/core";
 import React from "react";
+import NotificationImportantIcon from "@material-ui/icons/NotificationImportant";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 
 interface DropDrawerProps {
   handleClose: () => void;
+  toggleModal: () => void;
   open: boolean;
   refer: React.MutableRefObject<null>;
 }
@@ -21,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-function DropDrawer(props: DropDrawerProps) {
+function DropDrawerSmall(props: DropDrawerProps) {
   const classes = useStyles();
   return (
     <Menu
@@ -36,6 +41,25 @@ function DropDrawer(props: DropDrawerProps) {
       }}
       getContentAnchorEl={null}
     >
+      <MenuItem onClick={props.handleClose} className={classes.text}>
+        <IconButton color="inherit" onClick={props.toggleModal}>
+          <Badge
+            badgeContent={4}
+            color="secondary"
+            anchorOrigin={{ horizontal: "left", vertical: "top" }}
+          >
+            <NotificationImportantIcon />
+            <Typography variant="body1">Notifications</Typography>
+          </Badge>
+        </IconButton>
+      </MenuItem>
+      <MenuItem onClick={props.handleClose} className={classes.text}>
+        <IconButton color="inherit">
+          <HelpOutlineIcon />
+          <Typography variant="body1">Questions</Typography>
+        </IconButton>
+      </MenuItem>
+      <Divider />
       <MenuItem onClick={props.handleClose} className={classes.text}>
         <Typography variant="body1">My Profile</Typography>
       </MenuItem>
@@ -53,4 +77,4 @@ function DropDrawer(props: DropDrawerProps) {
   );
 }
 
-export default DropDrawer;
+export default DropDrawerSmall;

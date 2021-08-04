@@ -156,14 +156,38 @@ export const commercialdash = [
   {
     title: "Dashboard",
     url: "/Commercial/dashboard",
+    more: [],
   },
   {
     title: "Tasklists",
     url: "#",
+    more: [
+      {
+        title: "Promotions & Funding",
+        url: "/Commercial/promotions",
+      },
+      {
+        title: "Retail Price Change",
+        url: "/Commercial/retail",
+      },
+      {
+        title: "Range Amendment",
+        url: "/Commercial/range",
+      },
+      {
+        title: "Product Portal",
+        url: "/Commercial/product",
+      },
+      {
+        title: "Supplier Portal",
+        url: "/Commercial/supplier",
+      },
+    ],
   },
   {
     title: "KPI Analytics",
     url: "/Commercial/analytics",
+    more: [],
   },
 ];
 

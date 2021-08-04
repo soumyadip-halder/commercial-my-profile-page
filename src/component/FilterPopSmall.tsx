@@ -8,7 +8,9 @@ import {
   TableRow,
   TableCell,
   TextField,
-  Box,
+  useTheme,
+  useMediaQuery,
+  Typography,
 } from "@material-ui/core";
 import React from "react";
 import CloseIcon from "@material-ui/icons/Close";
@@ -20,8 +22,8 @@ import { green } from "@material-ui/core/colors";
 const useStyles = makeStyles((theme) => ({
   paper: {
     backgroundColor: theme.palette.background.paper,
-    // border: "1px solid #000",
-    // boxShadow: theme.shadows[2],
+    border: "1px solid #000",
+    boxShadow: theme.shadows[2],
     padding: theme.spacing(2, 4, 3),
     //marginLeft: theme.spacing(5),
   },
@@ -49,10 +51,15 @@ const useStyles = makeStyles((theme) => ({
   },
   space: {
     marginRight: theme.spacing(1),
-    [theme.breakpoints.between("sm", "xl")]: {
+    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(1),
+    [theme.breakpoints.between("sm", "md")]: {
       fontSize: "0.7em",
     },
     [theme.breakpoints.between("xs", "sm")]: {
+      fontSize: "0.6em",
+    },
+    [theme.breakpoints.down("xs")]: {
       fontSize: "0.6em",
     },
   },
@@ -78,9 +85,10 @@ interface FilterPopProps {
   toggleModal: () => void;
 }
 
-const FilterPop = React.forwardRef((props: FilterPopProps, ref) => {
+const FilterPopSmall = React.forwardRef((props: FilterPopProps, ref) => {
   const classes = useStyles();
-
+  const theme = useTheme();
+  const active = useMediaQuery(theme.breakpoints.down(500));
   // const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
   //   setOption(newValue);
   // };
@@ -104,74 +112,83 @@ const FilterPop = React.forwardRef((props: FilterPopProps, ref) => {
   // };
   return (
     <div className={classes.paper}>
+      <IconButton onClick={props.toggleModal} edge="end">
+        <CloseIcon />
+      </IconButton>
       <Grid container>
-        <Grid item lg={12} md={12} sm={12} xs={12}>
-          <IconButton onClick={props.toggleModal} edge="end">
-            <CloseIcon />
-          </IconButton>
-        </Grid>
-        <Grid item lg={12} md={12} sm={12} xs={12}>
-          {/* <FormControl
-            variant="outlined"
-            className={classes.formControl}
-            size="small"
-          >
-            <InputLabel
-              id="demo-simple-select-outlined-label"
-              className={classes.font}
+        {!active ? (
+          <Grid item sm={12} xs={12}>
+            <Button
+              variant="contained"
+              endIcon={<ArrowDropDownIcon />}
+              color="primary"
+              className={classes.space}
+              size="small"
             >
               Saved Searches
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={state.age}
-              onChange={handleChange1}
-              label="Age"
-              className={classes.font}
+            </Button>
+
+            <Button
+              variant="contained"
+              endIcon={<ArrowDropDownIcon />}
+              color="primary"
+              className={classes.space}
+              size="small"
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl> */}
-          {/* </Grid>
-        <Grid item> */}
-
-          <Button
-            variant="contained"
-            endIcon={<ArrowDropDownIcon />}
-            color="primary"
-            className={classes.space}
-          >
-            Saved Searches
-          </Button>
-
-          <Button
-            variant="contained"
-            endIcon={<ArrowDropDownIcon />}
-            color="primary"
-            className={classes.space}
-          >
-            Saved Search
-          </Button>
-          <Button
-            variant="contained"
-            endIcon={<ArrowDropDownIcon />}
-            color="primary"
-            className={classes.space}
-          >
-            Apply Search
-          </Button>
-        </Grid>
+              Saved Search
+            </Button>
+            <Button
+              variant="contained"
+              endIcon={<ArrowDropDownIcon />}
+              color="primary"
+              className={classes.space}
+              size="small"
+            >
+              Apply Search
+            </Button>
+          </Grid>
+        ) : (
+          <>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                endIcon={<ArrowDropDownIcon />}
+                color="primary"
+                className={classes.space}
+                size="small"
+              >
+                Saved Searches
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                endIcon={<ArrowDropDownIcon />}
+                color="primary"
+                className={classes.space}
+                size="small"
+              >
+                Saved Search
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                endIcon={<ArrowDropDownIcon />}
+                color="primary"
+                className={classes.space}
+                size="small"
+              >
+                Apply Search
+              </Button>
+            </Grid>
+          </>
+        )}
       </Grid>
       <br />
-      <Box style={{ overflow: "auto" }}>
+      {!active ? (
         <Grid container>
-          <Grid item sm={12} xs={12} md={12}>
+          <Grid item xs={12} md={12}>
             <Table
               className={classes.table}
               size="small"
@@ -193,7 +210,8 @@ const FilterPop = React.forwardRef((props: FilterPopProps, ref) => {
                       <SearchIcon />
                     </IconButton>
                   </TableCell>
-
+                </TableRow>
+                <TableRow>
                   <TableCell className={classes.tab}>Sub Process</TableCell>
                   <TableCell className={classes.tab}>
                     <TextField
@@ -220,7 +238,8 @@ const FilterPop = React.forwardRef((props: FilterPopProps, ref) => {
                       <ArrowDropDownCircleIcon style={{ color: green[900] }} />
                     </IconButton>
                   </TableCell>
-
+                </TableRow>
+                <TableRow>
                   <TableCell className={classes.tab}>Assigned to</TableCell>
                   <TableCell className={classes.tab}>
                     <TextField
@@ -249,7 +268,8 @@ const FilterPop = React.forwardRef((props: FilterPopProps, ref) => {
                       <ArrowDropDownCircleIcon style={{ color: green[900] }} />
                     </IconButton>
                   </TableCell>
-
+                </TableRow>
+                <TableRow>
                   <TableCell className={classes.tab}>Workflow Status</TableCell>
                   <TableCell className={classes.tab}>
                     <TextField
@@ -277,7 +297,8 @@ const FilterPop = React.forwardRef((props: FilterPopProps, ref) => {
                       }}
                     />
                   </TableCell>
-
+                </TableRow>
+                <TableRow>
                   <TableCell className={classes.tab}>
                     Last Actioned Between
                   </TableCell>
@@ -298,7 +319,118 @@ const FilterPop = React.forwardRef((props: FilterPopProps, ref) => {
             </Table>
           </Grid>
         </Grid>
-      </Box>
+      ) : (
+        <Grid container>
+          <Grid item xs={12} md={12}>
+            <Typography className={classes.tab}>ID or Description</Typography>
+            <TextField
+              id="Description"
+              label=""
+              variant="outlined"
+              size="small"
+            />
+            <IconButton color="inherit">
+              <SearchIcon />
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <Typography className={classes.tab}>Sub Process</Typography>
+
+            <TextField
+              id="Process"
+              label="Any"
+              variant="outlined"
+              size="small"
+            />
+            <IconButton color="inherit">
+              <ArrowDropDownCircleIcon style={{ color: green[900] }} />
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <Typography className={classes.tab}>Requested By</Typography>
+
+            <TextField
+              id="Requested"
+              label="Any"
+              variant="outlined"
+              size="small"
+            />
+            <IconButton color="inherit">
+              <ArrowDropDownCircleIcon style={{ color: green[900] }} />
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <Typography className={classes.tab}>Assigned to</Typography>
+
+            <TextField
+              id="Assigned"
+              label="Use Name"
+              variant="outlined"
+              size="small"
+            />
+            <IconButton color="inherit">
+              <ArrowDropDownCircleIcon style={{ color: green[900] }} />
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <Typography className={classes.tab}>Last Actioned By</Typography>
+
+            <TextField
+              id="Actioned"
+              label="Any"
+              variant="outlined"
+              size="small"
+            />
+            <IconButton color="inherit">
+              <ArrowDropDownCircleIcon style={{ color: green[900] }} />
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <Typography className={classes.tab}>Workflow Status</Typography>
+
+            <TextField
+              id="Workflow"
+              label="In Progress"
+              variant="outlined"
+              size="small"
+            />
+            <IconButton color="inherit">
+              <ArrowDropDownCircleIcon style={{ color: green[900] }} />
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <Typography className={classes.tab}>Created Between</Typography>
+
+            <TextField
+              id="datetime-Created"
+              label="Created Between"
+              type="datetime-local"
+              defaultValue="2017-05-24T10:30"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <Typography className={classes.tab}>
+              Last Actioned Between
+            </Typography>
+
+            <TextField
+              id="datetime-Actioned"
+              label="Last Actioned Date"
+              type="datetime-local"
+              defaultValue="2017-05-24T10:30"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+        </Grid>
+      )}
+
       {/* <Grid container component={Paper}>
         <Grid item lg={6}>
           <Typography display="inline">ID or Description</Typography>
@@ -409,4 +541,4 @@ const FilterPop = React.forwardRef((props: FilterPopProps, ref) => {
   );
 });
 
-export default FilterPop;
+export default FilterPopSmall;

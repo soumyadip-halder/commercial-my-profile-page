@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   tabHead: {
     color: theme.palette.primary.main,
     fontWeight: "bold",
-    marginLeft: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
   },
 }));
 function ProductPortal() {
@@ -33,10 +33,10 @@ function ProductPortal() {
       </div>
       <div className={classes.value}>
         <Grid container className={classes.container}>
-          <Grid item lg={2} md={3} sm={3} xs={6}>
+          <Grid item lg={2} md={2} sm={3} xs={6}>
             <Sidepanel />
           </Grid>
-          <Grid item lg={10} md={9} sm={9} xs={6}>
+          <Grid item lg={10} md={10} sm={9} xs={6}>
             <Typography
               variant="body1"
               color="primary"

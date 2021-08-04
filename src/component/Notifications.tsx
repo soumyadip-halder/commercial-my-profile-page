@@ -5,10 +5,10 @@ import {
   ListItem,
   List,
   ListItemIcon,
-  ListItemText,
   IconButton,
   Tabs,
   Tab,
+  Typography,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import CloseIcon from "@material-ui/icons/Close";
@@ -18,8 +18,8 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 const useStyles = makeStyles((theme) => ({
   paper: {
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
+    // border: "2px solid #000",
+    // boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
   root: {
@@ -31,6 +31,17 @@ const useStyles = makeStyles((theme) => ({
   },
   default: {
     backgroundColor: theme.palette.background.paper,
+  },
+  space: {
+    [theme.breakpoints.between("sm", "md")]: {
+      fontSize: "0.7em",
+    },
+    [theme.breakpoints.between("xs", "sm")]: {
+      fontSize: "0.6em",
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "0.6em",
+    },
   },
 }));
 interface NotificationProps {
@@ -65,6 +76,7 @@ function Notifications(props: NotificationProps) {
               variant="contained"
               color="primary"
               endIcon={<KeyboardArrowDownIcon />}
+              className={classes.space}
             >
               All Applications{" "}
             </Button>
@@ -75,24 +87,32 @@ function Notifications(props: NotificationProps) {
           <Tab
             label="My Alerts"
             value={0}
-            className={option === 0 ? classes.activeTab : classes.default}
+            className={
+              option === 0
+                ? `${classes.activeTab} ${classes.space}`
+                : `${classes.default} ${classes.space}`
+            }
           />
           <Tab
             label="Group Alerts"
             value={1}
-            className={option === 1 ? classes.activeTab : classes.default}
+            className={
+              option === 1
+                ? `${classes.activeTab} ${classes.space}`
+                : `${classes.default} ${classes.space}`
+            }
           />
         </Tabs>
         <Divider />
-        {console.log("value", option)}
         {option === 0 ? (
           <List>
             {notifications.map((notify, index) => (
               <ListItem key={index}>
                 <ListItemIcon>{notify.icon}</ListItemIcon>
-                <ListItemText>
-                  <strong>{notify.title}</strong> {notify.description}
-                </ListItemText>
+                <Typography className={classes.space} color="primary">
+                  <strong style={{ fontWeight: "bold" }}>{notify.title}</strong>{" "}
+                  {notify.description}
+                </Typography>
               </ListItem>
             ))}
           </List>
@@ -101,9 +121,10 @@ function Notifications(props: NotificationProps) {
             {notifications2.map((notify, index) => (
               <ListItem key={index}>
                 <ListItemIcon>{notify.icon}</ListItemIcon>
-                <ListItemText>
-                  <strong>{notify.title}</strong> {notify.description}
-                </ListItemText>
+                <Typography className={classes.space} color="primary">
+                  <strong style={{ fontWeight: "bold" }}>{notify.title}</strong>{" "}
+                  {notify.description}
+                </Typography>
               </ListItem>
             ))}
           </List>

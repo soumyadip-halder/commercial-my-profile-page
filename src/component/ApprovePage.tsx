@@ -3,7 +3,6 @@ import {
   Button,
   IconButton,
   Grid,
-  ButtonGroup,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -15,10 +14,10 @@ import AttachFileIcon from "@material-ui/icons/AttachFile";
 const useStyles = makeStyles((theme) => ({
   paper: {
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
+    //border: "1px solid #000",
+    //boxShadow: theme.shadows[2],
     padding: theme.spacing(2, 4, 3),
-    width: "50%",
+    //width: "50%",
   },
   root: {
     backgroundColor: theme.palette.background.paper,
@@ -43,7 +42,18 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "white",
   },
   space: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
     marginRight: theme.spacing(1),
+    [theme.breakpoints.between("sm", "md")]: {
+      fontSize: "0.7em",
+    },
+    [theme.breakpoints.between("xs", "sm")]: {
+      fontSize: "0.6em",
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "0.5em",
+    },
   },
   table: {
     width: "100%",
@@ -58,44 +68,39 @@ interface ApprovePageProps {
   toggleModal: () => void;
 }
 
-function ApprovePage(props: ApprovePageProps) {
+const ApprovePage = React.forwardRef((props: ApprovePageProps, ref) => {
   const classes = useStyles();
   return (
     <div className={classes.paper}>
       <IconButton onClick={props.toggleModal} edge="end">
         <CloseIcon />
       </IconButton>
+      <Typography variant="body1" color="primary">
+        Action
+      </Typography>
       <Grid container>
-        <Grid item lg={4}>
-          <Typography variant="body1" color="primary">
-            Action
-          </Typography>
-        </Grid>
-        <Grid item lg={8}>
-          <ButtonGroup>
-            <Button
-              variant="contained"
-              endIcon={<ArrowDropDownIcon />}
-              color="primary"
-              className={classes.space}
-            >
-              Approve
-            </Button>
+        <Grid item>
+          <Button
+            variant="contained"
+            endIcon={<ArrowDropDownIcon />}
+            color="primary"
+            className={classes.space}
+            size="small"
+          >
+            Approve
+          </Button>
 
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.space}
-            >
-              Submit
-            </Button>
-            <Button
-              variant="contained"
-              endIcon={<AttachFileIcon />}
-              color="primary"
-              className={classes.space}
-            />
-          </ButtonGroup>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.space}
+            size="small"
+          >
+            Submit
+          </Button>
+          <IconButton size="small">
+            <AttachFileIcon />
+          </IconButton>
         </Grid>
       </Grid>
       <br />
@@ -108,9 +113,10 @@ function ApprovePage(props: ApprovePageProps) {
         variant="outlined"
         fullWidth
         maxRows={50}
+        className={classes.space}
       />
     </div>
   );
-}
+});
 
 export default ApprovePage;

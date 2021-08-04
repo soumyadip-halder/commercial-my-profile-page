@@ -4,16 +4,13 @@ import {
   Toolbar,
   makeStyles,
   Grid,
-  Badge,
   Avatar,
   Dialog,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import React, { useState, useRef } from "react";
 import { LogoMin } from "./Logos";
-import NotificationImportantIcon from "@material-ui/icons/NotificationImportant";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import DropDrawer from "./DropDrawer";
+import DropDrawerSmall from "./DropDrawerSmall";
 import Notifications from "./Notifications";
 import { toggleNotify } from "../redux/notify/action";
 import { connect } from "react-redux";
@@ -62,7 +59,7 @@ interface HeaderProps {
   toggleDispatchNot: any;
 }
 
-function Header(props: HeaderProps) {
+function HeaderSmall(props: HeaderProps) {
   const classes = useStyles(props.drawWidth)();
   const [open, setOpen] = useState(false);
   //const [openMod, setOpenMod] = useState(false);
@@ -93,7 +90,7 @@ function Header(props: HeaderProps) {
       <AppBar>
         <Toolbar>
           <Grid container className={classes.gridContainer}>
-            <Grid item>
+            <Grid item xs={4}>
               <IconButton
                 className={classes.menuButton}
                 onClick={props.toggledraw}
@@ -101,35 +98,24 @@ function Header(props: HeaderProps) {
                 <MenuIcon className={classes.menuIcon} />
               </IconButton>
             </Grid>
-            <Grid item className={classes.logo}>
+            <Grid item className={classes.logo} xs={8}>
               <div
               //className={props.open ? classes.modwidth : classes.fullwidth}
               >
-                {props.open ? null : <LogoMin />}
+                <LogoMin />
               </div>
             </Grid>
             {/* <Grid item>
             <Typography variant="h6">Morrisons Commercial Dashboard</Typography>
           </Grid> */}
-            <Grid item>
-              <IconButton color="inherit" onClick={toggleModal}>
-                <Badge
-                  badgeContent={4}
-                  color="secondary"
-                  anchorOrigin={{ horizontal: "left", vertical: "top" }}
-                >
-                  <NotificationImportantIcon />
-                </Badge>
-              </IconButton>
-
-              <IconButton color="inherit">
-                <HelpOutlineIcon />
-              </IconButton>
-
+            <Grid item xs={2}>
               <IconButton color="inherit" onClick={handleClose} ref={inputEl}>
-                <Avatar className={classes.avatar}>SH</Avatar>
-                <DropDrawer
+                <Avatar className={classes.avatar} sizes="small">
+                  SH
+                </Avatar>
+                <DropDrawerSmall
                   handleClose={handleClose}
+                  toggleModal={toggleModal}
                   open={open}
                   refer={inputEl}
                 />
@@ -154,4 +140,4 @@ const mapDispatchToProps = (dispatch: any) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderSmall);

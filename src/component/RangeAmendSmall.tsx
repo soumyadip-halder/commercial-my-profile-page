@@ -1,7 +1,5 @@
-import { Divider, Grid, Typography, makeStyles } from "@material-ui/core";
+import { Divider, Typography, makeStyles } from "@material-ui/core";
 import React from "react";
-import Dashboard from "./Dashboard";
-import Sidepanel from "./Sidepanel";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,8 +14,13 @@ const useStyles = makeStyles((theme) => ({
   container: {
     height: "100%",
   },
+  tabHead: {
+    color: theme.palette.primary.main,
+    fontWeight: "bold",
+    marginLeft: theme.spacing(2),
+  },
 }));
-function CommercialDashboard() {
+function RangeAmendSmall() {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -28,17 +31,12 @@ function CommercialDashboard() {
         <Divider />
       </div>
       <div className={classes.value}>
-        <Grid container className={classes.container}>
-          <Grid item lg={2} md={2} sm={4} xs={5}>
-            <Sidepanel />
-          </Grid>
-          <Grid item lg={10} md={10} sm={8} xs={7}>
-            <Dashboard />
-          </Grid>
-        </Grid>
+        <Typography variant="body1" color="primary" className={classes.tabHead}>
+          Tasklists {">"} Range Amendment
+        </Typography>
       </div>
     </div>
   );
 }
 
-export default CommercialDashboard;
+export default RangeAmendSmall;

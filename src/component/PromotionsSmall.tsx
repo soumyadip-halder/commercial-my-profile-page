@@ -1,7 +1,6 @@
-import { Divider, Grid, Typography, makeStyles } from "@material-ui/core";
+import { Divider, Typography, makeStyles, Grid } from "@material-ui/core";
 import React from "react";
 import PromotionDetails from "./PromotionDetails";
-import Sidepanel from "./Sidepanel";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
 }));
-function Promotions() {
+function PromotionsSmall() {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -32,17 +31,10 @@ function Promotions() {
         </Grid>
       </Grid>
       <div className={classes.value}>
-        <Grid container className={classes.container}>
-          <Grid item lg={2} md={2} sm={4} xs={5}>
-            <Sidepanel />
-          </Grid>
-          <Grid item lg={10} md={10} sm={8} xs={7}>
-            <PromotionDetails />
-          </Grid>
-        </Grid>
+        <PromotionDetails />
       </div>
     </div>
   );
 }
 
-export default Promotions;
+export default PromotionsSmall;
