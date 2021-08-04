@@ -37,7 +37,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-function SidepanelSmall() {
+interface SidebarProps {
+  handleDrawerToggle: () => void;
+}
+function SidepanelSmall(props: SidebarProps) {
   const classes = useStyles();
   const history = useHistory();
   const location = useLocation();
@@ -56,7 +59,10 @@ function SidepanelSmall() {
               : classes.link
           }
           button
-          onClick={() => history.push(commercialdash[0].url)}
+          onClick={() => {
+            history.push(commercialdash[0].url);
+            props.handleDrawerToggle();
+          }}
         >
           <ListItemText
             primary={commercialdash[0].title}
@@ -88,7 +94,10 @@ function SidepanelSmall() {
                   : classes.pad
               }
               button
-              onClick={() => history.push(task.url)}
+              onClick={() => {
+                history.push(task.url);
+                props.handleDrawerToggle();
+              }}
             >
               <ListItemText classes={{ primary: classes.text }}>
                 {task.title}
@@ -106,7 +115,10 @@ function SidepanelSmall() {
               : classes.link
           }
           button
-          onClick={() => history.push(commercialdash[2].url)}
+          onClick={() => {
+            history.push(commercialdash[2].url);
+            props.handleDrawerToggle();
+          }}
         >
           <ListItemText
             primary={commercialdash[2].title}

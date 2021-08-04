@@ -235,7 +235,7 @@ function LayoutSmall(props: LayoutProps) {
                 </ListItem>
                 <Collapse in={openCol[index]} timeout="auto" unmountOnExit>
                   <Divider />
-                  <SidepanelSmall />
+                  <SidepanelSmall handleDrawerToggle={handleDrawerToggle} />
                 </Collapse>
               </List>
             );
