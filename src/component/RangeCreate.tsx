@@ -118,6 +118,11 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "0.6em",
     },
   },
+  text: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "0.8em",
+    },
+  },
   back: {
     marginLeft: theme.spacing(8),
     [theme.breakpoints.between("sm", "md")]: {
@@ -754,7 +759,7 @@ function Dashboard() {
                 value={name}
                 placeholder="Trading Grp_Product Grp_Target Date"
                 InputProps={{
-                  classes: { input: classes.button },
+                  classes: { input: classes.text },
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip
@@ -773,7 +778,7 @@ function Dashboard() {
                 }}
                 InputLabelProps={{
                   shrink: true,
-                  classes: { input: classes.button },
+                  classes: { input: classes.text },
                 }}
                 helperText={helperTexts.getHelperText(
                   "createRangeReset",
@@ -797,7 +802,7 @@ function Dashboard() {
                   errorMessage.getErrorMessage("createRangeReset", "buyerName"),
                 ]}
                 InputProps={{
-                  classes: { input: classes.button },
+                  classes: { input: classes.text },
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip
@@ -838,7 +843,7 @@ function Dashboard() {
                       value={department.departmentId}
                       onChange={onDepartmentChange}
                       InputProps={{
-                        classes: { input: classes.button },
+                        classes: { input: classes.text },
                         // endAdornment: (
                         //   <InputAdornment position="end"></InputAdornment>
                         // ),
@@ -880,7 +885,7 @@ function Dashboard() {
                 value={buyerAssistant}
                 onChange={onBuyerAssistantChange}
                 InputProps={{
-                  classes: { input: classes.button },
+                  classes: { input: classes.text },
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip
@@ -921,7 +926,7 @@ function Dashboard() {
                       value={category.categoryId}
                       onChange={onCategoryChange}
                       InputProps={{
-                        classes: { input: classes.button },
+                        classes: { input: classes.text },
                         // endAdornment: (
                         //   <InputAdornment position="end" component="span">
                         //   </InputAdornment>
@@ -972,7 +977,7 @@ function Dashboard() {
                 onChange={onSupplyChainSpecialistChange}
                 fullWidth
                 InputProps={{
-                  classes: { input: classes.button },
+                  classes: { input: classes.text },
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip
