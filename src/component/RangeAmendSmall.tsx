@@ -1,5 +1,6 @@
 import { Divider, Typography, makeStyles } from "@material-ui/core";
 import React from "react";
+import RangeCreate from "./RangeCreate";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,9 +32,10 @@ function RangeAmendSmall() {
         <Divider />
       </div>
       <div className={classes.value}>
-        <Typography variant="body1" color="primary" className={classes.tabHead}>
+        {/* <Typography variant="body1" color="primary" className={classes.tabHead}>
           Tasklists {">"} Range Amendment
-        </Typography>
+        </Typography> */}
+        <RangeCreate />
       </div>
     </div>
   );

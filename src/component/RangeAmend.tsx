@@ -1,6 +1,7 @@
 import { Divider, Grid, Typography, makeStyles } from "@material-ui/core";
 import React from "react";
 import Sidepanel from "./Sidepanel";
+import RangeCreate from "./RangeCreate";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,17 +34,18 @@ function RangeAmend() {
       </div>
       <div className={classes.value}>
         <Grid container className={classes.container}>
-          <Grid item lg={2} md={2} sm={3} xs={6}>
+          <Grid item lg={2} md={2} sm={4} xs={5}>
             <Sidepanel />
           </Grid>
-          <Grid item lg={10} md={10} sm={9} xs={6}>
-            <Typography
+          <Grid item lg={10} md={10} sm={8} xs={7}>
+            {/* <Typography
               variant="body1"
               color="primary"
               className={classes.tabHead}
             >
               Tasklists {">"} Range Amendment
-            </Typography>
+            </Typography> */}
+            <RangeCreate />
           </Grid>
         </Grid>
       </div>
