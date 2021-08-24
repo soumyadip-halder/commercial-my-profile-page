@@ -100,12 +100,12 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     fontWeight: "bold",
     marginLeft: theme.spacing(2),
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "0.8em",
-    },
-    [theme.breakpoints.down("xs")]: {
-      fontSize: "0.6em",
-    },
+    // [theme.breakpoints.down("sm")]: {
+    //   fontSize: "0.8em",
+    // },
+    // [theme.breakpoints.down("xs")]: {
+    //   fontSize: "0.6em",
+    // },
   },
   margin: {
     margin: theme.spacing(2),
@@ -713,7 +713,11 @@ function Dashboard() {
       <Prompt when={isPageModified} message={labels.promptMessage} />
       <Grid container className={classes.margin}>
         <Grid item lg={10} md={10} sm={8} xs={8}>
-          <Typography variant="h6" color="primary" className={classes.tabHead}>
+          <Typography
+            variant="body1"
+            color="primary"
+            className={classes.tabHead}
+          >
             Create Range Reset
           </Typography>
         </Grid>
