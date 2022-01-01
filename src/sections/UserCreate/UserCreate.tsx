@@ -256,7 +256,7 @@ function UserCreate({ rolesArray, appFuncList }: any) {
     <Dialog onClose={handleCloseGroups} open={groupOpen}>
       <Box
         sx={{
-          height: 450,
+          height: 400,
           // width: dialogwidth,
           width: "auto",
           p: 2,
@@ -272,14 +272,48 @@ function UserCreate({ rolesArray, appFuncList }: any) {
             flexDirection: "column",
           }}
         >
-          <Box>
-            <DialogTitle className={classes.text}>Add Groups</DialogTitle>
-          </Box>
-
+          {/* <Box> */}
           <Box
             sx={{
-              paddingLeft: "20px",
-              paddingRight: "20px",
+              display: "flex",
+              height: 30,
+              flexDirection: "row",
+            }}
+            className={classes.viewLogTitle}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexGrow: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="subtitle1">Add Groups</Typography>
+            </Box>
+            <Box
+              sx={{
+                paddingRight: 2,
+              }}
+            >
+              <button
+                style={{
+                  border: 0,
+                  padding: 0,
+                  height: 22,
+                  width: 22,
+                }}
+                className={classes.closeViewLog}
+                onClick={handleCloseGroups}
+              >
+                <b>X</b>
+              </button>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              alignItems: "flex-start",
+              marginTop: "50px",
             }}
           >
             <Select
