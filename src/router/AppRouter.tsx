@@ -1,16 +1,22 @@
-import React from "react";
-import { Switch, Route, BrowserRouter } from "react-router-dom";
-import { Container } from "@material-ui/core";
-import Login from "../pages/Login/Login";
-import AuthRoute from "./AuthRoute";
-import Home from "../pages/Home/Home";
-import PageNotFound from "../pages/PageNotFound/PageNotFound";
+import React from 'react'
+import { Switch, Route, BrowserRouter } from 'react-router-dom'
+import { Container } from '@material-ui/core'
+import Login from '../pages/Login/Login'
+import AuthRoute from './AuthRoute'
+import Home from '../pages/Home/Home'
+import PageNotFound from '../pages/PageNotFound/PageNotFound'
 
 const Error = () => (
-  <div>
-    <h1>Error Page</h1>
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      color: '#004e37',
+    }}
+  >
+    <p style={{ fontSize: '24px', marginTop: 10 }}>Error Page</p>
   </div>
-);
+)
 
 const AppRouter = () => {
   return (
@@ -30,7 +36,7 @@ const AppRouter = () => {
         </Switch>
       </BrowserRouter>
     </Container>
-  );
-};
+  )
+}
 
-export default AppRouter;
+export default AppRouter
