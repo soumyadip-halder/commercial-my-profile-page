@@ -7,7 +7,7 @@
   --font-size-display-6: 1.5rem; /* 24px */
   --font-size-display-5: 1.875rem; /* 30px */
   --font-size-display-4: 2.25rem; /* 36px */
-  --font-size-display-3: 3rem;  /* 48px */
+  --font-size-display-3: 3rem; /* 48px */
   --font-size-display-2: 3.75rem; /* 60px */
   --font-size-display-1: 4.5rem; /* 72px */
 
@@ -76,6 +76,15 @@
   font-style: normal;
   font-weight: 600;
   line-height: var(--line-height-display-6);
+}
+
+.display7 {
+  font-family: MorrisonsAgenda;
+  font-size: var(--font-size-display-lg);
+  font-stretch: normal;
+  font-style: normal;
+  font-weight: 600;
+  line-height: var(--line-height-display-lg);
 }
 
 .subtitle1 {

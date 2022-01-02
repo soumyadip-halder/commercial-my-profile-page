@@ -20,6 +20,7 @@ function Login(props: any) {
   const { loginUser, user, isLoading, errorMessage } = props
   const theme = useTheme()
   const active = useMediaQuery(theme.breakpoints.down(500))
+  const moresmall = useMediaQuery(theme.breakpoints.down(320))
   const classes = useStyles()
   let history = useHistory()
   const { GOOGLE_CLIENT_ID } = Config
@@ -150,10 +151,13 @@ function Login(props: any) {
             alignItems: 'center',
             flexDirection: 'column',
             marginTop: 10,
-            height: '50vh',
+            height: !moresmall ? '50vh' : '40vh',
           }}
         >
-          <div className={'display6'} style={{ color: '#004e37' }}>
+          <div
+            className={!moresmall ? 'display6' : 'display7'}
+            style={{ color: '#004e37' }}
+          >
             Commercial Web Application
           </div>
           <br />
