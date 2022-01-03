@@ -15,6 +15,7 @@ import { useCallback } from 'react'
 import Config from '../../config/Config'
 import { useStyles } from './Styles'
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
+import { ServiceResponse } from './Messages'
 
 function Login(props: any) {
   const { loginUser, user, isLoading, errorMessage } = props
@@ -51,9 +52,11 @@ function Login(props: any) {
   // }, [responseGoogle, history])
   useEffect(() => {
     if (user) {
-      history.push('/commercial-webapp/dashboard')
+      if (!isLoading && errorMessage.toLowerCase() !== 'usernotadded')
+        history.push('/commercial-webapp/dashboard')
+      else history.push('/login')
     }
-  }, [user, history])
+  }, [user, history, errorMessage, isLoading])
 
   const responseGoogleerror = (error: any) => {
     console.log(error)
@@ -184,7 +187,9 @@ function Login(props: any) {
             marginTop: 10,
           }}
         >
-          {errorMessage}
+          {errorMessage.toLowerCase() !== 'usernotadded'
+            ? errorMessage
+            : ServiceResponse.getMessage('app', 'usernotadded')}
         </div>
         <LoadingComponent showLoader={isLoading} />
       </div>

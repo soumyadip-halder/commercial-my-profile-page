@@ -1,11 +1,5 @@
 const formattedDate = () => {
-  return new Date()
-    .toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    })
-    .replace(/ /g, '-')
+  return new Date().toISOString().split('T')[0]
 }
 
 export interface LocationhierarchyTypes {
@@ -32,7 +26,7 @@ export const locationTypes: LocationhierarchyTypes[] = [
     hierarchyLevel: 'channel',
     hierarchyId: 'Wholesale',
     startDate: formattedDate(),
-    endDate: '2099-01-01',
+    endDate: '2099-12-31',
   },
   {
     value: 'Retail',
@@ -40,7 +34,7 @@ export const locationTypes: LocationhierarchyTypes[] = [
     hierarchyLevel: 'channel',
     hierarchyId: 'Retail',
     startDate: formattedDate(),
-    endDate: '2099-01-01',
+    endDate: '2099-12-31',
   },
 ]
 

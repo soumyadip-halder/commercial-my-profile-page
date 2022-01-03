@@ -7,131 +7,131 @@ import {
   Dialog,
   Paper,
   useMediaQuery,
-} from "@material-ui/core";
-import React, { useRef, useState } from "react";
-import Select, { StylesConfig } from "react-select";
-import { Link } from "react-router-dom";
-import { components } from "react-select";
-import CloseIcon from "@material-ui/icons/Close";
-import { TextareaAutosize } from "@material-ui/core";
-import { teal } from "@material-ui/core/colors";
-import { Toast } from "primereact/toast";
-import { useEffect } from "react";
-import { useStyles } from "./Styles";
+} from '@material-ui/core'
+import React, { useRef, useState } from 'react'
+import Select, { StylesConfig } from 'react-select'
+import { Link } from 'react-router-dom'
+import { components } from 'react-select'
+import CloseIcon from '@material-ui/icons/Close'
+import { TextareaAutosize } from '@material-ui/core'
+import { teal } from '@material-ui/core/colors'
+import { Toast } from 'primereact/toast'
+import { useEffect } from 'react'
+import { useStyles } from './Styles'
 import {
   constants,
   locationTypes,
   LocationhierarchyTypes,
-} from "./DataConstants";
-import config from "../../config/Config";
-import { getProductHierarchyAPI, putUserGroupAPI } from "../../api/Fetch";
+} from './DataConstants'
+import config from '../../config/Config'
+import { getProductHierarchyAPI, putUserGroupAPI } from '../../api/Fetch'
 
 function UserGroupCreate() {
-  const theme = useTheme();
-  const { BASE_URL_SIT, PRODUCT_HIERARCHY_GET, API_KEY } = config;
-  const active = useMediaQuery(theme.breakpoints.down(750));
-  const classes = useStyles();
-  const [groupId, setGroupId] = useState("");
-  const [groupname, setGroupname] = useState("");
-  const [description, setDescription] = useState("");
-  const [currentDate, setCurrentDate] = useState("");
-  const [status, setStatus] = useState("");
-  const [viewProductEl, setViewProductEl] = useState(null);
-  const [locationNames, setLocationNames] = useState([]);
-  const [viewLocationEl, setViewLocationEl] = useState(null);
-  const toast = useRef<any>(null);
+  const theme = useTheme()
+  const { BASE_URL_SIT, PRODUCT_HIERARCHY_GET, API_KEY } = config
+  const active = useMediaQuery(theme.breakpoints.down(750))
+  const classes = useStyles()
+  const [groupId, setGroupId] = useState('')
+  const [groupname, setGroupname] = useState('')
+  const [description, setDescription] = useState('')
+  const [currentDate, setCurrentDate] = useState('')
+  const [status, setStatus] = useState('')
+  const [viewProductEl, setViewProductEl] = useState(null)
+  const [locationNames, setLocationNames] = useState([])
+  const [viewLocationEl, setViewLocationEl] = useState(null)
+  const toast = useRef<any>(null)
   //product changes start.............................................
   // const BASE = "https://pre-api.morrisons.com";
-  const [error, setError] = useState("");
-  const [disabled, setDisabled] = useState(true);
-  const [selected, setSelected] = useState<any>([]);
-  const [data, setData] = useState<any>([]);
-  const [uniquediv, setUniqueDiv] = useState<any>([]);
-  const [uniquedivobj, setUniqueDivObj] = useState<any>([]);
-  const [uniquegrp, setUniqueGrp] = useState<any>([]);
-  const [uniquegrpobj, setUniqueGrpObj] = useState<any>([]);
-  const [uniquecat, setUniqueCat] = useState<any>([]);
-  const [uniquecatobj, setUniqueCatObj] = useState<any>([]);
-  const [uniquedep, setUniqueDep] = useState<any>([]);
-  const [uniquedepobj, setUniqueDepObj] = useState<any>([]);
-  const [uniquecls, setUniqueCls] = useState<any>([]);
-  const [uniqueclsobj, setUniqueClsObj] = useState<any>([]);
-  const [uniquescls, setUniqueScls] = useState<any>([]);
-  const [uniquesclsobj, setUniqueSclsObj] = useState<any>([]);
-  const [payload, setPayload] = useState<any>([]);
-  const [hierLevel, setHierLevel] = useState<any>("");
+  const [error, setError] = useState('')
+  const [disabled, setDisabled] = useState(true)
+  const [selected, setSelected] = useState<any>([])
+  const [data, setData] = useState<any>([])
+  const [uniquediv, setUniqueDiv] = useState<any>([])
+  const [uniquedivobj, setUniqueDivObj] = useState<any>([])
+  const [uniquegrp, setUniqueGrp] = useState<any>([])
+  const [uniquegrpobj, setUniqueGrpObj] = useState<any>([])
+  const [uniquecat, setUniqueCat] = useState<any>([])
+  const [uniquecatobj, setUniqueCatObj] = useState<any>([])
+  const [uniquedep, setUniqueDep] = useState<any>([])
+  const [uniquedepobj, setUniqueDepObj] = useState<any>([])
+  const [uniquecls, setUniqueCls] = useState<any>([])
+  const [uniqueclsobj, setUniqueClsObj] = useState<any>([])
+  const [uniquescls, setUniqueScls] = useState<any>([])
+  const [uniquesclsobj, setUniqueSclsObj] = useState<any>([])
+  const [payload, setPayload] = useState<any>([])
+  const [hierLevel, setHierLevel] = useState<any>('')
   //product changes end ................................................
 
   //product changes start...........................................
 
   useEffect(() => {
     for (let d = 0; d < data.length; d++) {
-      data[d]["tag"] = data[d].name;
-      let tag = `${data[d].name}#${data[d].tag}#${data[d].id}`;
+      data[d]['tag'] = data[d].name
+      let tag = `${data[d].name}#${data[d].tag}#${data[d].id}`
       if (!uniquediv.includes(tag)) {
-        setUniqueDiv((prevState: any) => [...prevState, tag]);
-        const splitted = tag.split("#");
+        setUniqueDiv((prevState: any) => [...prevState, tag])
+        const splitted = tag.split('#')
         setUniqueDivObj((prevState: any) => [
           ...prevState,
           {
             value: splitted[0],
             label: splitted[1],
             id: splitted[2],
-            hierGroup: "division",
+            hierGroup: 'division',
           },
-        ]);
+        ])
       }
       for (let g = 0; g < data[d].nodes.length; g++) {
-        data[d].nodes[g]["tag"] = `${data[d].tag} > ${data[d].nodes[g].name}`;
-        let tag = `${data[d].nodes[g].name}#${data[d].nodes[g].tag}#${data[d].nodes[g].id}`;
+        data[d].nodes[g]['tag'] = `${data[d].tag} > ${data[d].nodes[g].name}`
+        let tag = `${data[d].nodes[g].name}#${data[d].nodes[g].tag}#${data[d].nodes[g].id}`
         if (!uniquegrp.includes(tag)) {
-          setUniqueGrp((prevState: any) => [...prevState, tag]);
-          const splitted = tag.split("#");
+          setUniqueGrp((prevState: any) => [...prevState, tag])
+          const splitted = tag.split('#')
           setUniqueGrpObj((prevState: any) => [
             ...prevState,
             {
               value: splitted[0],
               label: splitted[1],
               id: splitted[2],
-              hierGroup: "group",
+              hierGroup: 'group',
             },
-          ]);
+          ])
         }
         for (let c = 0; c < data[d].nodes[g].nodes.length; c++) {
           data[d].nodes[g].nodes[c][
-            "tag"
-          ] = `${data[d].nodes[g].tag} > ${data[d].nodes[g].nodes[c].name}`;
-          let tag = `${data[d].nodes[g].nodes[c].name}#${data[d].nodes[g].nodes[c].tag}#${data[d].nodes[g].nodes[c].id}`;
+            'tag'
+          ] = `${data[d].nodes[g].tag} > ${data[d].nodes[g].nodes[c].name}`
+          let tag = `${data[d].nodes[g].nodes[c].name}#${data[d].nodes[g].nodes[c].tag}#${data[d].nodes[g].nodes[c].id}`
           if (!uniquecat.includes(tag)) {
-            setUniqueCat((prevState: any) => [...prevState, tag]);
-            const splitted = tag.split("#");
+            setUniqueCat((prevState: any) => [...prevState, tag])
+            const splitted = tag.split('#')
             setUniqueCatObj((prevState: any) => [
               ...prevState,
               {
                 value: splitted[0],
                 label: splitted[1],
                 id: splitted[2],
-                hierGroup: "category",
+                hierGroup: 'category',
               },
-            ]);
+            ])
           }
           for (let dp = 0; dp < data[d].nodes[g].nodes[c].nodes.length; dp++) {
             data[d].nodes[g].nodes[c].nodes[dp][
-              "tag"
-            ] = `${data[d].nodes[g].nodes[c].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].name}`;
-            let tag = `${data[d].nodes[g].nodes[c].nodes[dp].name}#${data[d].nodes[g].nodes[c].nodes[dp].tag}#${data[d].nodes[g].nodes[c].nodes[dp].id}`;
+              'tag'
+            ] = `${data[d].nodes[g].nodes[c].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].name}`
+            let tag = `${data[d].nodes[g].nodes[c].nodes[dp].name}#${data[d].nodes[g].nodes[c].nodes[dp].tag}#${data[d].nodes[g].nodes[c].nodes[dp].id}`
             if (!uniquedep.includes(tag)) {
-              setUniqueDep((prevState: any) => [...prevState, tag]);
-              const splitted = tag.split("#");
+              setUniqueDep((prevState: any) => [...prevState, tag])
+              const splitted = tag.split('#')
               setUniqueDepObj((prevState: any) => [
                 ...prevState,
                 {
                   value: splitted[0],
                   label: splitted[1],
                   id: splitted[2],
-                  hierGroup: "department",
+                  hierGroup: 'department',
                 },
-              ]);
+              ])
             }
             for (
               let cl = 0;
@@ -139,21 +139,21 @@ function UserGroupCreate() {
               cl++
             ) {
               data[d].nodes[g].nodes[c].nodes[dp].nodes[cl][
-                "tag"
-              ] = `${data[d].nodes[g].nodes[c].nodes[dp].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].name}`;
-              let tag = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].name}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].tag}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].id}`;
+                'tag'
+              ] = `${data[d].nodes[g].nodes[c].nodes[dp].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].name}`
+              let tag = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].name}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].tag}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].id}`
               if (!uniquecls.includes(tag)) {
-                setUniqueCls((prevState: any) => [...prevState, tag]);
-                const splitted = tag.split("#");
+                setUniqueCls((prevState: any) => [...prevState, tag])
+                const splitted = tag.split('#')
                 setUniqueClsObj((prevState: any) => [
                   ...prevState,
                   {
                     value: splitted[0],
                     label: splitted[1],
                     id: splitted[2],
-                    hierGroup: "class",
+                    hierGroup: 'class',
                   },
-                ]);
+                ])
               }
               for (
                 let scl = 0;
@@ -162,21 +162,21 @@ function UserGroupCreate() {
                 scl++
               ) {
                 data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl][
-                  "tag"
-                ] = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].name}`;
-                let tag = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].name}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].tag}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].id}`;
+                  'tag'
+                ] = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].tag} > ${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].name}`
+                let tag = `${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].name}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].tag}#${data[d].nodes[g].nodes[c].nodes[dp].nodes[cl].nodes[scl].id}`
                 if (!uniquescls.includes(tag)) {
-                  setUniqueScls((prevState: any) => [...prevState, tag]);
-                  const splitted = tag.split("#");
+                  setUniqueScls((prevState: any) => [...prevState, tag])
+                  const splitted = tag.split('#')
                   setUniqueSclsObj((prevState: any) => [
                     ...prevState,
                     {
                       value: splitted[0],
                       label: splitted[1],
                       id: splitted[2],
-                      hierGroup: "subclass",
+                      hierGroup: 'subclass',
                     },
-                  ]);
+                  ])
                 }
               }
             }
@@ -184,37 +184,37 @@ function UserGroupCreate() {
         }
       }
     }
-  }, [data]);
+  }, [data])
 
   useEffect(() => {
     async function handleClick() {
-      setData([]);
-      setUniqueDivObj([]);
-      setUniqueGrpObj([]);
-      setUniqueCatObj([]);
-      setUniqueDepObj([]);
-      setUniqueClsObj([]);
-      setUniqueSclsObj([]);
-      setUniqueDiv([]);
-      setUniqueGrp([]);
-      setUniqueCat([]);
-      setUniqueDep([]);
-      setUniqueCls([]);
-      setUniqueScls([]);
-      setDisabled(true);
-      let nexturl = `${BASE_URL_SIT}${PRODUCT_HIERARCHY_GET}?apikey=${API_KEY}`;
+      setData([])
+      setUniqueDivObj([])
+      setUniqueGrpObj([])
+      setUniqueCatObj([])
+      setUniqueDepObj([])
+      setUniqueClsObj([])
+      setUniqueSclsObj([])
+      setUniqueDiv([])
+      setUniqueGrp([])
+      setUniqueCat([])
+      setUniqueDep([])
+      setUniqueCls([])
+      setUniqueScls([])
+      setDisabled(true)
+      let nexturl = `${BASE_URL_SIT}${PRODUCT_HIERARCHY_GET}?apikey=${API_KEY}`
       // let nexturl = `${BASE}/product/v1/hierarchies/reporting?apikey=ArAaZlvKV09DlZst4aGqxicONzvtGbpI&offset=0`;
       //   const start = new Date();
-      while (nexturl !== "") {
-        if (error !== "") {
+      while (nexturl !== '') {
+        if (error !== '') {
           toast.current.show({
-            severity: "error",
-            summary: "Error!",
-            detail: "Product hierarchy service has issue",
+            severity: 'error',
+            summary: 'Error!',
+            detail: 'Product hierarchy service has issue',
             life: 6000,
-            className: "login-toast",
-          });
-          break;
+            className: 'login-toast',
+          })
+          break
         }
         // console.log("to visit url: ", nexturl);
         // await axios
@@ -229,68 +229,68 @@ function UserGroupCreate() {
             setData((prevState: any) => [
               ...prevState,
               ...res.data.hierarchy.nodes,
-            ]);
+            ])
             nexturl = res.data.metaData.links.next
               ? `${BASE_URL_SIT}${res.data.metaData.links.next}`
-              : "";
+              : ''
             // console.log(`up next: ${res.data.metaData.links.next}`);
             // console.log(res.data.hierarchy.nodes);
           })
           .catch((e) => {
-            nexturl = "";
-            setError(e.message);
-          });
+            nexturl = ''
+            setError(e.message)
+          })
       }
       // const end = new Date();
       // const timediff = end - start;
       // console.log("Time taken for api calls: ", timediff);
     }
-    handleClick();
-  }, [BASE_URL_SIT, PRODUCT_HIERARCHY_GET, API_KEY, error]);
+    handleClick()
+  }, [BASE_URL_SIT, PRODUCT_HIERARCHY_GET, API_KEY, error])
 
   const handleChange = (e: any) => {
-    setHierLevel(constants.mainvalues.filter((val) => val.value === e.value));
+    setHierLevel(constants.mainvalues.filter((val) => val.value === e.value))
     switch (e.value) {
-      case "division":
-        setDisabled(false);
-        setPayload("");
-        setSelected([...uniquedivobj]);
-        break;
-      case "group":
-        setDisabled(false);
-        setPayload("");
-        setSelected([...uniquegrpobj]);
-        break;
-      case "category":
-        setDisabled(false);
-        setPayload("");
-        setSelected([...uniquecatobj]);
-        break;
-      case "department":
-        setDisabled(false);
-        setPayload("");
-        setSelected([...uniquedepobj]);
-        break;
-      case "class":
-        setDisabled(false);
-        setPayload("");
-        setSelected([...uniqueclsobj]);
-        break;
-      case "subclass":
-        setDisabled(false);
-        setPayload("");
-        setSelected([...uniquesclsobj]);
-        break;
+      case 'division':
+        setDisabled(false)
+        setPayload('')
+        setSelected([...uniquedivobj])
+        break
+      case 'group':
+        setDisabled(false)
+        setPayload('')
+        setSelected([...uniquegrpobj])
+        break
+      case 'category':
+        setDisabled(false)
+        setPayload('')
+        setSelected([...uniquecatobj])
+        break
+      case 'department':
+        setDisabled(false)
+        setPayload('')
+        setSelected([...uniquedepobj])
+        break
+      case 'class':
+        setDisabled(false)
+        setPayload('')
+        setSelected([...uniqueclsobj])
+        break
+      case 'subclass':
+        setDisabled(false)
+        setPayload('')
+        setSelected([...uniquesclsobj])
+        break
       default:
-        setDisabled(true);
-        setPayload("");
-        setSelected([]);
-        break;
+        setDisabled(true)
+        setPayload('')
+        setSelected([])
+        break
     }
-  };
+  }
 
   const handleHierarchyChange = (e: any) => {
-    let values = [];
+    let values = []
 
     for (let i = 0; i < e.length; i++) {
       values.push({
@@ -298,19 +298,13 @@ function UserGroupCreate() {
         label: e[i].label,
         hierarchyLevel: e[i].hierGroup ? e[i].hierGroup : e[i].hierarchyLevel,
         hierarchyId: e[i].id ? e[i].id : e[i].hierarchyId,
-        startDate: new Date()
-          .toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })
-          .replace(/ /g, "-"),
-        endDate: "2099-12-31",
-      });
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: '2099-12-31',
+      })
     }
-    setPayload([...values]);
-    console.log(values);
-  };
+    setPayload([...values])
+    console.log(values)
+  }
 
   //product changes end...................
 
@@ -318,32 +312,32 @@ function UserGroupCreate() {
     option: (provided: any, state: any) => ({
       ...provided,
       borderColor: teal[900],
-      backgroundColor: state.isSelected ? teal[900] : "white",
-      color: state.isSelected ? "white" : teal[900],
+      backgroundColor: state.isSelected ? teal[900] : 'white',
+      color: state.isSelected ? 'white' : teal[900],
     }),
-  };
+  }
   const locationCustomStyles: StylesConfig<LocationhierarchyTypes, true> = {
     option: (provided: any, state: any) => ({
       ...provided,
       borderColor: teal[900],
-      backgroundColor: state.isSelected ? teal[900] : "white",
-      color: state.isSelected ? "white" : teal[900],
+      backgroundColor: state.isSelected ? teal[900] : 'white',
+      color: state.isSelected ? 'white' : teal[900],
     }),
-  };
+  }
 
-  const viewProductOpen = Boolean(viewProductEl);
-  const viewLocationOpen = Boolean(viewLocationEl);
+  const viewProductOpen = Boolean(viewProductEl)
+  const viewLocationOpen = Boolean(viewLocationEl)
   const handleLocationChange = (selected: any) => {
-    setLocationNames(selected);
+    setLocationNames(selected)
     // console.log(selected);
-  };
+  }
   const handleReset = () => {
-    setGroupId("");
-    setGroupname("");
-    setDescription("");
-    setPayload([]);
-    setLocationNames([]);
-  };
+    setGroupId('')
+    setGroupname('')
+    setDescription('')
+    setPayload([])
+    setLocationNames([])
+  }
   const Option = (props: any) => {
     return (
       <div>
@@ -352,12 +346,12 @@ function UserGroupCreate() {
             type="checkbox"
             checked={props.isSelected}
             onChange={() => {}}
-          />{" "}
+          />{' '}
           <label>{props.label}</label>
         </components.Option>
       </div>
-    );
-  };
+    )
+  }
   const productSelect = (
     <>
       {/* <Select
@@ -392,7 +386,7 @@ function UserGroupCreate() {
         //value={payload !== "" ? payload.id : ""}
       />
     </>
-  );
+  )
   const locationSelect = (
     <>
       <Select
@@ -409,31 +403,31 @@ function UserGroupCreate() {
         styles={locationCustomStyles}
       />
     </>
-  );
+  )
   const ongroupIDChange = (e: any) => {
-    setGroupId(e.target.value);
-  };
+    setGroupId(e.target.value)
+  }
   const ongroupnameChange = (e: any) => {
-    setGroupname(e.target.value);
-  };
+    setGroupname(e.target.value)
+  }
   const ondescriptionChange = (e: any) => {
-    setDescription(e.target.value);
-  };
+    setDescription(e.target.value)
+  }
   const onstatusChange = (e: any) => {
-    setStatus(e.target.value);
-  };
+    setStatus(e.target.value)
+  }
   const handleOpenViewProduct = (e: any) => {
-    setViewProductEl(e.currentTarget);
-  };
+    setViewProductEl(e.currentTarget)
+  }
   const handleCloseViewProduct = () => {
-    setViewProductEl(null);
-  };
+    setViewProductEl(null)
+  }
   const handleOpenViewLocation = (e: any) => {
-    setViewLocationEl(e.currentTarget);
-  };
+    setViewLocationEl(e.currentTarget)
+  }
   const handleCloseViewLocation = () => {
-    setViewLocationEl(null);
-  };
+    setViewLocationEl(null)
+  }
 
   const viewProduct = (
     <Dialog
@@ -443,35 +437,35 @@ function UserGroupCreate() {
     >
       <Box
         sx={{
-          width: "auto",
+          width: 'auto',
           height: !active ? 500 : 400,
           //   border: "3px solid green",
           //   borderRadius: 4,
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
           p: 1,
         }}
       >
         <Box
           sx={{
-            display: "flex",
+            display: 'flex',
             height: 30,
-            flexDirection: "row",
+            flexDirection: 'row',
           }}
           className={classes.viewLogTitle}
         >
           <Box
             sx={{
-              display: "flex",
+              display: 'flex',
               flexGrow: 1,
-              justifyContent: "center",
+              justifyContent: 'center',
             }}
           >
             <Typography variant="subtitle1">Add Product Hierarchies</Typography>
           </Box>
           <Box
             sx={{
-              paddingRight: "2px",
+              paddingRight: '2px',
             }}
           >
             <button
@@ -490,15 +484,15 @@ function UserGroupCreate() {
         </Box>
         <Box
           sx={{
-            paddingLeft: "16px",
-            display: "flex",
+            paddingLeft: '16px',
+            display: 'flex',
           }}
         >
           <Box
             className={classes.inputFieldBox}
             sx={{
-              display: "flex",
-              flexDirection: "column",
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             {/* {productSelect} */}
@@ -545,7 +539,7 @@ function UserGroupCreate() {
         </Box>
         <Box
           sx={{
-            padding: "16px",
+            padding: '16px',
           }}
         >
           <Box>
@@ -553,8 +547,8 @@ function UserGroupCreate() {
           </Box>
           <Box
             sx={{
-              justifyContent: "center",
-              paddingRight: "10px",
+              justifyContent: 'center',
+              paddingRight: '10px',
             }}
           >
             {productSelect}
@@ -562,7 +556,7 @@ function UserGroupCreate() {
         </Box>
       </Box>
     </Dialog>
-  );
+  )
   const viewLocation = (
     <Dialog
       id="basic-menu"
@@ -571,28 +565,28 @@ function UserGroupCreate() {
     >
       <Box
         sx={{
-          width: "auto",
+          width: 'auto',
           height: !active ? 500 : 400,
           //   border: "3px solid green",
           //   borderRadius: 4,
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
           p: 1,
         }}
       >
         <Box
           sx={{
-            display: "flex",
+            display: 'flex',
             height: 30,
-            flexDirection: "row",
+            flexDirection: 'row',
           }}
           className={classes.viewLogTitle}
         >
           <Box
             sx={{
-              display: "flex",
+              display: 'flex',
               flexGrow: 1,
-              justifyContent: "center",
+              justifyContent: 'center',
             }}
           >
             <Typography variant="subtitle1">
@@ -620,8 +614,8 @@ function UserGroupCreate() {
         </Box>
         <Box
           sx={{
-            justifyContent: "center",
-            display: "flex",
+            justifyContent: 'center',
+            display: 'flex',
             p: 2,
           }}
         >
@@ -629,28 +623,28 @@ function UserGroupCreate() {
         </Box>
       </Box>
     </Dialog>
-  );
+  )
   useEffect(() => {
-    let today = new Date();
-    let dd = String(today.getDate());
+    let today = new Date()
+    let dd = String(today.getDate())
 
-    let mm = String(today.getMonth() + 1);
-    let yyyy = String(today.getFullYear());
-    if (dd < "10") {
-      dd = "0" + dd;
+    let mm = String(today.getMonth() + 1)
+    let yyyy = String(today.getFullYear())
+    if (dd < '10') {
+      dd = '0' + dd
     }
 
-    if (mm < "10") {
-      mm = "0" + mm;
+    if (mm < '10') {
+      mm = '0' + mm
     }
-    let startdate;
-    startdate = yyyy + "-" + mm + "-" + dd;
+    let startdate
+    startdate = yyyy + '-' + mm + '-' + dd
     //console.log(startdate);
-    setCurrentDate(startdate);
-  }, [locationNames]);
+    setCurrentDate(startdate)
+  }, [locationNames])
 
   const handleCreateGroup = (e: any) => {
-    e.preventDefault();
+    e.preventDefault()
 
     const formData = {
       groupName: groupname,
@@ -660,21 +654,21 @@ function UserGroupCreate() {
         return {
           hierarchyLevel: location.hierarchyLevel,
           hierarchyId: location.hierarchyId,
-          startDate: currentDate,
+          startDate: location.startDate,
           endDate: location.endDate,
-        };
+        }
       }),
       productHierarchy: payload.map((product: any) => {
         return {
           hierarchyLevel: product.hierarchyLevel,
           hierarchyId: product.hierarchyId,
-          startDate: currentDate,
+          startDate: product.startDate,
           endDate: product.endDate,
-        };
+        }
       }),
-    };
+    }
     //console.log(status);
-    console.log(formData);
+    console.log(formData)
     // let accessToken;
     // if (localStorage && localStorage.getItem("_GresponseV2")) {
     //   accessToken = JSON.parse(
@@ -696,38 +690,38 @@ function UserGroupCreate() {
     putUserGroupAPI(formData, groupId)
       .then((res) => {
         //console.log(res);
-        let statusCode = res.status;
+        let statusCode = res.status
         //console.log(res.data.message);
         if (statusCode === 200) {
           toast.current.show({
-            severity: "success",
-            summary: "",
+            severity: 'success',
+            summary: '',
             detail: res.data.message,
             life: 6000,
-            className: "login-toast",
-          });
+            className: 'login-toast',
+          })
         }
       })
       .catch((err) => {
         //console.log(err);
-        let statusCode = err.response.data.error;
-        console.log(statusCode);
+        let statusCode = err.response.data.error
+        console.log(statusCode)
         toast.current.show({
-          severity: "error",
-          summary: "Error!",
+          severity: 'error',
+          summary: 'Error!',
           detail: err.response.data.error,
           life: 6000,
-          className: "login-toast",
-        });
-      });
-  };
+          className: 'login-toast',
+        })
+      })
+  }
 
   return (
     <>
       <Toast ref={toast} position="bottom-left" />
       <Paper className={classes.root} elevation={0}>
         <Box
-          sx={{ flexGrow: 1, p: 1, display: "flex" }}
+          sx={{ flexGrow: 1, p: 1, display: 'flex' }}
           className={classes.text}
         >
           <Grid container spacing={1}>
@@ -740,20 +734,20 @@ function UserGroupCreate() {
             >
               <Box
                 sx={{
-                  flexDirection: "column",
-                  display: "flex",
+                  flexDirection: 'column',
+                  display: 'flex',
                   p: 2,
-                  paddingLeft: "40px",
-                  paddingRight: "30px",
-                  textAlign: "left",
+                  paddingLeft: '40px',
+                  paddingRight: '30px',
+                  textAlign: 'left',
                 }}
               >
                 <Box
                   sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    paddingBottom: "20px",
-                    paddingTop: "10px",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    paddingBottom: '20px',
+                    paddingTop: '10px',
                   }}
                 >
                   <Box
@@ -765,8 +759,8 @@ function UserGroupCreate() {
                   </Box>
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: !active ? "row" : "column",
+                      display: 'flex',
+                      flexDirection: !active ? 'row' : 'column',
                     }}
                   >
                     <Box
@@ -786,22 +780,22 @@ function UserGroupCreate() {
                 <form onSubmit={handleCreateGroup}>
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: !active ? "row" : "column",
-                      alignItems: "baseline",
+                      display: 'flex',
+                      flexDirection: !active ? 'row' : 'column',
+                      alignItems: 'baseline',
                     }}
                   >
                     <Box
                       className={classes.inputLabel}
                       sx={{
-                        display: !active ? null : "flex",
+                        display: !active ? null : 'flex',
                       }}
                     >
                       <Typography variant="subtitle2">
                         Group ID &nbsp;
                         <span
                           style={{
-                            color: "#ff0000",
+                            color: '#ff0000',
                           }}
                         >
                           *
@@ -827,14 +821,14 @@ function UserGroupCreate() {
                     <Box
                       className={classes.inputLabel}
                       sx={{
-                        display: !active ? null : "flex",
+                        display: !active ? null : 'flex',
                       }}
                     >
                       <Typography variant="subtitle2">
                         Group Name &nbsp;
                         <span
                           style={{
-                            color: "#ff0000",
+                            color: '#ff0000',
                           }}
                         >
                           *
@@ -858,15 +852,15 @@ function UserGroupCreate() {
                   </Box>
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: !active ? "row" : "column",
-                      paddingTop: "20px",
+                      display: 'flex',
+                      flexDirection: !active ? 'row' : 'column',
+                      paddingTop: '20px',
                     }}
                   >
                     <Box
                       className={classes.inputLabel}
                       sx={{
-                        display: !active ? null : "flex",
+                        display: !active ? null : 'flex',
                       }}
                     >
                       <Typography variant="subtitle2">Description</Typography>
@@ -890,7 +884,7 @@ function UserGroupCreate() {
                         Status &nbsp;
                         <span
                           style={{
-                            color: "#ff0000",
+                            color: '#ff0000',
                           }}
                         >
                           *
@@ -919,7 +913,7 @@ function UserGroupCreate() {
                               <option value={type.statusID} key={type.statusID}>
                                 {type.text}
                               </option>
-                            );
+                            )
                           })}
                         </select>
                       </Typography>
@@ -1008,16 +1002,16 @@ function UserGroupCreate() {
                   <Box className={classes.eachRow}>
                     <Box
                       sx={{
-                        display: "flex",
-                        flexDirection: !active ? "row" : "column",
-                        justifyContent: !active ? "space-evenly" : "center",
+                        display: 'flex',
+                        flexDirection: !active ? 'row' : 'column',
+                        justifyContent: !active ? 'space-evenly' : 'center',
                         width: !active ? 400 : 200,
-                        alignItems: !active ? "center" : "center",
+                        alignItems: !active ? 'center' : 'center',
                       }}
                     >
                       <Box
                         sx={{
-                          display: "flex",
+                          display: 'flex',
                         }}
                       >
                         <Button
@@ -1031,7 +1025,7 @@ function UserGroupCreate() {
                       </Box>
                       <Box
                         sx={{
-                          display: "flex",
+                          display: 'flex',
                         }}
                       >
                         <Button
@@ -1053,6 +1047,6 @@ function UserGroupCreate() {
         </Box>
       </Paper>
     </>
-  );
+  )
 }
-export default UserGroupCreate;
+export default UserGroupCreate
