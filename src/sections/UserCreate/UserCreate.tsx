@@ -1135,7 +1135,8 @@ function UserCreate({ rolesArray, appFuncList }: any) {
                     : classes.backButton
                 }
                 disabled={colleagueData ? false : true}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault()
                   setOpenAdditional((prevState) => !prevState)
                 }}
               >

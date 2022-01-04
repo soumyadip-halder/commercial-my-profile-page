@@ -153,6 +153,7 @@ function UpdateUser(props: any) {
   //   setRoleNames([]);
   // };
   const onrequestTypeChange = (e: any) => {
+    e.preventDefault()
     setRequestType(e.target.value)
   }
   useEffect(() => {
@@ -972,7 +973,7 @@ function UpdateUser(props: any) {
           </Box>
         </Box>
       </Box>
-      <form onSubmit={handleUpdateUser}>
+      <form>
         <Box
           sx={{
             display: 'flex',
@@ -1201,7 +1202,8 @@ function UpdateUser(props: any) {
                     : classes.backButton
                 }
                 disabled={additionalInfo ? false : true}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault()
                   setOpenAdditional((prevState) => !prevState)
                 }}
               >
@@ -1510,6 +1512,7 @@ function UpdateUser(props: any) {
                   : classes.buttons
               }
               size="small"
+              onClick={handleUpdateUser}
             >
               Approve
             </Button>
