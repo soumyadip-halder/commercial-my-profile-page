@@ -153,6 +153,10 @@ export const useStyles = makeStyles((theme) => {
       // backgroundColor: "white",
       cursor: "pointer",
       fontSize: "18px",
+      '&:disabled': {
+        color: 'grey',
+        cursor: 'default',
+      },
     },
     viewLogTitle: {
       backgroundColor: theme.palette.primary.main,

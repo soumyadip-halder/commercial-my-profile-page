@@ -1,20 +1,20 @@
-import { makeStyles } from "@material-ui/core";
-import { teal } from "@material-ui/core/colors";
+import { makeStyles } from '@material-ui/core'
+import { teal } from '@material-ui/core/colors'
 
-export const fieldWidth = window.innerWidth - 80;
+export const fieldWidth = window.innerWidth - 80
 
 export const useStyles = makeStyles((theme) => {
   return {
     eachRow: {
-      display: "flex",
+      display: 'flex',
       [theme.breakpoints.up(750)]: {
-        flexDirection: "row",
+        flexDirection: 'row',
       },
       [theme.breakpoints.down(750)]: {
-        flexDirection: "column",
+        flexDirection: 'column',
       },
-      paddingTop: "20px",
-      alignItems: "baseline",
+      paddingTop: '20px',
+      alignItems: 'baseline',
     },
     inputFields: {
       // [theme.breakpoints.up("sm")]: {
@@ -39,12 +39,12 @@ export const useStyles = makeStyles((theme) => {
       // [theme.breakpoints.down("sm")]: {
       //   width: fieldWidth,
       // },
-      width: "100%",
+      width: '100%',
       height: 38,
       color: teal[900],
     },
     selectOptions: {
-      "&:hover": {
+      '&:hover': {
         backgroundColor: theme.palette.primary.main,
       },
     },
@@ -87,8 +87,8 @@ export const useStyles = makeStyles((theme) => {
       // [theme.breakpoints.down("sm")]: {
       //   width: fieldWidth,
       // },
-      width: "100%",
-      border: "1px solid black",
+      width: '100%',
+      border: '1px solid black',
     },
     designationField: {
       [theme.breakpoints.up(750)]: {
@@ -100,109 +100,113 @@ export const useStyles = makeStyles((theme) => {
       // [theme.breakpoints.down("sm")]: {
       //   width: fieldWidth,
       // },
-      height: "32px",
+      height: '32px',
     },
 
     submitButton: {
-      width: "auto",
+      width: 'auto',
       //height: 40,
-      display: "inline",
-      "&:hover": {
-        fontSize: "large",
+      display: 'inline',
+      '&:hover': {
+        fontSize: 'large',
       },
-      marginBottom: "10px",
-      marginRight: "10px",
+      marginBottom: '10px',
+      marginRight: '10px',
     },
     buttons: {
-      width: "auto",
+      width: 'auto',
       //height: 40,
-      "&:hover": {
-        fontSize: "large",
+      '&:hover': {
+        fontSize: 'large',
       },
-      marginBottom: "10px",
-      marginRight: "10px",
+      marginBottom: '10px',
+      marginRight: '10px',
     },
     underlineRemove: {
-      textDecoration: "none",
-      color: "#0000ff",
+      textDecoration: 'none',
+      color: '#0000ff',
     },
     multiSelect: {
-      "&:hover": {
-        borderColor: "green",
+      '&:hover': {
+        borderColor: 'green',
       },
     },
 
     uploadTextfield: {
-      width: "auto",
+      width: 'auto',
       [theme.breakpoints.up(400)]: {
         width: 200,
       },
       // [theme.breakpoints.down("sm")]: {
       //   width: fieldWidth - 80,
       // },
-      height: "32px",
-      cursor: "pointer",
+      height: '32px',
+      cursor: 'pointer',
     },
 
     backButton: {
       border: 0,
-      color: "blue",
+      color: 'blue',
       // backgroundColor: "white",
-      cursor: "pointer",
-      fontSize: "18px",
+      cursor: 'pointer',
+      fontSize: '18px',
+      '&:disabled': {
+        color: 'grey',
+        cursor: 'default',
+      },
     },
     viewLogTitle: {
       backgroundColor: theme.palette.primary.main,
-      color: "white",
-      alignItems: "baseline",
+      color: 'white',
+      alignItems: 'baseline',
     },
     viewlogTable: {
-      [theme.breakpoints.up("sm")]: {
+      [theme.breakpoints.up('sm')]: {
         width: fieldWidth - 350,
       },
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.down('sm')]: {
         width: fieldWidth - 20,
       },
     },
     closeViewLog: {
-      color: "white",
+      color: 'white',
       backgroundColor: theme.palette.primary.main,
-      fontSize: "18px",
-      "&:hover": {
-        color: "yellow",
-        backgroundColor: "green",
-        cursor: "pointer",
+      fontSize: '18px',
+      '&:hover': {
+        color: 'yellow',
+        backgroundColor: 'green',
+        cursor: 'pointer',
       },
     },
     whiteButton: {
       borderColor: theme.palette.primary.main,
-      border: "2px solid",
-      backgroundColor: "white",
+      border: '2px solid',
+      backgroundColor: 'white',
       color: theme.palette.primary.main,
-      "&:hover": {
-        color: "white",
+      '&:hover': {
+        color: 'white',
         backgroundColor: teal[900],
       },
-      marginBottom: "10px",
-      marginRight: "10px",
+      marginBottom: '10px',
+      marginRight: '10px',
     },
     uploadButton: {
-      width: "auto",
-      height: "32px",
-      cursor: "pointer",
+      width: 'auto',
+      height: '32px',
+      cursor: 'pointer',
       backgroundColor: teal[900],
-      color: "white",
-      padding: "2px",
+      color: 'white',
+      padding: '2px',
     },
     root: {
       padding: theme.spacing(2),
-      height: "100%",
+      height: '100%',
     },
     text: {
       color: theme.palette.primary.main,
     },
     hideit: {
-      display: "none",
+      display: 'none',
     },
-  };
-});
+  }
+})
