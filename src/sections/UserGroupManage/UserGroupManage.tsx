@@ -5,35 +5,49 @@ import {
   useMediaQuery,
   useTheme,
   Grid,
-} from "@material-ui/core";
-import React from "react";
-import { useEffect, useState } from "react";
-import { constants } from "./DataConstants";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import "primeicons/primeicons.css";
-import "primereact/resources/themes/saga-blue/theme.css";
-import "primereact/resources/primereact.css";
-import { useHistory } from "react-router-dom";
-import { teal } from "@material-ui/core/colors";
-import { getUserGroupAPI } from "../../api/Fetch";
-import { useStyles, fieldWidth } from "./Styles";
+} from '@material-ui/core'
+import React from 'react'
+import { useEffect, useState } from 'react'
+import { constants } from './DataConstants'
+import { DataTable } from 'primereact/datatable'
+import { Column } from 'primereact/column'
+import 'primeicons/primeicons.css'
+import 'primereact/resources/themes/saga-blue/theme.css'
+import 'primereact/resources/primereact.css'
+import { useHistory } from 'react-router-dom'
+import { teal } from '@material-ui/core/colors'
+import { connect } from 'react-redux'
+import { getUserGroupAPI } from '../../api/Fetch'
+import { useStyles, fieldWidth } from './Styles'
+import { set_groupID } from '../../redux/Actions/ManageGroup'
+import { routes } from '../../util/Constants'
 
-function UserGroupManage() {
-  const classes = useStyles();
-  const theme = useTheme();
-  const history = useHistory();
-  const active = useMediaQuery(theme.breakpoints.down(700));
-  const width = useMediaQuery(theme.breakpoints.up("md"));
-  const dialogwidth = width ? 600 : fieldWidth;
-  const [globalFilter, setGlobalFilter] = React.useState("");
-  const [userGroupsData, setUserGroupsData] = useState<any>("");
-  const [openProduct, setOpenProduct] = React.useState(false);
-  const [productData, setProductData] = useState<any>("");
-  const [openLocation, setOpenLocation] = React.useState(false);
-  const [locationData, setLocationData] = useState<any>("");
-  const [userGroupLoading, setUserGroupLoading] = React.useState(false);
+function UserGroupManage(props: any) {
+  const { set_groupID } = props
+  const classes = useStyles()
+  const theme = useTheme()
+  const history = useHistory()
+  const { DEFAULT, USERCONFIG_GROUPUPDATE, USERCONFIG_GROUPCREATE } = routes
+  const active = useMediaQuery(theme.breakpoints.down(700))
+  const width = useMediaQuery(theme.breakpoints.up('md'))
+  const dialogwidth = width ? 600 : fieldWidth
+  const [globalFilter, setGlobalFilter] = React.useState('')
+  const [userGroupsData, setUserGroupsData] = useState<any>('')
+  const [openProduct, setOpenProduct] = React.useState(false)
+  const [productData, setProductData] = useState<any>('')
+  const [openLocation, setOpenLocation] = React.useState(false)
+  const [locationData, setLocationData] = useState<any>('')
+  const [userGroupLoading, setUserGroupLoading] = React.useState(false)
   //start
+  const handleNameClick = (e: any) => {
+    console.log(e.target.value)
+    const selectedRow = userGroupsData.filter(
+      (row: any) => row.groupId === e.target.value
+    )
+    set_groupID(selectedRow)
+    console.log(selectedRow)
+    history.push(`${DEFAULT}${USERCONFIG_GROUPUPDATE}`)
+  }
 
   useEffect(() => {
     getUserGroupAPI &&
@@ -47,39 +61,39 @@ function UserGroupManage() {
               status: group.status,
               productHierarchy: group.productHierarchy,
               locationHierarchy: group.locationHierarchy,
-            };
-          });
-          setUserGroupsData(groupValues);
+            }
+          })
+          setUserGroupsData(groupValues)
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     return () => {
-      setUserGroupsData([]);
-    };
-  }, []);
+      setUserGroupsData([])
+    }
+  }, [])
   useEffect(() => {
     if (userGroupsData) {
-      setUserGroupLoading(false);
+      setUserGroupLoading(false)
     } else {
-      setUserGroupLoading(true);
+      setUserGroupLoading(true)
     }
-  }, [userGroupsData]);
+  }, [userGroupsData])
 
   const handleOpenProduct = (e: any) => {
-    setProductData(e);
-    setOpenProduct(true);
-  };
+    setProductData(e)
+    setOpenProduct(true)
+  }
   const handleCloseProduct = () => {
-    setOpenProduct(false);
-  };
+    setOpenProduct(false)
+  }
   const handleOpenLocation = (e: any) => {
-    setLocationData(e);
-    setOpenLocation(true);
-  };
+    setLocationData(e)
+    setOpenLocation(true)
+  }
   const handleCloseLocation = () => {
-    setOpenLocation(false);
-  };
+    setOpenLocation(false)
+  }
 
   const locationTemplate = (rowData: any) => {
     return (
@@ -97,8 +111,8 @@ function UserGroupManage() {
           </button>
         )}
       </>
-    );
-  };
+    )
+  }
   const productTemplate = (rowData: any) => {
     return (
       <>
@@ -115,33 +129,33 @@ function UserGroupManage() {
           </button>
         )}
       </>
-    );
-  };
+    )
+  }
   const viewProductHierarchyLog = (
     <Dialog open={openProduct} onClose={handleCloseProduct}>
       <Box
         sx={{
           width: dialogwidth,
-          border: "3px solid green",
+          border: '3px solid green',
           borderRadius: 4,
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
           p: 1,
         }}
       >
         <Box
           sx={{
-            display: "flex",
+            display: 'flex',
             height: 30,
-            flexDirection: "row",
+            flexDirection: 'row',
           }}
           className={classes.viewLogTitle}
         >
           <Box
             sx={{
-              display: "flex",
+              display: 'flex',
               flexGrow: 1,
-              justifyContent: "center",
+              justifyContent: 'center',
             }}
           >
             <Typography variant="subtitle1">Product Hierarchy</Typography>
@@ -167,14 +181,14 @@ function UserGroupManage() {
         </Box>
         <Box
           sx={{
-            display: "flex",
+            display: 'flex',
             p: 2,
           }}
         ></Box>
         <Box
           sx={{
             // justifyContent: "center",
-            display: "flex",
+            display: 'flex',
 
             // textAlign: "center"
           }}
@@ -185,7 +199,7 @@ function UserGroupManage() {
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
             rows={5}
             style={{
-              fontSize: "12px",
+              fontSize: '12px',
               //backgroundColor: "#f7f7f7",
               // width: fieldWidth,
             }}
@@ -201,48 +215,48 @@ function UserGroupManage() {
                   field={column.field}
                   header={column.headerName}
                   bodyStyle={{
-                    fontSize: "12px",
+                    fontSize: '12px',
                     width: column.width,
                   }}
                   headerStyle={{
-                    fontSize: "12px",
+                    fontSize: '12px',
                     width: column.width,
                     backgroundColor: teal[900],
-                    color: "white",
+                    color: 'white',
                   }}
                 ></Column>
-              );
+              )
             })}
           </DataTable>
         </Box>
       </Box>
     </Dialog>
-  );
+  )
   const viewLocationHierarchyLog = (
     <Dialog open={openLocation} onClose={handleCloseLocation}>
       <Box
         sx={{
           width: dialogwidth,
-          border: "3px solid green",
+          border: '3px solid green',
           borderRadius: 4,
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
           p: 1,
         }}
       >
         <Box
           sx={{
-            display: "flex",
+            display: 'flex',
             height: 30,
-            flexDirection: "row",
+            flexDirection: 'row',
           }}
           className={classes.viewLogTitle}
         >
           <Box
             sx={{
-              display: "flex",
+              display: 'flex',
               flexGrow: 1,
-              justifyContent: "center",
+              justifyContent: 'center',
             }}
           >
             <Typography variant="subtitle1">Location Hierarchy</Typography>
@@ -268,14 +282,14 @@ function UserGroupManage() {
         </Box>
         <Box
           sx={{
-            display: "flex",
+            display: 'flex',
             p: 2,
           }}
         ></Box>
         <Box
           sx={{
             // justifyContent: "center",
-            display: "flex",
+            display: 'flex',
 
             // textAlign: "center"
           }}
@@ -286,7 +300,7 @@ function UserGroupManage() {
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
             rows={5}
             style={{
-              fontSize: "12px",
+              fontSize: '12px',
               //backgroundColor: "#f7f7f7",
               // width: fieldWidth,
             }}
@@ -302,28 +316,36 @@ function UserGroupManage() {
                   field={column.field}
                   header={column.headerName}
                   bodyStyle={{
-                    fontSize: "12px",
+                    fontSize: '12px',
                     width: column.width,
                   }}
                   headerStyle={{
-                    fontSize: "12px",
+                    fontSize: '12px',
                     width: column.width,
                     backgroundColor: teal[900],
-                    color: "white",
+                    color: 'white',
                   }}
                 ></Column>
-              );
+              )
             })}
           </DataTable>
         </Box>
       </Box>
     </Dialog>
-  );
+  )
 
   //integration changes stop
   const groupIDTemplate = (rowData: any) => {
-    return <div className={classes.links}>{rowData.groupId}</div>;
-  };
+    return (
+      <button
+        value={rowData.groupId}
+        onClick={handleNameClick}
+        className={classes.links}
+      >
+        {rowData.groupId}
+      </button>
+    )
+  }
 
   //end
 
@@ -334,17 +356,17 @@ function UserGroupManage() {
           {!active ? (
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
                 p: 3,
                 paddingBottom: 1,
-                paddingTop: "32px",
+                paddingTop: '32px',
               }}
             >
               <Box
                 sx={{
-                  display: "flex",
+                  display: 'flex',
                   flexGrow: 1,
                 }}
               >
@@ -352,16 +374,16 @@ function UserGroupManage() {
               </Box>
               <Box
                 sx={{
-                  display: "flex",
+                  display: 'flex',
                 }}
               >
                 <input
                   type="text"
                   value={globalFilter}
                   onChange={(e) => setGlobalFilter(e.target.value)}
-                  placeholder={" Search User details "}
+                  placeholder={' Search User details '}
                   style={{
-                    width: "300px",
+                    width: '300px',
                   }}
                 />
               </Box>
@@ -374,7 +396,7 @@ function UserGroupManage() {
                 <button
                   className={classes.exploreButton}
                   onClick={() =>
-                    history.push("/commercial-webapp/userconfig/groupcreate")
+                    history.push(`${DEFAULT}${USERCONFIG_GROUPCREATE}`)
                   }
                 >
                   Create Group
@@ -384,54 +406,54 @@ function UserGroupManage() {
           ) : (
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
                 p: 3,
                 paddingBottom: 1,
-                paddingTop: "32px",
+                paddingTop: '32px',
               }}
             >
               <Box
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
+                  display: 'flex',
+                  flexDirection: 'column',
                 }}
               >
                 <Box
                   sx={{
-                    display: "flex",
-                    paddingRight: "10px",
+                    display: 'flex',
+                    paddingRight: '10px',
                   }}
                 >
                   <Typography variant="h6">Manage User Groups</Typography>
                 </Box>
                 <Box
                   sx={{
-                    display: "flex",
+                    display: 'flex',
                   }}
                 >
                   <input
                     type="text"
                     value={globalFilter}
                     onChange={(e) => setGlobalFilter(e.target.value)}
-                    placeholder={" Search User details "}
+                    placeholder={' Search User details '}
                     style={{
-                      width: "200px",
+                      width: '200px',
                     }}
                   />
                 </Box>
               </Box>
               <Box
                 sx={{
-                  display: "flex",
-                  justifySelf: "end",
+                  display: 'flex',
+                  justifySelf: 'end',
                 }}
               >
                 <button
                   className={classes.exploreButton}
                   onClick={() =>
-                    history.push("/commercial-webapp/userconfig/groupcreate")
+                    history.push(`${DEFAULT}${USERCONFIG_GROUPCREATE}`)
                   }
                 >
                   Create Group
@@ -443,7 +465,7 @@ function UserGroupManage() {
       </Grid>
       <Box
         sx={{
-          textAlign: "center",
+          textAlign: 'center',
           p: 2,
         }}
       >
@@ -455,7 +477,7 @@ function UserGroupManage() {
           style={{
             // fontSize: "10px",
             // backgroundColor: "#f7f7f7",
-            width: "100%",
+            width: '100%',
           }}
           scrollable
           scrollHeight="300px"
@@ -472,30 +494,35 @@ function UserGroupManage() {
                 field={column.field}
                 header={column.headerName}
                 bodyStyle={{
-                  fontSize: "14px",
+                  fontSize: '14px',
                   width: column.width,
                 }}
                 headerStyle={{
-                  fontSize: "14px",
+                  fontSize: '14px',
                   width: column.width,
                   backgroundColor: teal[900],
-                  color: "white",
+                  color: 'white',
                 }}
                 body={
-                  (column.field === "groupId" && groupIDTemplate) ||
-                  (column.field === "productHierarchy" && productTemplate) ||
-                  (column.field === "locationHierarchy" && locationTemplate)
+                  (column.field === 'groupId' && groupIDTemplate) ||
+                  (column.field === 'productHierarchy' && productTemplate) ||
+                  (column.field === 'locationHierarchy' && locationTemplate)
                 }
                 sortable
               />
-            );
+            )
           })}
         </DataTable>
       </Box>
       {viewProductHierarchyLog}
       {viewLocationHierarchyLog}
     </div>
-  );
+  )
 }
 
-export default UserGroupManage;
+const matchDispatchToProps = (dispatch: any) => {
+  return {
+    set_groupID: (groupid: any) => dispatch(set_groupID(groupid)),
+  }
+}
+export default connect(null, matchDispatchToProps)(UserGroupManage)

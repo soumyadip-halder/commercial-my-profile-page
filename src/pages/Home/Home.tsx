@@ -1,19 +1,19 @@
-import React, { useEffect, useCallback, useState } from "react";
-import { useRouteMatch } from "react-router-dom";
-import UserRouter from "../../router/UserRouter";
-import Header from "../../sections/Header/Header";
-import { useHistory, useLocation } from "react-router-dom";
-import { connect } from "react-redux";
+import React, { useEffect, useCallback, useState } from 'react'
+import { useRouteMatch } from 'react-router-dom'
+import UserRouter from '../../router/UserRouter'
+import Header from '../../sections/Header/Header'
+import { useHistory, useLocation } from 'react-router-dom'
+import { connect } from 'react-redux'
 import {
   logoutUser,
   getUser,
   resetRolesArray,
   resetAppsArray,
   resetUserdetails,
-} from "../../redux/Actions/Login/Action";
-import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
-import { useStyles, drawerWidth } from "./Styles";
-import NavigationDrawer from "../../sections/NavigationDrawer/NavigationDrawer";
+} from '../../redux/Actions/Login/Action'
+import ScrollToTop from '../../components/ScrollToTop/ScrollToTop'
+import { useStyles, drawerWidth } from './Styles'
+import NavigationDrawer from '../../sections/NavigationDrawer/NavigationDrawer'
 
 // const useStyles = makeStyles((theme) => ({
 //   contentSection: {
@@ -22,9 +22,9 @@ import NavigationDrawer from "../../sections/NavigationDrawer/NavigationDrawer";
 // }));
 
 const Home = (props: any) => {
-  const { path } = useRouteMatch();
-  const classes = useStyles();
-  let history = useHistory();
+  const { path } = useRouteMatch()
+  const classes = useStyles()
+  let history = useHistory()
 
   const {
     getUser,
@@ -35,9 +35,9 @@ const Home = (props: any) => {
     refreshApps,
     resetUserdetails,
     userDetail,
-  } = props;
+  } = props
   // let role = userDetail && userDetail.role;
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   const [openCol, setOpenCol] = useState([
     false,
     false,
@@ -47,43 +47,43 @@ const Home = (props: any) => {
     false,
     false,
     false,
-  ]);
+  ])
   const handleDrawerToggle = () => {
-    setOpen(!open);
-  };
+    setOpen(!open)
+  }
   const handleClick = (url: string) => {
-    history.push(url);
-    handleDrawerToggle();
-  };
-  const location = useLocation();
+    history.push(url)
+    handleDrawerToggle()
+  }
+  const location = useLocation()
 
   useEffect(() => {
     const user = JSON.parse(
-      (localStorage && localStorage.getItem("_GresponseV2")) || "{}"
-    );
+      (localStorage && localStorage.getItem('_GresponseV2')) || '{}'
+    )
     if (user && user.empId) {
-      getUser(user.empId);
+      getUser(user.empId)
     }
-  }, [getUser]);
+  }, [getUser])
 
   const handleLogout = useCallback(() => {
-    localStorage.removeItem("_Gresponse");
-    localStorage.removeItem("_GresponseV2");
-    localStorage.removeItem("_Colresponse");
-    refreshRoles();
-    refreshApps();
-    resetUserdetails();
-    history.push("/login");
-    logoutUser();
-  }, [history, logoutUser, refreshRoles, refreshApps, resetUserdetails]);
+    localStorage.removeItem('_Gresponse')
+    localStorage.removeItem('_GresponseV2')
+    localStorage.removeItem('_Colresponse')
+    refreshRoles()
+    refreshApps()
+    resetUserdetails()
+    history.push('/login')
+    logoutUser()
+  }, [history, logoutUser, refreshRoles, refreshApps, resetUserdetails])
 
   useEffect(() => {
     if (isTokenExpired) {
-      handleLogout();
+      handleLogout()
     }
-  }, [isTokenExpired, handleLogout]);
+  }, [isTokenExpired, handleLogout])
 
-  const serviceError = error;
+  const serviceError = error
 
   return (
     <div>
@@ -124,8 +124,8 @@ const Home = (props: any) => {
         userDetail={userDetail && userDetail.userdetails}
       />
     </div>
-  );
-};
+  )
+}
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
@@ -134,15 +134,15 @@ const mapDispatchToProps = (dispatch: any) => {
     refreshApps: () => dispatch(resetAppsArray()),
     resetUserdetails: () => dispatch(resetUserdetails()),
     getUser: (empId: String) => dispatch(getUser(empId)),
-  };
-};
+  }
+}
 
 const mapStateToProps = (state: any) => {
   return {
     userDetail: state.loginReducer.userDetail,
     isTokenExpired: state.loginReducer.isTokenExpired,
     error: state.loginReducer.error,
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

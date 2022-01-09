@@ -8,27 +8,41 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-} from "@material-ui/core";
-import { ChevronLeft } from "@material-ui/icons";
-import IconExpandLess from "@material-ui/icons/ExpandLess";
-import IconExpandMore from "@material-ui/icons/ExpandMore";
-import React from "react";
-import { useStyles } from "../../pages/Home/Styles";
-import { connect } from "react-redux";
+} from '@material-ui/core'
+import { ChevronLeft } from '@material-ui/icons'
+import IconExpandLess from '@material-ui/icons/ExpandLess'
+import IconExpandMore from '@material-ui/icons/ExpandMore'
+import React from 'react'
+import { useStyles } from '../../pages/Home/Styles'
+import { connect } from 'react-redux'
+import { routes } from '../../util/Constants'
 
 interface NavigationProps {
-  menuItems: Array<any>;
-  open: boolean;
-  handleDrawerToggle: () => void;
-  handleClick: (url: string) => void;
-  openCol: Array<boolean>;
-  setOpenCol: (arr: Array<boolean>) => void;
-  location: any;
+  menuItems: Array<any>
+  open: boolean
+  handleDrawerToggle: () => void
+  handleClick: (url: string) => void
+  openCol: Array<boolean>
+  setOpenCol: (arr: Array<boolean>) => void
+  location: any
 }
 
 const NavigationDrawer = (props: NavigationProps) => {
-  const classes = useStyles();
-  const base = "/commercial-webapp";
+  const classes = useStyles()
+  const {
+    DEFAULT,
+    USERCONFIG_USERMANAGE,
+    USERCONFIG_USERGROUP,
+    USERCONFIG_USERUPDATE,
+    USERCONFIG_GROUPCREATE,
+    USERCONFIG_GROUPUPDATE,
+    DASHBOARD,
+    DASHBOARD_PENDINGACTION,
+    DASHBOARD_PENDINGACTIONS_UPDATE,
+    DASHBOARD_UNASSIGNWORKFLOW,
+    DASHBOARD_INPROGRESSTASK,
+    DASHBOARD_MYGROUPPENDINGTASKS,
+  } = routes
   const {
     menuItems,
     open,
@@ -37,7 +51,7 @@ const NavigationDrawer = (props: NavigationProps) => {
     openCol,
     setOpenCol,
     location,
-  } = props;
+  } = props
   return (
     <>
       <Drawer
@@ -66,9 +80,20 @@ const NavigationDrawer = (props: NavigationProps) => {
                   <ListItem
                     key={menu.appCode}
                     button
-                    onClick={() => handleClick(`${base}${menu.url}`)}
+                    onClick={() => handleClick(`${DEFAULT}${menu.url}`)}
                     className={
-                      location.pathname === `${base}${menu.url}`
+                      location.pathname === `${DEFAULT}${menu.url}` ||
+                      ((location.pathname ===
+                        `${DEFAULT}${DASHBOARD_PENDINGACTION}` ||
+                        location.pathname ===
+                          `${DEFAULT}${DASHBOARD_PENDINGACTIONS_UPDATE}` ||
+                        location.pathname ===
+                          `${DEFAULT}${DASHBOARD_UNASSIGNWORKFLOW}` ||
+                        location.pathname ===
+                          `${DEFAULT}${DASHBOARD_INPROGRESSTASK}` ||
+                        location.pathname ===
+                          `${DEFAULT}${DASHBOARD_MYGROUPPENDINGTASKS}`) &&
+                        `${DEFAULT}${menu.url}` === `${DEFAULT}${DASHBOARD}`)
                         ? `${classes.hover} ${classes.active}`
                         : classes.hover
                     }
@@ -78,16 +103,16 @@ const NavigationDrawer = (props: NavigationProps) => {
                       classes={{ primary: classes.listItemText }}
                     />
                   </ListItem>
-                );
+                )
               }
               if (menu.more.length > 0) {
                 return (
                   <List key={menu.appCode}>
                     <ListItem
                       onClick={() => {
-                        const arr = [...openCol];
-                        arr[index] = !arr[index];
-                        setOpenCol(arr);
+                        const arr = [...openCol]
+                        arr[index] = !arr[index]
+                        setOpenCol(arr)
                       }}
                       button /*className={classes.link}*/
                     >
@@ -110,21 +135,23 @@ const NavigationDrawer = (props: NavigationProps) => {
                         {menu.more.map((task: any) => (
                           <ListItem
                             className={
-                              location.pathname === `${base}${task.url}` ||
+                              location.pathname === `${DEFAULT}${task.url}` ||
                               (location.pathname ===
-                                `${base}/userconfig/userupdate` &&
-                                `${base}${task.url}` ===
-                                  `${base}/userconfig/usermanage`) ||
-                              (location.pathname ===
-                                `${base}/userconfig/groupcreate` &&
-                                `${base}${task.url}` ===
-                                  `${base}/userconfig/usergroup`)
+                                `${DEFAULT}${USERCONFIG_USERUPDATE}` &&
+                                `${DEFAULT}${task.url}` ===
+                                  `${DEFAULT}${USERCONFIG_USERMANAGE}`) ||
+                              ((location.pathname ===
+                                `${DEFAULT}${USERCONFIG_GROUPCREATE}` ||
+                                location.pathname ===
+                                  `${DEFAULT}${USERCONFIG_GROUPUPDATE}`) &&
+                                `${DEFAULT}${task.url}` ===
+                                  `${DEFAULT}${USERCONFIG_USERGROUP}`)
                                 ? `${classes.link} ${classes.active}`
                                 : classes.link
                             }
                             button
                             onClick={() => {
-                              handleClick(`${base}${task.url}`);
+                              handleClick(`${DEFAULT}${task.url}`)
                             }}
                             key={task.appmenuId}
                           >
@@ -138,24 +165,24 @@ const NavigationDrawer = (props: NavigationProps) => {
                       <Divider />
                     </Collapse>
                   </List>
-                );
+                )
               }
-              return null;
+              return null
             })}
         </List>
       </Drawer>
     </>
-  );
-};
+  )
+}
 
 const mapStateToProps = (state: any) => {
   return {
     menuItems: state.loginReducer.menuList,
-  };
-};
+  }
+}
 
 const mapDispatchToProps = (dispatch: any) => {
-  return {};
-};
+  return {}
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationDrawer);
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationDrawer)

@@ -34,19 +34,24 @@ import { fieldWidth, useStyles } from './Styles'
 import {
   getUserGroupAPI,
   putUserDetailsAPI,
+  putUserDetailsCamundaAPI,
   postTaskLogsAPI,
+  getTasklistsAllAPI,
+  getTasklogsAPI,
 } from '../../api/Fetch'
 import { UtilityFunctions } from '../../util/UtilityFunctions'
+import { routes } from '../../util/Constants'
 
 const Input = styled('input')({
   display: 'none',
 })
 
 function UpdateUser(props: any) {
-  const { empDetails, reset_empID, rolesArray, appFuncList } = props
+  const { empDetails, reset_empID, rolesArray, appFuncList, userDetail } = props
   const history = useHistory()
   const classes = useStyles()
   const theme = useTheme()
+  const { DEFAULT, DASHBOARD, USERCONFIG_USERMANAGE } = routes
   const active = useMediaQuery(theme.breakpoints.down(750))
   const forbutton = useMediaQuery(theme.breakpoints.down(400))
   const width = useMediaQuery(theme.breakpoints.up('md'))
@@ -66,24 +71,30 @@ function UpdateUser(props: any) {
   const [statusWithValue, setStatusWithValue] = React.useState('')
   const [comments, setComments] = React.useState('')
   const [referenceDoc, setReferenceDoc] = React.useState<any>('')
-  const [additionalInfo, setAdditionalInfo] = React.useState('')
   const [viewLogEl, setViewLogEl] = React.useState(null)
   const viewLogOpen = Boolean(viewLogEl)
   const [groupData, setGroupData] = React.useState<any>('')
   const [groups, setGroups] = React.useState([])
   const [groupInput, setGroupInput] = React.useState([])
   const [groupOpen, setGroupOpen] = React.useState(false)
+  const [additionalInfo, setAdditionalInfo] = React.useState('')
   const [openAdditional, setOpenAdditional] = React.useState(false)
   const [roles, setRoles] = React.useState([])
   const [tasks, setTasks] = React.useState(taskList)
   const [referenceDocData, setReferenceDocData] = React.useState<any>('')
   const [taskSelected, setTaskSelected] = React.useState<any>(null)
   const [taskOpen, setTaskOpen] = React.useState(false)
+  const [requestId, setRequestId] = React.useState('')
+  const [viewLogRows, setViewLogRows] = React.useState<Array<any>>([])
   const toast = useRef<any>(null)
 
   useEffect(() => {
+    return () => reset_empID()
+  }, [])
+
+  useEffect(() => {
     if (!empDetails) {
-      history.push('/commercial-webapp/userconfig/usermanage')
+      history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`)
     } else {
       console.log(empDetails[0])
       setSelectEmployeeID(empDetails[0])
@@ -123,8 +134,32 @@ function UpdateUser(props: any) {
           .catch((err) => {
             console.log(err)
           })
+
+      getTasklistsAllAPI &&
+        getTasklistsAllAPI(empDetails[0].userId)
+          .then((res) => {
+            console.log(res.data)
+            setRequestId(res.data.tasklists[0].requestId)
+          })
+          .catch((err) => {
+            setViewLogRows([])
+          })
     }
-  }, [rolesArray, empDetails, history])
+  }, [rolesArray, empDetails, history, USERCONFIG_USERMANAGE, DEFAULT])
+
+  useEffect(() => {
+    if (requestId !== '') {
+      getTasklogsAPI &&
+        getTasklogsAPI(requestId)
+          .then((res) => {
+            console.log(res.data)
+            setViewLogRows([...res.data.tasklogs])
+          })
+          .catch((err) => {
+            setViewLogRows([])
+          })
+    }
+  }, [requestId])
 
   const goBack = () => {
     reset_empID()
@@ -153,7 +188,6 @@ function UpdateUser(props: any) {
   //   setRoleNames([]);
   // };
   const onrequestTypeChange = (e: any) => {
-    e.preventDefault()
     setRequestType(e.target.value)
   }
   useEffect(() => {
@@ -295,7 +329,7 @@ function UpdateUser(props: any) {
     <Dialog onClose={handleCloseGroups} open={groupOpen}>
       <Box
         sx={{
-          height: 400,
+          height: 450,
           // width: dialogwidth,
           width: 'auto',
           p: 2,
@@ -351,7 +385,7 @@ function UpdateUser(props: any) {
           <Box
             sx={{
               alignItems: 'flex-start',
-              marginTop: '50px',
+              marginTop: '30px',
             }}
           >
             <Select
@@ -658,8 +692,8 @@ function UpdateUser(props: any) {
     <Dialog open={viewLogOpen} onClose={handleCloseViewLog}>
       <Box
         sx={{
-          width: dialogwidth,
-          border: '3px solid green',
+          // width: dialogwidth,
+          // border: '3px solid green',
           borderRadius: 4,
           display: 'flex',
           flexDirection: 'column',
@@ -671,6 +705,9 @@ function UpdateUser(props: any) {
             display: 'flex',
             height: 30,
             flexDirection: 'row',
+            flexGrow: 1,
+            // width: fieldWidth,
+            justifyContent: 'center',
           }}
           className={classes.viewLogTitle}
         >
@@ -708,9 +745,8 @@ function UpdateUser(props: any) {
             p: 2,
           }}
         >
-          <Typography variant="body2">
-            Request ID:
-            <b>0112233</b>
+          <Typography variant="body2" style={{ overflowX: 'scroll' }}>
+            Request ID:<b> {requestId}</b>
           </Typography>
         </Box>
         <Box
@@ -722,18 +758,18 @@ function UpdateUser(props: any) {
           }}
         >
           <DataTable
-            value={constants.viewLogRows}
+            value={viewLogRows}
             paginator
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
             rows={5}
             style={{
               fontSize: '12px',
-              backgroundColor: '#f7f7f7',
-              // width: fieldWidth,
+              // backgroundColor: '#f7f7f7',
+              width: '100%',
             }}
             className={`p-datatable-sm ${classes.viewlogTable}`}
             scrollable
-            scrollHeight="400px"
+            // scrollHeight="400px"
           >
             {constants.viewLogColumns.map((column) => {
               return (
@@ -760,10 +796,25 @@ function UpdateUser(props: any) {
     </Dialog>
   )
 
-  const handleUpdateUser = (e: any) => {
+  const handleUpdateUserforApprove = (e: any) => {
     e.preventDefault()
     const formData = {
-      requestType: requestType,
+      camunda: {
+        submitFlag: 'Approved',
+        requestorDetails: {
+          emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          requestedDate: new Date().toISOString().split('T')[0],
+          requestType: requestType,
+        },
+        requestorRoles:
+          userDetail &&
+          userDetail.userdetails[0].roles.map((role: any) => {
+            return {
+              roleId: role.roleId,
+            }
+          }),
+      },
       user: {
         EmployeeId: employeeID,
         firstName: firstName,
@@ -799,102 +850,260 @@ function UpdateUser(props: any) {
     //       },
     //     }
     //   )
-    putUserDetailsAPI(formData)
-      .then((res) => {
-        console.log(res)
-        let statusCode = res.status
-        //console.log(res.data.message);
-        // if (statusCode === 200) {
-        //   toast.current.show({
-        //     severity: "success",
-        //     summary: "",
-        //     detail: res.data.message,
-        //     life: 6000,
-        //   });
-        //   // alert(res)
-        // }
-        if (statusCode === 202)
+    userDetail &&
+      putUserDetailsCamundaAPI(formData)
+        .then((res) => {
+          console.log(res)
+          //console.log(res.data.message);
+          // if (statusCode === 200) {
+          //   toast.current.show({
+          //     severity: "success",
+          //     summary: "",
+          //     detail: res.data.message,
+          //     life: 6000,
+          //   });
+          //   // alert(res)
+          // }
           toast.current.show({
             severity: 'success',
             summary: '',
-            detail: res.data,
+            detail: res.data.comments,
             life: 6000,
             className: 'login-toast',
           })
-      })
-      .catch((err) => {
-        console.log(err.response)
-        let statusCode = err.response.status
-        console.log(statusCode)
-        // alert(err)
-        toast.current.show({
-          severity: 'error',
-          summary: 'Error!',
-          detail: err.response.data.error,
-          life: 6000,
-          className: 'login-toast',
+
+          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
-      })
+        .catch((err) => {
+          console.log(err.response)
+          let statusCode = err.response.status
+          console.log(statusCode)
+          // alert(err)
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error!',
+            // detail: err.response.data.error,
+            // detail: `${err.response.data.errorMessage} ${statusCode}`,
+            life: 6000,
+            className: 'login-toast',
+          })
+          //history.push('/commercial-webapp/dashboard')
+        })
 
-    const formDataforAttachment: any = {
-      requestId: 'SYSTCS175',
-      timestamp: '2021-12-12',
-      userId: employeeID,
-      role: 'ADMIN',
-      camundaRequestId: 'C1234567',
-      actionTaken: 'New',
-      comments: comments,
+    // const formDataforAttachment: any = {
+    //   requestId: 'SYSTCS175',
+    //   timestamp: '2021-12-12',
+    //   userId: employeeID,
+    //   role: 'ADMIN',
+    //   camundaRequestId: 'C1234567',
+    //   actionTaken: 'New',
+    //   comments: comments,
+    // }
+
+    // const formdata = new FormData()
+    // formdata.append('fileIn', referenceDocData)
+    // formdata.append(
+    //   'postData',
+    //   new Blob([JSON.stringify(formDataforAttachment)], {
+    //     type: 'application/json',
+    //   })
+    // )
+
+    // //start
+    // // axios
+    // //   .post(
+    // //     `https://dev-api.morrisons.com/commercial-user/v1/tasklogs?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+    // //     formdata,
+    // //     {
+    // //       headers: {
+    // //         "Cache-Control": "no-cache",
+    // //         Authorization: `Bearer ${accessToken.access_token}`,
+    // //         "content-type": "application/json",
+    // //       },
+    // //     }
+    // //   )
+    // postTaskLogsAPI(formData)
+    //   .then((res) => {
+    //     console.log(res)
+    //     let statusCode = res.status
+    //     if (statusCode === 200) {
+    //       toast.current.show({
+    //         severity: 'success',
+    //         summary: '',
+    //         detail: res.data.message,
+    //         life: 6000,
+    //         className: 'login-toast',
+    //       })
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.response)
+    //     let statusCode = err.response.status
+    //     console.log(statusCode)
+    //     // alert(err)
+    //     toast.current.show({
+    //       severity: 'error',
+    //       summary: 'Error!',
+    //       detail: `${err.response.data.errorMessage} ${statusCode}`,
+    //       life: 6000,
+    //       className: 'login-toast',
+    //     })
+    //   })
+  }
+
+  const handleUpdateUserforSubmit = (e: any) => {
+    e.preventDefault()
+    const formData = {
+      camunda: {
+        submitFlag: 'Submit',
+        requestorDetails: {
+          emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          requestedDate: new Date().toISOString().split('T')[0],
+          requestType: requestType,
+        },
+        requestorRoles:
+          userDetail &&
+          userDetail.userdetails[0].roles.map((role: any) => {
+            return {
+              roleId: role.roleId,
+            }
+          }),
+      },
+      user: {
+        EmployeeId: employeeID,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        emailId: email,
+        additionalInfo: additionalInfo,
+        designation: designation.toUpperCase(),
+        status: status,
+      },
+      roles: roleNames.map((role: any) => {
+        return {
+          roleId: role.value,
+        }
+      }),
+      usergroups: groups.map((group: any) => {
+        return {
+          groupId: group.value,
+          status: group.status,
+        }
+      }),
     }
+    console.log(formData)
 
-    const formdata = new FormData()
-    formdata.append('fileIn', referenceDocData)
-    formdata.append(
-      'postData',
-      new Blob([JSON.stringify(formDataforAttachment)], {
-        type: 'application/json',
-      })
-    )
-
-    //start
     // axios
-    //   .post(
-    //     `https://dev-api.morrisons.com/commercial-user/v1/tasklogs?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
-    //     formdata,
+    //   .put(
+    //     `https://dev-api.morrisons.com/commercial-workflow/v1/users/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+    //     formData,
     //     {
     //       headers: {
     //         "Cache-Control": "no-cache",
     //         Authorization: `Bearer ${accessToken.access_token}`,
-    //         "content-type": "application/json",
     //       },
     //     }
     //   )
-    postTaskLogsAPI(formData)
-      .then((res) => {
-        console.log(res)
-        let statusCode = res.status
-        if (statusCode === 200) {
+    userDetail &&
+      putUserDetailsCamundaAPI(formData)
+        .then((res) => {
+          console.log(res)
+          //console.log(res.data.message);
+          // if (statusCode === 200) {
+          //   toast.current.show({
+          //     severity: "success",
+          //     summary: "",
+          //     detail: res.data.message,
+          //     life: 6000,
+          //   });
+          //   // alert(res)
+          // }
           toast.current.show({
             severity: 'success',
             summary: '',
-            detail: res.data.message,
+            detail: res.data.comments,
             life: 6000,
             className: 'login-toast',
           })
-        }
-      })
-      .catch((err) => {
-        console.log(err.response)
-        let statusCode = err.response.status
-        console.log(statusCode)
-        // alert(err)
-        toast.current.show({
-          severity: 'error',
-          summary: 'Error!',
-          detail: err.response.data.error,
-          life: 6000,
-          className: 'login-toast',
+
+          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
-      })
+        .catch((err) => {
+          console.log(err.response)
+          let statusCode = err.response.status
+          console.log(statusCode)
+          // alert(err)
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error!',
+            // detail: err.response.data.error,
+            // detail: `${err.response.data.errorMessage} ${statusCode}`,
+            life: 6000,
+            className: 'login-toast',
+          })
+          //history.push('/commercial-webapp/dashboard')
+        })
+
+    // const formDataforAttachment: any = {
+    //   requestId: 'SYSTCS175',
+    //   timestamp: '2021-12-12',
+    //   userId: employeeID,
+    //   role: 'ADMIN',
+    //   camundaRequestId: 'C1234567',
+    //   actionTaken: 'New',
+    //   comments: comments,
+    // }
+
+    // const formdata = new FormData()
+    // formdata.append('fileIn', referenceDocData)
+    // formdata.append(
+    //   'postData',
+    //   new Blob([JSON.stringify(formDataforAttachment)], {
+    //     type: 'application/json',
+    //   })
+    // )
+
+    // //start
+    // // axios
+    // //   .post(
+    // //     `https://dev-api.morrisons.com/commercial-user/v1/tasklogs?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+    // //     formdata,
+    // //     {
+    // //       headers: {
+    // //         "Cache-Control": "no-cache",
+    // //         Authorization: `Bearer ${accessToken.access_token}`,
+    // //         "content-type": "application/json",
+    // //       },
+    // //     }
+    // //   )
+    // postTaskLogsAPI(formData)
+    //   .then((res) => {
+    //     console.log(res)
+    //     let statusCode = res.status
+    //     if (statusCode === 200) {
+    //       toast.current.show({
+    //         severity: 'success',
+    //         summary: '',
+    //         detail: res.data.message,
+    //         life: 6000,
+    //         className: 'login-toast',
+    //       })
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.response)
+    //     let statusCode = err.response.status
+    //     console.log(statusCode)
+    //     // alert(err)
+    //     toast.current.show({
+    //       severity: 'error',
+    //       summary: 'Error!',
+    //       detail: `${err.response.data.errorMessage} ${statusCode}`,
+    //       life: 6000,
+    //       className: 'login-toast',
+    //     })
+    //   })
   }
 
   const createForm = (
@@ -952,7 +1161,7 @@ function UpdateUser(props: any) {
             }}
           >
             <button className={classes.backButton} onClick={handleOpenViewLog}>
-              View Log ({constants.viewLogRows.length})
+              View Log ({viewLogRows.length})
             </button>
           </Box>
           <Box
@@ -1007,7 +1216,7 @@ function UpdateUser(props: any) {
                 </option>
                 {constants.requestTypes.map((type) => {
                   return (
-                    type.name !== 'new' && (
+                    type.name.toLowerCase() !== 'new' && (
                       <option value={type.name} key={type.name}>
                         {type.text}
                       </option>
@@ -1478,6 +1687,7 @@ function UpdateUser(props: any) {
                   : classes.submitButton
               }
               size="small"
+              onClick={handleUpdateUserforSubmit}
             >
               Submit
             </Button>
@@ -1512,7 +1722,7 @@ function UpdateUser(props: any) {
                   : classes.buttons
               }
               size="small"
-              onClick={handleUpdateUser}
+              onClick={handleUpdateUserforApprove}
             >
               Approve
             </Button>
@@ -1554,6 +1764,7 @@ const mapStatetoProps = (state: any) => {
     empDetails: state.manageUserReducer.empDetails,
     rolesArray: state.loginReducer.rolesArray,
     appFuncList: state.loginReducer.appFuncList,
+    userDetail: state.loginReducer.userDetail,
   }
 }
 

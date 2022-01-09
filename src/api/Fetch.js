@@ -1,11 +1,11 @@
-import axios from "axios";
-import config from "../config/Config";
+import axios from 'axios'
+import config from '../config/Config'
 //import depotTable from "../serviceJson/depoTable.json";
 import {
   serviceRequest,
   serviceRequestBasic,
   serviceRequestForProduct,
-} from "./ServiceRequest";
+} from './ServiceRequest'
 const {
   BASE_URL,
   BASE_URL_SIT,
@@ -15,6 +15,7 @@ const {
   GET_APP_MENU_ALL,
   GET_USER_DETAILS_ID,
   PUT_USER_DETAILS_ID,
+  PUT_USER_DETAILS_ID_CAMUNDA,
   GET_USER_DETAILS_ALL,
   GET_ROLES_ID,
   GET_ROLES_ALL,
@@ -32,22 +33,24 @@ const {
   GET_USER_INFO_OTHER,
   USER_V2,
   PRODUCT_HIERARCHY_GET,
-} = config;
+  PUT_CLAIM_TASK_CAMUNDA,
+  GET_DASHBOARD_STATUS_CAMUNDA,
+} = config
 
 export const userV2Login = (idToken) => {
-  const data = new URLSearchParams();
-  data.append("grant_type", "password");
-  data.append("id_token", idToken);
+  const data = new URLSearchParams()
+  data.append('grant_type', 'password')
+  data.append('id_token', idToken)
   return axios({
-    method: "POST",
+    method: 'POST',
     url: `${BASE_URL_SIT}${USER_V2}?apikey=${API_KEY}`,
     headers: {
-      "content-type": "application/x-www-form-urlencoded",
-      "Cache-Control": "no-cache",
+      'content-type': 'application/x-www-form-urlencoded',
+      'Cache-Control': 'no-cache',
     },
     data,
-  });
-};
+  })
+}
 
 // export const fetchProducts = (ids) => {
 //   const url = `${PRODUCT_SEARCH_URL}`;
@@ -69,10 +72,10 @@ export const userV2Login = (idToken) => {
 // };
 
 export const postTaskLogsAPI = (req) => {
-  const url = `${BASE_URL}${POST_TASKLOG_ID}`;
-  let reqBody = `${JSON.stringify(req)}`;
-  return serviceRequest(url, "POST", reqBody);
-};
+  const url = `${BASE_URL}${POST_TASKLOG_ID}`
+  let reqBody = `${JSON.stringify(req)}`
+  return serviceRequest(url, 'POST', reqBody)
+}
 
 // export const getRangeResetAPI = (rangeResetId) => {
 //   let url = `${RANGE_BASE_URL}${GET_RANGE_RESET}`;
@@ -102,11 +105,18 @@ export const postTaskLogsAPI = (req) => {
 // };
 
 export const putUserDetailsAPI = (req) => {
-  let url = `${BASE_URL}${PUT_USER_DETAILS_ID}`;
-  url = url.replace("{userId}", req.user.EmployeeId);
-  let reqBody = `${JSON.stringify(req)}`;
-  return serviceRequest(url, "PUT", reqBody);
-};
+  let url = `${BASE_URL}${PUT_USER_DETAILS_ID}`
+  url = url.replace('{userId}', req.user.EmployeeId)
+  let reqBody = `${JSON.stringify(req)}`
+  return serviceRequest(url, 'PUT', reqBody)
+}
+
+export const putUserDetailsCamundaAPI = (req) => {
+  let url = `${BASE_URL}${PUT_USER_DETAILS_ID_CAMUNDA}`
+  url = url.replace('{userId}', req.user.EmployeeId)
+  let reqBody = `${JSON.stringify(req)}`
+  return serviceRequest(url, 'PUT', reqBody)
+}
 
 // export const fetchMyRangeResets = () => {
 //   const url = `${RANGE_BASE_URL}${GET_RANGE_RESETS}`;
@@ -160,67 +170,100 @@ export const putUserDetailsAPI = (req) => {
 // };
 
 export const getUserDetailsAPI = (userId) => {
-  const url = `${BASE_URL_SIT}${GET_USER_INFO}`;
-  return serviceRequest(url, "GET", undefined);
-};
+  const url = `${BASE_URL_SIT}${GET_USER_INFO}`
+  return serviceRequest(url, 'GET', undefined)
+}
 
 export const colleagueV2Login = (accesToken) => {
   return axios({
-    method: "GET",
+    method: 'GET',
     url: `${BASE_URL}${GET_USER_INFO}?apikey=${API_KEY}`,
     headers: {
-      "content-type": "application/json",
+      'content-type': 'application/json',
       Authorization: `Bearer ${accesToken}`,
     },
-  });
-};
+  })
+}
 
 export const getRoleAPI = () => {
-  const url = `${BASE_URL}${GET_ROLES_ALL}`;
-  const params = "limit=1000";
-  return serviceRequest(url, "GET", undefined, params);
-};
+  const url = `${BASE_URL}${GET_ROLES_ALL}`
+  const params = 'limit=1000'
+  return serviceRequest(url, 'GET', undefined, params)
+}
+
+export const getStatusCamundaAPI = () => {
+  let empId = ''
+  const userV2Response = JSON.parse(
+    localStorage && localStorage.getItem('_GresponseV2')
+  )
+  if (userV2Response) {
+    empId = userV2Response && userV2Response.empId
+  }
+  let url = `${BASE_URL}${GET_DASHBOARD_STATUS_CAMUNDA}`
+  const params = 'limit=1000'
+  url = url.replace('{userId}', empId)
+  return serviceRequest(url, 'GET', undefined, params)
+}
 
 export const getAppsAPI = () => {
-  const url = `${BASE_URL}${GET_APP_MENU_ALL}`;
-  const params = "limit=1000";
-  return serviceRequest(url, "GET", undefined, params);
-};
+  const url = `${BASE_URL}${GET_APP_MENU_ALL}`
+  const params = 'limit=1000'
+  return serviceRequest(url, 'GET', undefined, params)
+}
 
 export const getUserAPI = (userId) => {
-  let url = `${BASE_URL}${GET_USER_DETAILS_ID}`;
-  url = url.replace("{userId}", userId);
-  return serviceRequest(url, "GET", undefined);
-};
+  let url = `${BASE_URL}${GET_USER_DETAILS_ID}`
+  url = url.replace('{userId}', userId)
+  return serviceRequest(url, 'GET', undefined)
+}
 
 export const getUserGroupAPI = () => {
-  const url = `${BASE_URL}${GET_USER_GROUPS_ALL}`;
-  const params = "limit=1000";
-  return serviceRequest(url, "GET", undefined, params);
-};
+  const url = `${BASE_URL}${GET_USER_GROUPS_ALL}`
+  const params = 'limit=1000'
+  return serviceRequest(url, 'GET', undefined, params)
+}
 
 export const putUserGroupAPI = (req, groupId) => {
-  let url = `${BASE_URL}${PUT_USER_GROUPS_ID}`;
-  url = url.replace("{groupId}", groupId);
-  let reqBody = `${JSON.stringify(req)}`;
-  return serviceRequest(url, "PUT", reqBody);
-};
+  let url = `${BASE_URL}${PUT_USER_GROUPS_ID}`
+  url = url.replace('{groupId}', groupId)
+  let reqBody = `${JSON.stringify(req)}`
+  return serviceRequest(url, 'PUT', reqBody)
+}
+
+export const putClaimTaskAPI = (req, taskId) => {
+  let url = `${BASE_URL}${PUT_CLAIM_TASK_CAMUNDA}`
+  url = url.replace('{taskId}', taskId)
+  let reqBody = `${JSON.stringify(req)}`
+  return serviceRequest(url, 'PUT', reqBody)
+}
 
 export const getProductHierarchyAPI = (url) => {
-  return serviceRequestForProduct(url, "GET", undefined);
-};
+  return serviceRequestForProduct(url, 'GET', undefined)
+}
 
 export const getAllUsersAPI = () => {
-  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`;
-  const params = "limit=1000";
-  return serviceRequest(url, "GET", undefined, params);
-};
+  const url = `${BASE_URL}${GET_USER_DETAILS_ALL}`
+  const params = 'limit=1000'
+  return serviceRequest(url, 'GET', undefined, params)
+}
 
 export const getColleagueAPI = (id) => {
-  let url = `${BASE_URL_SIT}${GET_USER_INFO_OTHER}`;
-  url = url.replace("{userId}", id);
-  return serviceRequestBasic(url, "GET", undefined);
-};
+  let url = `${BASE_URL_SIT}${GET_USER_INFO_OTHER}`
+  url = url.replace('{userId}', id)
+  return serviceRequestBasic(url, 'GET', undefined)
+}
+
+export const getTasklistsAllAPI = (userId) => {
+  let url = `${BASE_URL}${GET_TASKLIST_ALL}`
+  const params = `limit=1000&referenceNumberIn=${userId}`
+  return serviceRequest(url, 'GET', undefined, params)
+}
+
+export const getTasklogsAPI = (requestId) => {
+  let url = `${BASE_URL}${GET_TASKLOG_ID}`
+  url = url.replace('{requestId}', requestId)
+  return serviceRequestBasic(url, 'GET', undefined)
+}
 // export const getItemWeekStoreViewForecastAPI = (
 //   rangeResetId,
 //   productMinCode,

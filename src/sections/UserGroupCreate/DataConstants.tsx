@@ -26,7 +26,7 @@ export const locationTypes: LocationhierarchyTypes[] = [
     hierarchyLevel: 'channel',
     hierarchyId: 'Wholesale',
     startDate: formattedDate(),
-    endDate: '2099-12-31',
+    endDate: '2099-01-01',
   },
   {
     value: 'Retail',
@@ -34,7 +34,7 @@ export const locationTypes: LocationhierarchyTypes[] = [
     hierarchyLevel: 'channel',
     hierarchyId: 'Retail',
     startDate: formattedDate(),
-    endDate: '2099-12-31',
+    endDate: '2099-01-01',
   },
 ]
 

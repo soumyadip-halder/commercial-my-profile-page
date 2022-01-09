@@ -38,17 +38,20 @@ import {
   getUserGroupAPI,
   postTaskLogsAPI,
   putUserDetailsAPI,
+  putUserDetailsCamundaAPI,
 } from '../../api/Fetch'
 import { UtilityFunctions } from '../../util/UtilityFunctions'
+import { routes } from '../../util/Constants'
 
 const Input = styled('input')({
   display: 'none',
 })
 
-function UserCreate({ rolesArray, appFuncList }: any) {
+function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const classes = useStyles()
   const history = useHistory()
   const theme = useTheme()
+  const { DEFAULT, DASHBOARD } = routes
   const active = useMediaQuery(theme.breakpoints.down(750))
   const forbutton = useMediaQuery(theme.breakpoints.down(400))
   const width = useMediaQuery(theme.breakpoints.up('md'))
@@ -59,7 +62,7 @@ function UserCreate({ rolesArray, appFuncList }: any) {
   const [firstName, setFirstName] = React.useState('')
   const [lastName, setLastName] = React.useState('')
   const [middleName, setMiddleName] = React.useState('')
-  const [requestType, setRequestType] = React.useState('')
+  const [requestType, setRequestType] = React.useState('new')
   // const [selectEmployeeID, setSelectEmployeeID] = React.useState<any>();
   const [referenceDocData, setReferenceDocData] = React.useState<any>('')
   const [employeeID, setEmployeeID] = React.useState('')
@@ -67,9 +70,6 @@ function UserCreate({ rolesArray, appFuncList }: any) {
   const [designation, setDesignation] = React.useState('')
   const [status, setStatus] = React.useState('')
   const [comments, setComments] = React.useState('')
-  const [additionalInfo, setAdditionalInfo] = React.useState('')
-  const [colleagueData, setColleagueData] = React.useState('')
-  const [submitFlag, setSubmitFlag] = React.useState('')
   const [referenceDoc, setReferenceDoc] = React.useState<any>('')
   const [viewLogEl, setViewLogEl] = React.useState(null)
   const viewLogOpen = Boolean(viewLogEl)
@@ -78,6 +78,7 @@ function UserCreate({ rolesArray, appFuncList }: any) {
   const [groupInput, setGroupInput] = React.useState<any>()
   const [groupOpen, setGroupOpen] = React.useState(false)
   const [openAdditional, setOpenAdditional] = useState(false)
+  const [colleagueData, setColleagueData] = React.useState('')
   //integration changes start
   const [roles, setRoles] = useState([])
   const [groupsData, setGroupsData] = useState([])
@@ -258,7 +259,7 @@ function UserCreate({ rolesArray, appFuncList }: any) {
     <Dialog onClose={handleCloseGroups} open={groupOpen}>
       <Box
         sx={{
-          height: 400,
+          height: 450,
           // width: dialogwidth,
           width: 'auto',
           p: 2,
@@ -315,7 +316,7 @@ function UserCreate({ rolesArray, appFuncList }: any) {
           <Box
             sx={{
               alignItems: 'flex-start',
-              marginTop: '50px',
+              marginTop: '30px',
             }}
           >
             <Select
@@ -352,6 +353,60 @@ function UserCreate({ rolesArray, appFuncList }: any) {
       </Box>
     </Dialog>
   )
+
+  // useEffect(() => {
+  //   if (selectEmployeeID) {
+  //     setEmployeeID(selectEmployeeID.user.userId);
+  //     setFirstName(selectEmployeeID.user.firstName);
+  //     setMiddleName(selectEmployeeID.user.middleName);
+  //     setLastName(selectEmployeeID.user.lastName);
+  //     setEmail(selectEmployeeID.user.emailId);
+  //     setDesignation(selectEmployeeID.user.designation);
+  //     setStatus(selectEmployeeID.user.status);
+  //     setRoleNames(
+  //       selectEmployeeID.roles.map((role: any) => {
+  //         return {
+  //           label: role.roleId,
+  //           value: role.roleId,
+  //         };
+  //       })
+  //     );
+
+  //     setGroupInput(
+  //       selectEmployeeID.usergroups.map((group: any) => {
+  //         return {
+  //           label: group.groupId,
+  //           value: group.groupId,
+  //           status: group.status,
+  //         };
+  //       })
+  //     );
+  //     setGroups(
+  //       selectEmployeeID.usergroups.map((group: any) => {
+  //         return {
+  //           label: group.groupId,
+  //           value: group.groupId,
+  //           status: group.status,
+  //         };
+  //       })
+  //     );
+  //   } else {
+  //     setEmployeeID("");
+  //     setFirstName("");
+  //     setMiddleName("");
+  //     setLastName("");
+  //     setEmail("");
+  //     setDesignation("");
+  //     setStatus("");
+  //   }
+  // }, [selectEmployeeID]);
+
+  const handleOpenViewLog = (e: any) => {
+    setViewLogEl(e.currentTarget)
+  }
+  const handleCloseViewLog = () => {
+    setViewLogEl(null)
+  }
 
   const viewAdditionalInfo = (
     <Dialog
@@ -470,60 +525,6 @@ function UserCreate({ rolesArray, appFuncList }: any) {
     </Dialog>
   )
 
-  // useEffect(() => {
-  //   if (selectEmployeeID) {
-  //     setEmployeeID(selectEmployeeID.user.userId);
-  //     setFirstName(selectEmployeeID.user.firstName);
-  //     setMiddleName(selectEmployeeID.user.middleName);
-  //     setLastName(selectEmployeeID.user.lastName);
-  //     setEmail(selectEmployeeID.user.emailId);
-  //     setDesignation(selectEmployeeID.user.designation);
-  //     setStatus(selectEmployeeID.user.status);
-  //     setRoleNames(
-  //       selectEmployeeID.roles.map((role: any) => {
-  //         return {
-  //           label: role.roleId,
-  //           value: role.roleId,
-  //         };
-  //       })
-  //     );
-
-  //     setGroupInput(
-  //       selectEmployeeID.usergroups.map((group: any) => {
-  //         return {
-  //           label: group.groupId,
-  //           value: group.groupId,
-  //           status: group.status,
-  //         };
-  //       })
-  //     );
-  //     setGroups(
-  //       selectEmployeeID.usergroups.map((group: any) => {
-  //         return {
-  //           label: group.groupId,
-  //           value: group.groupId,
-  //           status: group.status,
-  //         };
-  //       })
-  //     );
-  //   } else {
-  //     setEmployeeID("");
-  //     setFirstName("");
-  //     setMiddleName("");
-  //     setLastName("");
-  //     setEmail("");
-  //     setDesignation("");
-  //     setStatus("");
-  //   }
-  // }, [selectEmployeeID]);
-
-  const handleOpenViewLog = (e: any) => {
-    setViewLogEl(e.currentTarget)
-  }
-  const handleCloseViewLog = () => {
-    setViewLogEl(null)
-  }
-
   const viewLog = (
     <Dialog open={viewLogOpen} onClose={handleCloseViewLog}>
       <Box
@@ -634,6 +635,25 @@ function UserCreate({ rolesArray, appFuncList }: any) {
     history.goBack()
   }
 
+  // const getCurrentDate = () => {
+  //   let today = new Date()
+  //   let dd = String(today.getDate())
+
+  //   let mm = String(today.getMonth() + 1)
+  //   let yyyy = String(today.getFullYear())
+  //   if (dd < '10') {
+  //     dd = '0' + dd
+  //   }
+
+  //   if (mm < '10') {
+  //     mm = '0' + mm
+  //   }
+  //   let startdate
+  //   startdate = yyyy + '-' + mm + '-' + dd
+  //   //console.log(startdate);
+  //   return startdate
+  // }
+
   const handleSearchEmployee = () => {
     // let selectedEmp = userData.filter((user: any) => {
     //   return user.user.userId === empIdInput
@@ -658,7 +678,6 @@ function UserCreate({ rolesArray, appFuncList }: any) {
           setEmail(userData.email)
           setDesignation(userData.jobRole.jobTitle)
           setColleagueData(userData)
-
           //setStatus(userData.employee_status);
         }
       })
@@ -674,30 +693,30 @@ function UserCreate({ rolesArray, appFuncList }: any) {
         })
       })
   }
-  React.useEffect(() => {
-    let employeedetails
-    if (localStorage && localStorage.getItem('_GresponseV2')) {
-      employeedetails = JSON.parse(
-        (localStorage && localStorage.getItem('_GresponseV2')) || '{}'
-      )
-    }
-    let empid = employeedetails.empId
-    console.log(empid)
-    if (empid === '40011368') {
-      setSubmitFlag('ADMIN')
-    } else {
-      setSubmitFlag('USER')
-    }
-  }, [])
 
-  const handleCreateRequest = (e: any) => {
+  const handleCreateRequestforApprove = (e: any) => {
     e.preventDefault()
     const colleague: any =
       colleagueData && constants.getColleagueDetails(colleagueData)
     const colleaguestring = `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
 
     const formData = {
-      requestType: requestType,
+      camunda: {
+        submitFlag: 'Approved',
+        requestorDetails: {
+          emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          requestedDate: new Date().toISOString().split('T')[0],
+          requestType: requestType,
+        },
+        requestorRoles:
+          userDetail &&
+          userDetail.userdetails[0].roles.map((role: any) => {
+            return {
+              roleId: role.roleId,
+            }
+          }),
+      },
       user: {
         EmployeeId: employeeID,
         firstName: firstName,
@@ -719,7 +738,6 @@ function UserCreate({ rolesArray, appFuncList }: any) {
           status: group.status,
         }
       }),
-      submitFlag: submitFlag,
     }
     console.log(formData)
 
@@ -734,101 +752,220 @@ function UserCreate({ rolesArray, appFuncList }: any) {
     //       },
     //     }
     //   )
-    putUserDetailsAPI(formData)
-      .then((res) => {
-        console.log(res)
-        let statusCode = res.status
-        console.log(statusCode)
-        //console.log(res.data.message);
-        //    if (statusCode === 200) {
-        //   toast.current.show({
-        //     severity: "success",
-        //     summary: "",
-        //     detail: res.data.message,
-        //     life: 6000,
-        //   });
-        //   // alert(res)
-        //   setEmployeeID("");
-        //   setFirstName("");
-        //   setMiddleName("");
-        //   setLastName("");
-        //   setEmail("");
-        //   setDesignation("");
-        //   setStatus("");
-        //   setGroups([]);
-        //   setRoleNames([]);
-        // }
-        if (statusCode >= 200 && statusCode <= 299) {
+    userDetail &&
+      putUserDetailsCamundaAPI(formData)
+        .then((res) => {
+          console.log(res)
           toast.current.show({
             severity: 'success',
             summary: '',
-            detail: res.data.message,
+            detail: res.data.comments,
             life: 6000,
             className: 'login-toast',
           })
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        // let statusCode = err.response.status
-        //console.log(statusCode)
-        alert(err)
-        toast.current.show({
-          severity: 'error',
-          summary: 'Error!',
-          detail: err.response.data.errorMessage,
-          life: 6000,
-          className: 'login-toast',
-        })
-      })
 
-    const formDataforAttachment: any = {
-      requestId: 'SYSTCS109',
-      timestamp: '2021-12-12',
-      userId: employeeID,
-      role: 'ADMIN',
-      camundaRequestId: 'C1234567',
-      actionTaken: 'New',
-      comments: comments,
+          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+        })
+        .catch((err) => {
+          console.log(err)
+          // let statusCode = err.status
+          //console.log(statusCode)
+          // alert(err)
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error!',
+            // detail: err.response.data.error,
+            // detail: `${err.data.errorMessage} ${statusCode}`,
+            life: 6000,
+            className: 'login-toast',
+          })
+          //history.push('/commercial-webapp/dashboard')
+        })
+
+    // const formDataforAttachment: any = {
+    //   requestId: 'SYSTCS109',
+    //   timestamp: '2021-12-12',
+    //   userId: employeeID,
+    //   role: 'ADMIN',
+    //   camundaRequestId: 'C1234567',
+    //   actionTaken: 'New',
+    //   comments: comments,
+    // }
+
+    // const formdata = new FormData()
+    // formdata.append('fileIn', referenceDocData)
+    // formdata.append(
+    //   'postData',
+    //   new Blob([JSON.stringify(formDataforAttachment)], {
+    //     type: 'application/json',
+    //   })
+    // )
+
+    // //start
+    // postTaskLogsAPI(formData)
+    //   .then((res) => {
+    //     console.log(res)
+    //     let statusCode = res.status
+    //     if (statusCode === 200) {
+    //       toast.current.show({
+    //         severity: 'success',
+    //         summary: '',
+    //         detail: res.data.message,
+    //         life: 6000,
+    //         className: 'login-toast',
+    //       })
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.response)
+    //     let statusCode = err.response.status
+    //     console.log(statusCode)
+    //     // alert(err)
+    //     toast.current.show({
+    //       severity: 'error',
+    //       summary: 'Error!',
+    //       detail: `${err.response.data.errorMessage} ${statusCode}`,
+    //       life: 6000,
+    //       className: 'login-toast',
+    //     })
+    //   })
+  }
+
+  const handleCreateRequestforSubmit = (e: any) => {
+    e.preventDefault()
+    const colleague: any =
+      colleagueData && constants.getColleagueDetails(colleagueData)
+    const colleaguestring = `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
+
+    const formData = {
+      camunda: {
+        submitFlag: 'Submit',
+        requestorDetails: {
+          emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          requestedDate: new Date().toISOString().split('T')[0],
+          requestType: requestType,
+        },
+        requestorRoles:
+          userDetail &&
+          userDetail.userdetails[0].roles.map((role: any) => {
+            return {
+              roleId: role.roleId,
+            }
+          }),
+      },
+      user: {
+        EmployeeId: employeeID,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        emailId: email,
+        additionalInfo: colleagueData && colleaguestring,
+        status: status,
+        designation: designation.toUpperCase(),
+      },
+      roles: roleNames.map((role: any) => {
+        return {
+          roleId: role.value,
+        }
+      }),
+      usergroups: groups.map((group: any) => {
+        return {
+          groupId: group.value,
+          status: group.status,
+        }
+      }),
     }
+    console.log(formData)
 
-    const formdata = new FormData()
-    formdata.append('fileIn', referenceDocData)
-    formdata.append(
-      'postData',
-      new Blob([JSON.stringify(formDataforAttachment)], {
-        type: 'application/json',
-      })
-    )
-
-    //start
-    postTaskLogsAPI(formData)
-      .then((res) => {
-        console.log(res)
-        let statusCode = res.status
-        if (statusCode === 200) {
+    // axios
+    //   .put(
+    //     `https://dev-api.morrisons.com/commercial-workflow/v1/users/userdetails/${employeeID}?apikey=vqaiDRZzSQhA6CPAy0rSotsQAkRepprX`,
+    //     formData,
+    //     {
+    //       headers: {
+    //         "Cache-Control": "no-cache",
+    //         Authorization: `Bearer ${accessToken.access_token}`,
+    //       },
+    //     }
+    //   )
+    userDetail &&
+      putUserDetailsCamundaAPI(formData)
+        .then((res) => {
+          console.log(res)
           toast.current.show({
             severity: 'success',
             summary: '',
-            detail: res.data.message,
+            detail: res.data.status,
             life: 6000,
             className: 'login-toast',
           })
-        }
-      })
-      .catch((err) => {
-        console.log(err.response)
-        // let statusCode = err.response.status
-        // console.log(statusCode)
-        // alert(err)
-        toast.current.show({
-          severity: 'error',
-          summary: 'Error!',
-          detail: err.response.data.errorMessage,
-          life: 6000,
-          className: 'login-toast',
+
+          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
-      })
+        .catch((err) => {
+          console.log(err)
+          // let statusCode = err.status
+          //console.log(statusCode)
+          // alert(err)
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error!',
+            // detail: err.response.data.error,
+            // detail: `${err.data.errorMessage} ${statusCode}`,
+            life: 6000,
+            className: 'login-toast',
+          })
+          // history.push('/commercial-webapp/dashboard')
+        })
+
+    // const formDataforAttachment: any = {
+    //   requestId: 'SYSTCS109',
+    //   timestamp: '2021-12-12',
+    //   userId: employeeID,
+    //   role: 'ADMIN',
+    //   camundaRequestId: 'C1234567',
+    //   actionTaken: 'New',
+    //   comments: comments,
+    // }
+
+    // const formdata = new FormData()
+    // formdata.append('fileIn', referenceDocData)
+    // formdata.append(
+    //   'postData',
+    //   new Blob([JSON.stringify(formDataforAttachment)], {
+    //     type: 'application/json',
+    //   })
+    // )
+
+    // //start
+    // postTaskLogsAPI(formData)
+    //   .then((res) => {
+    //     console.log(res)
+    //     let statusCode = res.status
+    //     if (statusCode === 200) {
+    //       toast.current.show({
+    //         severity: 'success',
+    //         summary: '',
+    //         detail: res.data.message,
+    //         life: 6000,
+    //         className: 'login-toast',
+    //       })
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.response)
+    //     let statusCode = err.response.status
+    //     console.log(statusCode)
+    //     // alert(err)
+    //     toast.current.show({
+    //       severity: 'error',
+    //       summary: 'Error!',
+    //       detail: `${err.response.data.errorMessage} ${statusCode}`,
+    //       life: 6000,
+    //       className: 'login-toast',
+    //     })
+    //   })
   }
 
   const createForm = (
@@ -1440,6 +1577,7 @@ function UserCreate({ rolesArray, appFuncList }: any) {
                   : classes.submitButton
               }
               size="small"
+              onClick={handleCreateRequestforSubmit}
             >
               Submit
             </Button>
@@ -1474,7 +1612,7 @@ function UserCreate({ rolesArray, appFuncList }: any) {
                   : classes.buttons
               }
               size="small"
-              onClick={handleCreateRequest}
+              onClick={handleCreateRequestforApprove}
             >
               Approve
             </Button>
@@ -1514,6 +1652,7 @@ const mapStateToProps = (state: any) => {
   return {
     rolesArray: state.loginReducer.rolesArray,
     appFuncList: state.loginReducer.appFuncList,
+    userDetail: state.loginReducer.userDetail,
   }
 }
 export default connect(mapStateToProps, null)(UserCreate)
