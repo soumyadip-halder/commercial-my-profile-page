@@ -1115,7 +1115,7 @@ function UpdateUser(props: any) {
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
             camundaRequestId: res.data.businessKey,
-            actionTaken: 'Approved',
+            actionTaken: 'Submitted',
             comments: comments,
             attachmentUrl: null,
           }
