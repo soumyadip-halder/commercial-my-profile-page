@@ -125,6 +125,7 @@ function InprogressTask(props: any) {
                         bodyStyle={{
                           fontSize: '12px',
                           width: column.width,
+                          overflowX: 'auto',
                         }}
                         headerStyle={{
                           fontSize: '12px',
@@ -165,6 +166,7 @@ function InprogressTask(props: any) {
                         bodyStyle={{
                           fontSize: '12px',
                           width: column.width,
+                          overflowX: 'auto',
                         }}
                         headerStyle={{
                           fontSize: '12px',

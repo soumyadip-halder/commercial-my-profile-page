@@ -35,6 +35,7 @@ const {
   PRODUCT_HIERARCHY_GET,
   PUT_CLAIM_TASK_CAMUNDA,
   GET_DASHBOARD_STATUS_CAMUNDA,
+  POST_ATTACHMENT,
 } = config
 
 export const userV2Login = (idToken) => {
@@ -77,6 +78,12 @@ export const postTaskLogsAPI = (req) => {
   return serviceRequest(url, 'POST', reqBody)
 }
 
+export const postFileAttachmentAPI = (req, userId) => {
+  let url = `${BASE_URL}${POST_ATTACHMENT}`
+  url = url.replace('{userId}', userId)
+  let reqBody = `${JSON.stringify(req)}`
+  return serviceRequest(url, 'POST', reqBody)
+}
 // export const getRangeResetAPI = (rangeResetId) => {
 //   let url = `${RANGE_BASE_URL}${GET_RANGE_RESET}`;
 //   url = url.replace("{rangeResetId}", rangeResetId);
@@ -257,6 +264,12 @@ export const getTasklistsAllAPI = (userId) => {
   let url = `${BASE_URL}${GET_TASKLIST_ALL}`
   const params = `limit=1000&referenceNumberIn=${userId}`
   return serviceRequest(url, 'GET', undefined, params)
+}
+
+export const getTasklistsAPI = (requestId) => {
+  let url = `${BASE_URL}${GET_TASKLIST_ID}`
+  url = url.replace('{requestId}', requestId)
+  return serviceRequestBasic(url, 'GET', undefined)
 }
 
 export const getTasklogsAPI = (requestId) => {
