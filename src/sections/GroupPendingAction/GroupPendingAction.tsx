@@ -73,6 +73,7 @@ function GroupPendingAction(props: any) {
               roleId: role.roleId,
             }
           }),
+        submitFlag: 'Assign',
       }
       const taskIds =
         unassignUser && unassignUser.map((item: any) => item.taskId)

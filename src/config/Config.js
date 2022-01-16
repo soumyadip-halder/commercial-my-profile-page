@@ -11,7 +11,10 @@ const envDetails = {
     PUT_USER_DETAILS_ID_CAMUNDA:
       'commercial-workflow/v1/users/userdetails/{userId}',
     GET_DASHBOARD_STATUS_CAMUNDA: 'commercial-workflow/v1/status/{userId}',
-    PUT_CLAIM_TASK_CAMUNDA: 'commercial-workflow/v1//tasks/{taskId}/claim',
+    PUT_CLAIM_TASK_CAMUNDA: 'commercial-workflow/v1/tasks/{taskId}/claim',
+    PUT_REJECT_TASK_CAMUNDA:
+      'commercial-workflow/v1/tasks/businesskeys/{businessKey}/reject',
+    PUT_COMPLETE_TASK_CAMUNDA: 'commercial-workflow/v1/tasks/{taskId}/complete',
     GET_USER_DETAILS_ALL: 'commercial-user/v1/userdetails',
     GET_ROLES_ID: 'commercial-user/v1/roles/{roleId}',
     GET_ROLES_ALL: 'commercial-user/v1/roles',
@@ -45,6 +48,9 @@ const envDetails = {
       'commercial-workflow/v1/users/userdetails/{userId}',
     GET_DASHBOARD_STATUS_CAMUNDA: 'commercial-workflow/v1/status/{userId}',
     PUT_CLAIM_TASK_CAMUNDA: 'commercial-workflow/v1//tasks/{taskId}/claim',
+    PUT_REJECT_TASK_CAMUNDA:
+      'commercial-workflow/v1/tasks/businesskeys/{businessKey}/reject',
+    PUT_COMPLETE_TASK_CAMUNDA: 'commercial-workflow/v1/tasks/{taskId}/complete',
     GET_USER_DETAILS_ALL: 'commercial-user/v1/userdetails',
     GET_ROLES_ID: 'commercial-user/v1/roles/{roleId}',
     GET_ROLES_ALL: 'commercial-user/v1/roles',
@@ -78,6 +84,9 @@ const envDetails = {
       'commercial-workflow/v1/users/userdetails/{userId}',
     GET_DASHBOARD_STATUS_CAMUNDA: 'commercial-workflow/v1/status/{userId}',
     PUT_CLAIM_TASK_CAMUNDA: 'commercial-workflow/v1//tasks/{taskId}/claim',
+    PUT_REJECT_TASK_CAMUNDA:
+      'commercial-workflow/v1/tasks/businesskeys/{businessKey}/reject',
+    PUT_COMPLETE_TASK_CAMUNDA: 'commercial-workflow/v1/tasks/{taskId}/complete',
     GET_USER_DETAILS_ALL: 'commercial-user/v1/userdetails',
     GET_ROLES_ID: 'commercial-user/v1/roles/{roleId}',
     GET_ROLES_ALL: 'commercial-user/v1/roles',
@@ -111,6 +120,9 @@ const envDetails = {
       'commercial-workflow/v1/users/userdetails/{userId}',
     GET_DASHBOARD_STATUS_CAMUNDA: 'commercial-workflow/v1/status/{userId}',
     PUT_CLAIM_TASK_CAMUNDA: 'commercial-workflow/v1//tasks/{taskId}/claim',
+    PUT_REJECT_TASK_CAMUNDA:
+      'commercial-workflow/v1/tasks/businesskeys/{businessKey}/reject',
+    PUT_COMPLETE_TASK_CAMUNDA: 'commercial-workflow/v1/tasks/{taskId}/complete',
     GET_USER_DETAILS_ALL: 'commercial-user/v1/userdetails',
     GET_ROLES_ID: 'commercial-user/v1/roles/{roleId}',
     GET_ROLES_ALL: 'commercial-user/v1/roles',
@@ -144,6 +156,9 @@ const envDetails = {
       'commercial-workflow/v1/users/userdetails/{userId}',
     GET_DASHBOARD_STATUS_CAMUNDA: 'commercial-workflow/v1/status/{userId}',
     PUT_CLAIM_TASK_CAMUNDA: 'commercial-workflow/v1//tasks/{taskId}/claim',
+    PUT_REJECT_TASK_CAMUNDA:
+      'commercial-workflow/v1/tasks/businesskeys/{businessKey}/reject',
+    PUT_COMPLETE_TASK_CAMUNDA: 'commercial-workflow/v1/tasks/{taskId}/complete',
     GET_USER_DETAILS_ALL: 'commercial-user/v1/userdetails',
     GET_ROLES_ID: 'commercial-user/v1/roles/{roleId}',
     GET_ROLES_ALL: 'commercial-user/v1/roles',

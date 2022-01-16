@@ -170,12 +170,12 @@ export const constants = {
 
   statuses: [
     {
-      statusID: 'A',
-      text: 'ACTIVE',
-    },
-    {
       statusID: 'W',
       text: 'INPROGRESS',
+    },
+    {
+      statusID: 'A',
+      text: 'ACTIVE',
     },
     {
       statusID: 'I',

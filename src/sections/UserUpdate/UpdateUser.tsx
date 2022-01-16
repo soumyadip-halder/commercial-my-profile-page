@@ -21,6 +21,7 @@ import { constants } from '../UserCreate/DataConstants'
 import { useEffect } from 'react'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
+import AttachFileIcon from '@material-ui/icons/AttachFile'
 // import 'primeicons/primeicons.css';
 // import 'primereact/resources/themes/fluent-light/theme.css';
 import 'primereact/resources/themes/saga-green/theme.css'
@@ -42,6 +43,7 @@ import {
 } from '../../api/Fetch'
 import { UtilityFunctions } from '../../util/UtilityFunctions'
 import { routes, extensions } from '../../util/Constants'
+import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
 
 const Input = styled('input')({
   display: 'none',
@@ -72,18 +74,27 @@ function UpdateUser(props: any) {
   const [statusWithValue, setStatusWithValue] = React.useState('')
   const [comments, setComments] = React.useState('')
   const [wrongExtn, setWrongExtn] = React.useState(false)
-  const [referenceDoc, setReferenceDoc] = React.useState<any>('')
+  const [referenceDoc, setReferenceDoc] = React.useState<Array<any>>([])
   const [viewLogEl, setViewLogEl] = React.useState(null)
   const viewLogOpen = Boolean(viewLogEl)
+  const [roleAccess, setRoleAccess] = React.useState('')
+  const [groupAccess, setGroupAccess] = React.useState('')
   const [groupData, setGroupData] = React.useState<any>('')
   const [groups, setGroups] = React.useState([])
   const [groupInput, setGroupInput] = React.useState([])
   const [groupOpen, setGroupOpen] = React.useState(false)
+  const [cancelOpenApprove, setCancelOpenApprove] = React.useState(false)
+  const [cancelOpenSubmit, setCancelOpenSubmit] = React.useState(false)
   const [additionalInfo, setAdditionalInfo] = React.useState('')
   const [openAdditional, setOpenAdditional] = React.useState(false)
+  const [errorRequestType, setErrorRequestType] = React.useState('')
+  const [errorEmployeeId, setErrorEmployeeId] = React.useState('')
+  const [errorStatus, setErrorStatus] = React.useState('')
+  const [errorRoles, setErrorRoles] = React.useState('')
+  const [errorGroups, setErrorGroups] = React.useState('')
   const [roles, setRoles] = React.useState([])
   const [tasks, setTasks] = React.useState(taskList)
-  const [referenceDocData, setReferenceDocData] = React.useState<any>('')
+  const [referenceDocData, setReferenceDocData] = React.useState<Array<any>>([])
   const [taskSelected, setTaskSelected] = React.useState<any>(null)
   const [taskOpen, setTaskOpen] = React.useState(false)
   const [requestId, setRequestId] = React.useState('')
@@ -190,30 +201,54 @@ function UpdateUser(props: any) {
   //   setRoleNames([]);
   const handleFileUpload = (event: any) => {
     setWrongExtn(false)
-    setReferenceDoc(event.target.files[0])
-    const checkextension = event.target.files[0]
-      ? new RegExp(
-          '(' + extensions.join('|').replace(/\./g, '\\.') + ')$',
-          'i'
-        ).test(event.target.files[0].name)
-      : false
-    if (checkextension) {
-      setWrongExtn(false)
-    } else if (event.target.files[0]) {
-      setWrongExtn(true)
-    }
-    if (event.target.files[0] && checkextension) {
-      // let reader = new FileReader();
-      // reader.readAsDataURL(event.target.files[0]);
+    // setReferenceDoc(event.target.files[0])
+    for (let i = 0; i < event.target.files.length; i++) {
+      const checkextension = event.target.files[i]
+        ? new RegExp(
+            '(' + extensions.join('|').replace(/\./g, '\\.') + ')$',
+            'i'
+          ).test(event.target.files[i].name)
+        : false
+      if (!checkextension && event.target.files[i]) {
+        setWrongExtn(true)
+      }
+      if (event.target.files[i] && checkextension) {
+        // let reader = new FileReader();
+        // reader.readAsDataURL(event.target.files[0]);
 
-      // reader.onload = (e: any) => {
-      //   console.log(e.target.result);
-      setReferenceDocData(event.target.files[0])
-      // };
+        // reader.onload = (e: any) => {
+        //   console.log(e.target.result);
+        setReferenceDocData((prevState) => [
+          ...prevState,
+          {
+            name: event.target.files[i].name,
+            data: event.target.files[i],
+            link: URL.createObjectURL(event.target.files[i]),
+          },
+        ])
+        URL.revokeObjectURL(event.target.files[i])
+        // };
+      }
     }
   }
   // };
   const onrequestTypeChange = (e: any) => {
+    if (e.target.value !== '') setErrorRequestType('')
+    if (e.target.value.toLowerCase() === 'new') {
+      // setStatus('W')
+      setRoleAccess('new_role')
+      setGroupAccess('new_group')
+    }
+    if (e.target.value.toLowerCase() === 'modify') {
+      // setStatus('W')
+      setRoleAccess('mod_role')
+      setGroupAccess('mod_group')
+    }
+    if (e.target.value.toLowerCase() === 'remove') {
+      // setStatus('W')
+      setRoleAccess('rem_role')
+      setGroupAccess('rem_group')
+    }
     setRequestType(e.target.value)
   }
   useEffect(() => {
@@ -238,6 +273,7 @@ function UpdateUser(props: any) {
   const handleRoleChange1 = (selected: any) => {
     console.log(selected)
     setRoleNames(selected)
+    if (selected.length > 0) setErrorRoles('')
   }
 
   const postTasklog = (logData: any) => {
@@ -282,7 +318,7 @@ function UpdateUser(props: any) {
           UtilityFunctions.isHidden(
             '8',
             appFuncList ? appFuncList : [],
-            'mod_role'
+            roleAccess
           )
             ? true
             : false
@@ -349,6 +385,9 @@ function UpdateUser(props: any) {
       setEmail('')
       setDesignation('')
       setStatus('')
+      setRoleNames([])
+      setGroupInput([])
+      setGroups([])
     }
   }, [selectEmployeeID, groupData])
 
@@ -367,6 +406,7 @@ function UpdateUser(props: any) {
 
   const handleGroupsInput = (selected: any) => {
     setGroupInput(selected)
+    if (selected.length > 0) setErrorGroups('')
   }
 
   const viewGroups = (
@@ -444,6 +484,15 @@ function UpdateUser(props: any) {
               hideSelectedOptions={false}
               className={classes.multiSelect}
               styles={customStyles}
+              isDisabled={
+                UtilityFunctions.isHidden(
+                  '8',
+                  appFuncList ? appFuncList : [],
+                  groupAccess
+                )
+                  ? true
+                  : false
+              }
             />
           </Box>
         </Box>
@@ -458,6 +507,15 @@ function UpdateUser(props: any) {
             type="button"
             className={classes.whiteButton}
             onClick={updateGroups}
+            disabled={
+              UtilityFunctions.isHidden(
+                '8',
+                appFuncList ? appFuncList : [],
+                groupAccess
+              )
+                ? true
+                : false
+            }
           >
             Save
           </Button>
@@ -615,6 +673,20 @@ function UpdateUser(props: any) {
     setViewLogEl(null)
   }
 
+  const attachmentTemplate = (rowData: any) => {
+    return rowData.attachmentUrl ? (
+      <a
+        href={rowData.attachmentUrl}
+        target="popup"
+        className={classes.backButton}
+      >
+        <AttachFileIcon fontSize="small" />
+      </a>
+    ) : (
+      rowData.attachmentUrl
+    )
+  }
+
   const viewAdditionalInfo = (
     <Dialog
       open={openAdditional}
@@ -716,6 +788,7 @@ function UpdateUser(props: any) {
                   bodyStyle={{
                     fontSize: '12px',
                     width: column.width,
+                    overflowX: 'auto',
                   }}
                   headerStyle={{
                     fontSize: '12px',
@@ -824,6 +897,7 @@ function UpdateUser(props: any) {
                   bodyStyle={{
                     fontSize: '12px',
                     width: column.width,
+                    overflowX: 'auto',
                   }}
                   headerStyle={{
                     fontSize: '12px',
@@ -831,6 +905,7 @@ function UpdateUser(props: any) {
                     backgroundColor: teal[900],
                     color: 'white',
                   }}
+                  body={column.field === 'attachmentUrl' && attachmentTemplate}
                 ></Column>
               )
             })}
@@ -839,9 +914,72 @@ function UpdateUser(props: any) {
       </Box>
     </Dialog>
   )
-
-  const handleUpdateUserforApprove = (e: any) => {
+  const handleCancelApprove = (e: any) => {
+    // let text = 'are you really want to go back? All your Data will be lost.'
+    // if (window.confirm(text) === true) {
+    //   history.goBack()
+    // }
     e.preventDefault()
+    setCancelOpenApprove((p) => !p)
+  }
+
+  const handleCancelSubmit = (e: any) => {
+    // let text = 'are you really want to go back? All your Data will be lost.'
+    // if (window.confirm(text) === true) {
+    //   history.goBack()
+    // }
+    e.preventDefault()
+    setCancelOpenSubmit((p) => !p)
+  }
+
+  const checkForm = (btnName: string) => {
+    let flag = 1
+    if (
+      requestType !== 'new' &&
+      requestType !== 'modify' &&
+      requestType !== 'remove'
+    ) {
+      setErrorRequestType('Please select request type')
+      flag = 0
+    }
+    if (employeeID === '') {
+      setErrorEmployeeId('Provide employee id and search')
+      flag = 0
+    }
+    if (status === '') {
+      setErrorStatus('Please select a status')
+    }
+    if (roleNames.length === 0) {
+      setErrorRoles('Please select atleast one role')
+      flag = 0
+    }
+    if (groups.length === 0) {
+      setErrorGroups('Please select atleast one group')
+      flag = 0
+    }
+    if (flag === 1 && btnName === 'approve') {
+      setCancelOpenApprove(true)
+    } else if (flag === 1 && btnName === 'submit') {
+      setCancelOpenSubmit(true)
+    }
+    if (flag === 0) {
+      window.scrollTo(0, 0)
+    }
+  }
+  const handleApproveAfterDialog = (e: any) => {
+    e.preventDefault()
+    checkForm('approve')
+    // canSubmit && shoutOut === '' && setCancelOpenApprove(true)
+  }
+
+  const handleSubmitAfterDialog = (e: any) => {
+    e.preventDefault()
+    checkForm('submit')
+    // canSubmit && shoutOut === '' && setCancelOpenSubmit(true)
+  }
+
+  const handleUpdateUserforApprove = () => {
+    // e.preventDefault()
     const formData = {
       camunda: {
         submitFlag: 'Approved',
@@ -912,6 +1050,7 @@ function UpdateUser(props: any) {
           const datepart = time.split('T')[0]
           const timepart = time.split('T')[1].split('.')[0]
           const logData = {
+            // requestId: userDetail && userDetail.userdetails[0].user.userId,
             requestId: res.data.businessKey,
             // timestamp: `${datepart} ${timepart}`,
             timestamp: `${datepart}`,
@@ -922,31 +1061,31 @@ function UpdateUser(props: any) {
             comments: comments,
             attachmentUrl: null,
           }
-          if (referenceDocData) {
-            const formdata1 = new FormData()
-            formdata1.append('fileIn', referenceDocData)
-            userDetail &&
-              postFileAttachmentAPI &&
-              postFileAttachmentAPI(
-                formdata1,
-                userDetail.userdetails[0].user.userId
-              )
-                .then((res) => {
-                  logData.attachmentUrl = res.data.attachmentUrl
-                  postTasklog(logData)
-                })
-                .catch((err) => {
-                  toast.current.show({
-                    severity: 'error',
-                    summary: 'Error!',
-                    detail: `${err.response.status} from tasklistapi`,
-                    // detail: `${err.data.errorMessage} ${statusCode}`,
-                    life: 6000,
-                    className: 'login-toast',
+          if (referenceDocData.length > 0) {
+            referenceDocData.map((rf) => {
+              const formdata1 = new FormData()
+              formdata1.append('fileIn', rf.data)
+              userDetail &&
+                postFileAttachmentAPI &&
+                postFileAttachmentAPI(formdata1, employeeID)
+                  .then((res) => {
+                    logData.attachmentUrl = res.data.attachmentUrl
+                    postTasklog(logData)
                   })
-                  logData.attachmentUrl = null
-                  postTasklog(logData)
-                })
+                  .catch((err) => {
+                    toast.current.show({
+                      severity: 'error',
+                      summary: 'Error!',
+                      detail: `${err.response.status} from tasklistapi`,
+                      // detail: `${err.data.errorMessage} ${statusCode}`,
+                      life: 6000,
+                      className: 'login-toast',
+                    })
+                    // logData.attachmentUrl = null
+                    // postTasklog(logData)
+                  })
+              return null
+            })
           } else {
             console.log(logData)
             postTasklog(logData)
@@ -1038,8 +1177,8 @@ function UpdateUser(props: any) {
     //   })
   }
 
-  const handleUpdateUserforSubmit = (e: any) => {
-    e.preventDefault()
+  const handleUpdateUserforSubmit = () => {
+    // e.preventDefault()
     const formData = {
       camunda: {
         submitFlag: 'Submit',
@@ -1097,6 +1236,7 @@ function UpdateUser(props: any) {
     //     }
     //   )
     userDetail &&
+      putUserDetailsCamundaAPI &&
       putUserDetailsCamundaAPI(formData)
         .then((res) => {
           console.log(res)
@@ -1109,40 +1249,40 @@ function UpdateUser(props: any) {
           const datepart = time.split('T')[0]
           const timepart = time.split('T')[1].split('.')[0]
           const logData = {
+            // requestId: userDetail && userDetail.userdetails[0].user.userId,
             requestId: res.data.businessKey,
             // timestamp: `${datepart} ${timepart}`,
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
             camundaRequestId: res.data.businessKey,
-            actionTaken: 'Submitted',
+            actionTaken: 'Submited',
             comments: comments,
             attachmentUrl: null,
           }
-          if (referenceDocData) {
-            const formdata1 = new FormData()
-            formdata1.append('fileIn', referenceDocData)
-            console.log(formdata1)
-            userDetail &&
-              postFileAttachmentAPI &&
-              postFileAttachmentAPI(
-                formdata1,
-                userDetail.userdetails[0].user.userId
-              )
-                .then((res) => {
-                  logData.attachmentUrl = res.data.attachmentUrl
-                  postTasklog(logData)
-                })
-                .catch((err) => {
-                  toast.current.show({
-                    severity: 'error',
-                    summary: 'Error!',
-                    detail: `${err.response.status} from tasklistapi`,
-                    // detail: `${err.data.errorMessage} ${statusCode}`,
-                    life: 6000,
-                    className: 'login-toast',
+          if (referenceDocData.length > 0) {
+            referenceDocData.map((rf) => {
+              const formdata1 = new FormData()
+              formdata1.append('fileIn', rf.data)
+              userDetail &&
+                postFileAttachmentAPI &&
+                postFileAttachmentAPI(formdata1, employeeID)
+                  .then((res) => {
+                    logData.attachmentUrl = res.data.attachmentUrl
+                    postTasklog(logData)
                   })
-                })
+                  .catch((err) => {
+                    toast.current.show({
+                      severity: 'error',
+                      summary: 'Error!',
+                      detail: `${err.response.status} from tasklistapi`,
+                      // detail: `${err.data.errorMessage} ${statusCode}`,
+                      life: 6000,
+                      className: 'login-toast',
+                    })
+                  })
+              return null
+            })
           } else {
             postTasklog(logData)
           }
@@ -1233,6 +1373,25 @@ function UpdateUser(props: any) {
     //   })
   }
 
+  const viewConfirmApprove = (
+    <ConfirmBox
+      cancelOpen={cancelOpenApprove}
+      handleCancel={handleCancelApprove}
+      handleProceed={handleUpdateUserforApprove}
+      label1="Are you sure to Approve?"
+      label2="Please click Ok to proceed"
+    />
+  )
+
+  const viewConfirmSubmit = (
+    <ConfirmBox
+      cancelOpen={cancelOpenSubmit}
+      handleCancel={handleCancelSubmit}
+      handleProceed={handleUpdateUserforSubmit}
+      label1="Are you sure to Submit?"
+      label2="Please click Ok to proceed"
+    />
+  )
   const createForm = (
     <Box
       sx={{
@@ -1296,7 +1455,7 @@ function UpdateUser(props: any) {
               paddingLeft: 5,
             }}
           >
-            |
+            {' '}
           </Box>
           <Box
             sx={{
@@ -1325,7 +1484,16 @@ function UpdateUser(props: any) {
           className={classes.eachRow}
         >
           <Box className={classes.inputLabel}>
-            <Typography variant="subtitle2">Request Type</Typography>
+            <Typography variant="subtitle2">
+              Request Type &nbsp;
+              <span
+                style={{
+                  color: '#ff0000',
+                }}
+              >
+                *
+              </span>
+            </Typography>
           </Box>
 
           <Box className={classes.inputFieldBox}>
@@ -1354,6 +1522,16 @@ function UpdateUser(props: any) {
             </Typography>
           </Box>
         </Box>
+        {errorRequestType !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorRequestType}
+              </Typography>
+            </Box>
+          </Box>
+        )}
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
             <Typography variant="subtitle2">
@@ -1380,7 +1558,16 @@ function UpdateUser(props: any) {
             </Typography>
           </Box>
         </Box>
-
+        {errorEmployeeId !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorEmployeeId}
+              </Typography>
+            </Box>
+          </Box>
+        )}
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
             <Typography variant="subtitle2">First Name</Typography>
@@ -1550,7 +1737,16 @@ function UpdateUser(props: any) {
         </Box>
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
-            <Typography variant="subtitle2">Status</Typography>
+            <Typography variant="subtitle2">
+              Status &nbsp;
+              <span
+                style={{
+                  color: '#ff0000',
+                }}
+              >
+                *
+              </span>
+            </Typography>
           </Box>
 
           <Box className={classes.inputFieldBox}>
@@ -1566,21 +1762,53 @@ function UpdateUser(props: any) {
                 // }}
                 value={statusWithValue}
                 onChange={() => {}}
-                disabled
+                disabled={UtilityFunctions.isHidden(
+                  '8',
+                  appFuncList ? appFuncList : [],
+                  'status'
+                )}
               />
             </Typography>
           </Box>
         </Box>
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
-            <Typography variant="subtitle2">Role</Typography>
+            <Typography variant="subtitle2">
+              Role &nbsp;
+              <span
+                style={{
+                  color: '#ff0000',
+                }}
+              >
+                *
+              </span>
+            </Typography>
           </Box>
 
           <Box className={classes.inputFieldBox}>{roleSelect1}</Box>
         </Box>
+        {roleNames.length === 0 && errorRoles !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorRoles}
+              </Typography>
+            </Box>
+          </Box>
+        )}
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
-            <Typography variant="subtitle2">User Group</Typography>
+            <Typography variant="subtitle2">
+              User Group &nbsp;
+              <span
+                style={{
+                  color: '#ff0000',
+                }}
+              >
+                *
+              </span>
+            </Typography>
           </Box>
 
           <Box className={classes.inputFieldBox}>
@@ -1595,15 +1823,21 @@ function UpdateUser(props: any) {
                   </button>
                 ) : (
                   <button
-                    className={
-                      UtilityFunctions.isHidden(
-                        '8',
-                        appFuncList ? appFuncList : [],
-                        'mod_group'
-                      )
-                        ? classes.hideit
-                        : classes.backButton
-                    }
+                    // className={
+                    //   UtilityFunctions.isHidden(
+                    //     '8',
+                    //     appFuncList ? appFuncList : [],
+                    //     groupAccess
+                    //   )
+                    //     ? classes.hideit
+                    //     : classes.backButton
+                    // }
+                    className={classes.backButton}
+                    disabled={UtilityFunctions.isHidden(
+                      '8',
+                      appFuncList ? appFuncList : [],
+                      groupAccess
+                    )}
                     onClick={handleOpenGroups}
                   >
                     Add
@@ -1617,17 +1851,18 @@ function UpdateUser(props: any) {
                   Add
                 </button>
               )}
-              &nbsp;&nbsp; | &nbsp;&nbsp;
+              &nbsp;&nbsp; &nbsp;&nbsp;
               <button
-                className={
-                  UtilityFunctions.isHidden(
-                    '8',
-                    appFuncList ? appFuncList : [],
-                    'manage_task'
-                  )
-                    ? classes.hideit
-                    : classes.backButton
-                }
+                // className={
+                //   UtilityFunctions.isHidden(
+                //     '8',
+                //     appFuncList ? appFuncList : [],
+                //     'manage_task'
+                //   )
+                //     ? classes.hideit
+                //     : classes.backButton
+                // }
+                className={classes.hideit}
                 onClick={handleOpenTasks}
               >
                 Manage Task ( {tasks.length} )
@@ -1635,6 +1870,16 @@ function UpdateUser(props: any) {
             </Typography>
           </Box>
         </Box>
+        {groups.length === 0 && errorGroups !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorGroups}
+              </Typography>
+            </Box>
+          </Box>
+        )}
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
             <Typography variant="subtitle2">Reference Document</Typography>
@@ -1664,7 +1909,7 @@ function UpdateUser(props: any) {
                 {
                   <input
                     type="text"
-                    value={referenceDoc ? referenceDoc.name : ''}
+                    // value={referenceDoc ? referenceDoc.name : ''}
                     onClick={() =>
                       document.getElementById('selectedFile')!.click()
                     }
@@ -1676,6 +1921,7 @@ function UpdateUser(props: any) {
                 <Input
                   type="file"
                   id="selectedFile"
+                  multiple
                   onChange={handleFileUpload}
                 />
                 <button
@@ -1705,14 +1951,83 @@ function UpdateUser(props: any) {
               }}
             >
               <button className={classes.backButton}>view(3)</button> */}
-              {wrongExtn ? (
-                <Typography variant="subtitle2" color={'secondary'}>
-                  Invalid extension
-                </Typography>
-              ) : null}
             </Box>
           </Box>
         </Box>
+        {wrongExtn && referenceDocData.length > 0 ? (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox}>
+              <Typography variant="subtitle2" color={'secondary'}>
+                Files with invalid extensions omitted
+              </Typography>
+            </Box>
+          </Box>
+        ) : null}
+        {referenceDocData.length > 0 && (
+          <Box className={classes.eachRow}>
+            {/* <Box
+              sx={{
+                flexDirection: 'column',
+                display: 'flex',
+              }}
+              className={classes.inputFieldBox}
+            > */}
+            {/* {referenceDocData.map((p: any) => (
+                <Box className={classes.inputFieldBox} sx={{}} key={p.name}>
+                  <a href={p.link} target="popup">
+                    {p.name}
+                  </a>
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      const newone = referenceDocData.filter(
+                        (dat) => dat.name !== p.name
+                      )
+                      setReferenceDocData([...newone])
+                    }}
+                  >
+                    X
+                  </Button>
+                </Box>             
+              ))} */}
+            <Box
+              className={!active ? classes.filelist : classes.inputFieldBox}
+              sx={{ overflow: 'auto' }}
+            >
+              <table>
+                <tbody>
+                  {referenceDocData.map((p: any, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault()
+                              const newone = referenceDocData.filter(
+                                (dat) => dat.name !== p.name
+                              )
+                              setReferenceDocData([...newone])
+                            }}
+                            color="primary"
+                          >
+                            X
+                          </Button>
+                        </td>
+                        <td>
+                          <a href={p.link} target="popup">
+                            {p.name}
+                          </a>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </Box>
+          </Box>
+          // </Box>
+        )}
         <Box
           sx={{
             display: 'flex',
@@ -1763,35 +2078,18 @@ function UpdateUser(props: any) {
             }}
           >
             <Button
-              type="reset"
               variant="contained"
               color="primary"
-              className={
-                UtilityFunctions.isHidden(
-                  '8',
-                  appFuncList ? appFuncList : [],
-                  'cancel'
-                )
-                  ? classes.hideit
-                  : classes.whiteButton
-              }
-              size="small"
-            >
-              Cancel
-            </Button>
-
-            <Button
-              variant="contained"
-              color="primary"
-              className={
-                UtilityFunctions.isHidden(
-                  '8',
-                  appFuncList ? appFuncList : [],
-                  'reject'
-                )
-                  ? classes.hideit
-                  : classes.whiteButton
-              }
+              // className={
+              //   UtilityFunctions.isHidden(
+              //     '8',
+              //     appFuncList ? appFuncList : [],
+              //     'reject'
+              //   )
+              //     ? classes.hideit
+              //     : classes.whiteButton
+              // }
+              className={classes.hideit}
               size="small"
             >
               Reject
@@ -1819,7 +2117,8 @@ function UpdateUser(props: any) {
                   : classes.submitButton
               }
               size="small"
-              onClick={handleUpdateUserforSubmit}
+              // onClick={handleUpdateUserforSubmit}
+              onClick={handleSubmitAfterDialog}
             >
               Submit
             </Button>
@@ -1827,21 +2126,23 @@ function UpdateUser(props: any) {
             <Button
               variant="contained"
               color="primary"
-              className={
-                UtilityFunctions.isHidden(
-                  '8',
-                  appFuncList ? appFuncList : [],
-                  'reassign'
-                )
-                  ? classes.hideit
-                  : classes.buttons
-              }
+              // className={
+              //   UtilityFunctions.isHidden(
+              //     '8',
+              //     appFuncList ? appFuncList : [],
+              //     'reassign'
+              //   )
+              //     ? classes.hideit
+              //     : classes.buttons
+              // }
+              className={classes.hideit}
               size="small"
             >
               Reassign
             </Button>
 
             <Button
+              type="submit"
               variant="contained"
               color="primary"
               className={
@@ -1854,7 +2155,8 @@ function UpdateUser(props: any) {
                   : classes.buttons
               }
               size="small"
-              onClick={handleUpdateUserforApprove}
+              // onClick={handleUpdateUserforApprove}
+              onClick={handleApproveAfterDialog}
             >
               Approve
             </Button>
@@ -1883,6 +2185,8 @@ function UpdateUser(props: any) {
             {viewGroups}
             {manageTasks}
             {viewAdditionalInfo}
+            {viewConfirmApprove}
+            {viewConfirmSubmit}
           </Grid>
           {/* </Grid> */}
         </Box>

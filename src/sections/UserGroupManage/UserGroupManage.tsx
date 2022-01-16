@@ -131,12 +131,27 @@ function UserGroupManage(props: any) {
       </>
     )
   }
+  const hierarchyLevelTemplate = (rowData: any) => {
+    return rowData.hierarchyLevel === 'division'
+      ? 'Division'
+      : rowData.hierarchyLevel === 'group'
+      ? 'Trading Group'
+      : rowData.hierarchyLevel === 'category'
+      ? 'Category'
+      : rowData.hierarchyLevel === 'department'
+      ? 'Product Group'
+      : rowData.hierarchyLevel === 'class'
+      ? 'Class'
+      : rowData.hierarchyLevel === 'subclass'
+      ? 'Sub Class'
+      : ''
+  }
   const viewProductHierarchyLog = (
     <Dialog open={openProduct} onClose={handleCloseProduct}>
       <Box
         sx={{
-          width: dialogwidth,
-          border: '3px solid green',
+          // width: dialogwidth,
+          // border: '3px solid green',
           borderRadius: 4,
           display: 'flex',
           flexDirection: 'column',
@@ -202,6 +217,7 @@ function UserGroupManage(props: any) {
               fontSize: '12px',
               //backgroundColor: "#f7f7f7",
               // width: fieldWidth,
+              width: '100%',
             }}
             //className={`p-datatable-sm ${classes.viewlogTable}`}
             className={classes.viewlogTable}
@@ -217,6 +233,7 @@ function UserGroupManage(props: any) {
                   bodyStyle={{
                     fontSize: '12px',
                     width: column.width,
+                    overflowX: 'auto',
                   }}
                   headerStyle={{
                     fontSize: '12px',
@@ -224,6 +241,13 @@ function UserGroupManage(props: any) {
                     backgroundColor: teal[900],
                     color: 'white',
                   }}
+                  body={
+                    column.field === 'hierarchyLevel' && hierarchyLevelTemplate
+                    // ||
+                    // (column.field === 'hierarchyId' && hierarchyIdTemplate)
+                    // ||
+                    // (column.field === 'locationHierarchy' && locationTemplate)
+                  }
                 ></Column>
               )
             })}
@@ -236,8 +260,8 @@ function UserGroupManage(props: any) {
     <Dialog open={openLocation} onClose={handleCloseLocation}>
       <Box
         sx={{
-          width: dialogwidth,
-          border: '3px solid green',
+          // width: dialogwidth,
+          // border: '3px solid green',
           borderRadius: 4,
           display: 'flex',
           flexDirection: 'column',
@@ -303,6 +327,7 @@ function UserGroupManage(props: any) {
               fontSize: '12px',
               //backgroundColor: "#f7f7f7",
               // width: fieldWidth,
+              width: '100%',
             }}
             //className={`p-datatable-sm ${classes.viewlogTable}`}
             className={classes.viewlogTable}
@@ -318,6 +343,7 @@ function UserGroupManage(props: any) {
                   bodyStyle={{
                     fontSize: '12px',
                     width: column.width,
+                    overflowX: 'auto',
                   }}
                   headerStyle={{
                     fontSize: '12px',
@@ -496,6 +522,7 @@ function UserGroupManage(props: any) {
                 bodyStyle={{
                   fontSize: '14px',
                   width: column.width,
+                  overflowX: 'auto',
                 }}
                 headerStyle={{
                   fontSize: '14px',
