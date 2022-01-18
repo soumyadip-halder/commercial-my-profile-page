@@ -98,6 +98,7 @@ function UpdateUser(props: any) {
   const [taskSelected, setTaskSelected] = React.useState<any>(null)
   const [taskOpen, setTaskOpen] = React.useState(false)
   const [requestId, setRequestId] = React.useState('')
+  const [taskId, setTaskId] = React.useState('')
   const [viewLogRows, setViewLogRows] = React.useState<Array<any>>([])
   const toast = useRef<any>(null)
 
@@ -153,6 +154,7 @@ function UpdateUser(props: any) {
           .then((res) => {
             console.log(res.data)
             setRequestId(res.data.tasklists[0].requestId)
+            setTaskId(res.data.tasklists[0].taskId)
           })
           .catch((err) => {
             setViewLogRows([])
@@ -173,6 +175,22 @@ function UpdateUser(props: any) {
           })
     }
   }, [requestId])
+
+  useEffect(() => {
+    if (status === 'D' && requestType !== 'modify' && requestType !== '') {
+      setErrorRequestType('Only Modify request can be raised for Deleted users')
+    }
+    if (
+      status === 'I' &&
+      requestType !== 'modify' &&
+      requestType !== 'remove' &&
+      requestType !== ''
+    ) {
+      setErrorRequestType(
+        'Only Modify/Remove request can be raised for Inactive users'
+      )
+    }
+  }, [status, requestType])
 
   const goBack = () => {
     reset_empID()
@@ -232,6 +250,10 @@ function UpdateUser(props: any) {
     }
   }
   // };
+  const onstatusChange = (e: any) => {
+    setStatus(e.target.value)
+    if (e.target.value !== '') setErrorStatus('')
+  }
   const onrequestTypeChange = (e: any) => {
     if (e.target.value !== '') setErrorRequestType('')
     if (e.target.value.toLowerCase() === 'new') {
@@ -612,7 +634,7 @@ function UpdateUser(props: any) {
               className="p-datatable-sm"
               showGridlines
               scrollable
-              scrollHeight="400px"
+              scrollHeight="flex"
             >
               <Column
                 selectionMode="multiple"
@@ -667,7 +689,7 @@ function UpdateUser(props: any) {
   )
 
   const handleOpenViewLog = (e: any) => {
-    setViewLogEl(e.currentTarget)
+    if (viewLogRows.length > 0) setViewLogEl(e.currentTarget)
   }
   const handleCloseViewLog = () => {
     setViewLogEl(null)
@@ -694,7 +716,7 @@ function UpdateUser(props: any) {
         setOpenAdditional((prevState) => !prevState)
       }}
       fullWidth={true}
-      // maxWidth={'lg'}
+      maxWidth={false}
     >
       <Box
         sx={{
@@ -777,7 +799,7 @@ function UpdateUser(props: any) {
             className={`p-datatable-sm ${classes.viewlogTable}`}
             // className={classes.viewlogTable}
             scrollable
-            // scrollHeight="400px"
+            scrollHeight="flex"
           >
             {constants.getAdditionalInfoHeader.map((column: any) => {
               return (
@@ -806,7 +828,12 @@ function UpdateUser(props: any) {
   )
 
   const viewLog = (
-    <Dialog open={viewLogOpen} onClose={handleCloseViewLog}>
+    <Dialog
+      open={viewLogOpen}
+      onClose={handleCloseViewLog}
+      fullWidth={true}
+      maxWidth={false}
+    >
       <Box
         sx={{
           // width: dialogwidth,
@@ -862,8 +889,9 @@ function UpdateUser(props: any) {
             p: 2,
           }}
         >
-          <Typography variant="body2" style={{ overflowX: 'scroll' }}>
-            Request ID:<b> {requestId}</b>
+          <Typography variant="body2" style={{ overflowX: 'auto' }}>
+            {/* Request ID:<b> {requestId}</b> */}
+            Request ID:<b> {taskId}</b>
           </Typography>
         </Box>
         <Box
@@ -886,7 +914,7 @@ function UpdateUser(props: any) {
             }}
             className={`p-datatable-sm ${classes.viewlogTable}`}
             scrollable
-            // scrollHeight="400px"
+            scrollHeight="flex"
           >
             {constants.viewLogColumns.map((column) => {
               return (
@@ -934,6 +962,9 @@ function UpdateUser(props: any) {
 
   const checkForm = (btnName: string) => {
     let flag = 1
+    if (errorRequestType !== '') {
+      flag = 0
+    }
     if (
       requestType !== 'new' &&
       requestType !== 'modify' &&
@@ -1446,7 +1477,11 @@ function UpdateUser(props: any) {
               paddingLeft: 5,
             }}
           >
-            <button className={classes.backButton} onClick={handleOpenViewLog}>
+            <button
+              className={classes.backButton}
+              onClick={handleOpenViewLog}
+              disabled={viewLogRows.length > 0 ? false : true}
+            >
               View Log ({viewLogRows.length})
             </button>
           </Box>
@@ -1751,7 +1786,7 @@ function UpdateUser(props: any) {
 
           <Box className={classes.inputFieldBox}>
             <Typography variant="subtitle2">
-              <input
+              {/* <input
                 type="text"
                 name="status"
                 id="status"
@@ -1767,7 +1802,84 @@ function UpdateUser(props: any) {
                   appFuncList ? appFuncList : [],
                   'status'
                 )}
-              />
+              /> */}
+              <select
+                name="status"
+                id="status"
+                className={classes.selectField}
+                defaultValue=""
+                onChange={onstatusChange}
+                required
+                // disabled={requestType === 'new' && status === 'W'}
+                disabled={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'status'
+                  ) || requestType === 'new'
+                }
+              >
+                {/* <option disabled value="" className={classes.selectOptions}>
+                  None
+                </option> */}
+                {requestType === 'new'
+                  ? constants.statuses
+                      .filter((type) => type.statusID.toLowerCase() === 'w')
+                      .map((type) => {
+                        return (
+                          <option
+                            value={type.statusID}
+                            key={type.statusID}
+                            // selected={type.statusID === status ? true : false}
+                          >
+                            {type.text}
+                          </option>
+                        )
+                      })
+                  : requestType === 'modify'
+                  ? constants.statuses
+                      .filter((type) => type.statusID.toLowerCase() !== 'w')
+                      .map((type) => {
+                        return (
+                          <option
+                            value={type.statusID}
+                            key={type.statusID}
+                            selected={type.statusID === status ? true : false}
+                          >
+                            {type.text}
+                          </option>
+                        )
+                      })
+                  : requestType === 'remove'
+                  ? constants.statuses
+                      .filter(
+                        (type) => type.statusID.toLowerCase() !== 'w'
+                        // &&
+                        // type.statusID.toLowerCase() !== 'i'
+                      )
+                      .map((type) => {
+                        return (
+                          <option
+                            value={type.statusID}
+                            key={type.statusID}
+                            selected={type.statusID === status ? true : false}
+                          >
+                            {type.text}
+                          </option>
+                        )
+                      })
+                  : constants.statuses.map((type) => {
+                      return (
+                        <option
+                          value={type.statusID}
+                          key={type.statusID}
+                          selected={type.statusID === status ? true : false}
+                        >
+                          {type.text}
+                        </option>
+                      )
+                    })}
+              </select>
             </Typography>
           </Box>
         </Box>
@@ -2181,9 +2293,9 @@ function UpdateUser(props: any) {
             justifyContent="center"
           >
             {createForm}
-            {viewLog}
             {viewGroups}
             {manageTasks}
+            {viewLog}
             {viewAdditionalInfo}
             {viewConfirmApprove}
             {viewConfirmSubmit}

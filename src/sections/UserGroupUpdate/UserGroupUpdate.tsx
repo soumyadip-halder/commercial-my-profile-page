@@ -112,7 +112,7 @@ function UserGroupUpdate(props: any) {
       setPayload(
         selectGroupID.productHierarchy.map((product: any) => {
           return {
-            label: product.hierarchyLabel,
+            label: product.hierarchyName,
             value: product.hierarchyId,
             hierarchyId: product.hierarchyId,
             hierarchyLevel: product.hierarchyLevel,
@@ -748,7 +748,7 @@ function UserGroupUpdate(props: any) {
         return {
           hierarchyLevel: location.hierarchyLevel,
           hierarchyId: location.hierarchyId,
-          hierarchyLabel: null,
+          hierarchyName: null,
           startDate: new Date().toISOString().split('T')[0],
           endDate: location.endDate,
         }
@@ -757,7 +757,7 @@ function UserGroupUpdate(props: any) {
         return {
           hierarchyLevel: product.hierarchyLevel,
           hierarchyId: product.hierarchyId,
-          hierarchyLabel: product.label,
+          hierarchyName: product.label,
           startDate: new Date().toISOString().split('T')[0],
           endDate: product.endDate,
         }

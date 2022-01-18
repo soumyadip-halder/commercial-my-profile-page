@@ -183,7 +183,7 @@ function UnassignWorkflow(props: any) {
                     selection={unassignUser}
                     onSelectionChange={(e) => setUnassignUser(e.value)}
                     scrollable
-                    scrollHeight="500px"
+                    scrollHeight="flex"
                     globalFilter={globalFilter}
                     emptyMessage="No users found."
                     showGridlines
@@ -234,7 +234,7 @@ function UnassignWorkflow(props: any) {
                     selection={unassignUser}
                     onSelectionChange={(e) => setUnassignUser(e.value)}
                     scrollable
-                    scrollHeight="500px"
+                    scrollHeight="flex"
                     globalFilter={globalFilter}
                     emptyMessage="No users found."
                     showGridlines

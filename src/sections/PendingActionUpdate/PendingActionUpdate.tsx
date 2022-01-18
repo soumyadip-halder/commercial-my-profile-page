@@ -72,6 +72,7 @@ function PendingActionUpdate(props: any) {
   const [requestType, setRequestType] = React.useState('')
   const [selectEmployeeID, setSelectEmployeeID] = React.useState<any>('')
   const [requestedId, setRequestedId] = React.useState('')
+  const [taskId, setTaskId] = React.useState('')
   const [employeeID, setEmployeeID] = React.useState('')
   const [email, setEmail] = React.useState('')
   const [designation, setDesignation] = React.useState<any>('')
@@ -199,6 +200,10 @@ function PendingActionUpdate(props: any) {
       color: state.isSelected ? 'white' : teal[900],
     }),
   }
+  const onstatusChange = (e: any) => {
+    setStatus(e.target.value)
+    if (e.target.value !== '') setErrorStatus('')
+  }
   const onrequestTypeChange = (e: any) => {
     setRequestType(e.target.value)
   }
@@ -323,6 +328,7 @@ function PendingActionUpdate(props: any) {
       getTasklistsAPI &&
         getTasklistsAPI(selectEmployeeID.requestId)
           .then((res) => {
+            setTaskId(res.data.tasklists[0].taskId)
             setRequestType(
               res.data.tasklists[0].requestData.camunda &&
                 res.data.tasklists[0].requestData.camunda.requestorDetails &&
@@ -636,7 +642,7 @@ function PendingActionUpdate(props: any) {
               className="p-datatable-sm"
               showGridlines
               scrollable
-              scrollHeight="400px"
+              scrollHeight="flex"
             >
               <Column
                 selectionMode="multiple"
@@ -690,7 +696,7 @@ function PendingActionUpdate(props: any) {
     </Dialog>
   )
   const handleOpenViewLog = (e: any) => {
-    setViewLogEl(e.currentTarget)
+    if (viewLogRows.length > 0) setViewLogEl(e.currentTarget)
   }
   const handleCloseViewLog = () => {
     setViewLogEl(false)
@@ -717,7 +723,7 @@ function PendingActionUpdate(props: any) {
         setOpenAdditional((prevState) => !prevState)
       }}
       fullWidth={true}
-      // maxWidth={'lg'}
+      maxWidth={false}
     >
       <Box
         sx={{
@@ -800,7 +806,7 @@ function PendingActionUpdate(props: any) {
             className={`p-datatable-sm ${classes.viewlogTable}`}
             // className={classes.viewlogTable}
             scrollable
-            // scrollHeight="400px"
+            scrollHeight="flex"
           >
             {constants.getAdditionalInfoHeader.map((column: any) => {
               return (
@@ -829,7 +835,12 @@ function PendingActionUpdate(props: any) {
   )
 
   const viewLog = (
-    <Dialog open={viewLogOpen} onClose={handleCloseViewLog}>
+    <Dialog
+      open={viewLogOpen}
+      onClose={handleCloseViewLog}
+      fullWidth={true}
+      maxWidth={false}
+    >
       <Box
         sx={{
           // width: dialogwidth,
@@ -885,8 +896,9 @@ function PendingActionUpdate(props: any) {
             p: 2,
           }}
         >
-          <Typography variant="body2" style={{ overflowX: 'scroll' }}>
-            Request ID:<b> {requestedId}</b>
+          <Typography variant="body2" style={{ overflowX: 'auto' }}>
+            {/* Request ID:<b> {requestedId}</b> */}
+            Request ID:<b> {taskId}</b>
           </Typography>
         </Box>
         <Box
@@ -909,7 +921,7 @@ function PendingActionUpdate(props: any) {
             }}
             className={`p-datatable-sm ${classes.viewlogTable}`}
             scrollable
-            // scrollHeight="400px"
+            scrollHeight="flex"
           >
             {constants.viewLogColumns.map((column) => {
               return (
@@ -1813,7 +1825,11 @@ function PendingActionUpdate(props: any) {
               paddingLeft: 5,
             }}
           >
-            <button className={classes.backButton} onClick={handleOpenViewLog}>
+            <button
+              className={classes.backButton}
+              onClick={handleOpenViewLog}
+              disabled={viewLogRows.length > 0 ? false : true}
+            >
               View Log ({viewLogRows.length})
             </button>
           </Box>
@@ -1862,6 +1878,7 @@ function PendingActionUpdate(props: any) {
                   // className={`p-datatable-sm ${classes.viewlogTable}`}
                   scrollable
                   showGridlines
+                  scrollHeight="flex"
                   //loading={manageUserLoading}
                 >
                   {pendingActionUpdateTableHeaders.map((column) => {
@@ -1904,6 +1921,7 @@ function PendingActionUpdate(props: any) {
                   // className={`p-datatable-sm ${classes.viewlogTable}`}
                   scrollable
                   showGridlines
+                  scrollHeight="flex"
                   //loading={manageUserLoading}
                 >
                   {pendingActionUpdateTableHeaders.map((column) => {
@@ -1947,6 +1965,7 @@ function PendingActionUpdate(props: any) {
                 // className={`p-datatable-sm ${classes.viewlogTable}`}
                 scrollable
                 showGridlines
+                scrollHeight="flex"
                 //loading={manageUserLoading}
               >
                 {pendingActionUpdateTableHeaders.map((column) => {
@@ -2261,7 +2280,7 @@ function PendingActionUpdate(props: any) {
 
           <Box className={classes.inputFieldBox}>
             <Typography variant="subtitle2">
-              <input
+              {/* <input
                 type="text"
                 name="status"
                 id="status"
@@ -2277,7 +2296,84 @@ function PendingActionUpdate(props: any) {
                   appFuncList ? appFuncList : [],
                   'status'
                 )}
-              />
+              /> */}
+              <select
+                name="status"
+                id="status"
+                className={classes.selectField}
+                defaultValue=""
+                onChange={onstatusChange}
+                required
+                // disabled={requestType === 'new' && status === 'W'}
+                disabled={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'status'
+                  ) || requestType === 'new'
+                }
+              >
+                {/* <option disabled value="" className={classes.selectOptions}>
+                  None
+                </option> */}
+                {requestType === 'new'
+                  ? constants.statuses
+                      .filter((type) => type.statusID.toLowerCase() === 'w')
+                      .map((type) => {
+                        return (
+                          <option
+                            value={type.statusID}
+                            key={type.statusID}
+                            // selected={type.statusID === status ? true : false}
+                          >
+                            {type.text}
+                          </option>
+                        )
+                      })
+                  : requestType === 'modify'
+                  ? constants.statuses
+                      .filter((type) => type.statusID.toLowerCase() !== 'w')
+                      .map((type) => {
+                        return (
+                          <option
+                            value={type.statusID}
+                            key={type.statusID}
+                            selected={type.statusID === status ? true : false}
+                          >
+                            {type.text}
+                          </option>
+                        )
+                      })
+                  : requestType === 'remove'
+                  ? constants.statuses
+                      .filter(
+                        (type) => type.statusID.toLowerCase() !== 'w'
+                        // &&
+                        // type.statusID.toLowerCase() !== 'i'
+                      )
+                      .map((type) => {
+                        return (
+                          <option
+                            value={type.statusID}
+                            key={type.statusID}
+                            selected={type.statusID === status ? true : false}
+                          >
+                            {type.text}
+                          </option>
+                        )
+                      })
+                  : constants.statuses.map((type) => {
+                      return (
+                        <option
+                          value={type.statusID}
+                          key={type.statusID}
+                          selected={type.statusID === status ? true : false}
+                        >
+                          {type.text}
+                        </option>
+                      )
+                    })}
+              </select>
             </Typography>
           </Box>
         </Box>
@@ -2693,9 +2789,9 @@ function PendingActionUpdate(props: any) {
             justifyContent="center"
           >
             {createForm}
-            {viewLog}
             {viewGroups}
             {manageTasks}
+            {viewLog}
             {viewAdditionalInfo}
             {viewConfirmApprove}
             {viewConfirmSubmit}

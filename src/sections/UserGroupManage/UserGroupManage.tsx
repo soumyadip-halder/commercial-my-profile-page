@@ -222,7 +222,7 @@ function UserGroupManage(props: any) {
             //className={`p-datatable-sm ${classes.viewlogTable}`}
             className={classes.viewlogTable}
             scrollable
-            scrollHeight="400px"
+            scrollHeight="flex"
           >
             {constants.viewHierarchy.map((column: any) => {
               return (
@@ -332,7 +332,7 @@ function UserGroupManage(props: any) {
             //className={`p-datatable-sm ${classes.viewlogTable}`}
             className={classes.viewlogTable}
             scrollable
-            scrollHeight="400px"
+            scrollHeight="flex"
           >
             {constants.viewHierarchy.map((column: any) => {
               return (
@@ -506,7 +506,7 @@ function UserGroupManage(props: any) {
             width: '100%',
           }}
           scrollable
-          scrollHeight="300px"
+          scrollHeight="flex"
           //   className="p-datatable-sm"
           globalFilter={globalFilter}
           emptyMessage="No groups found."

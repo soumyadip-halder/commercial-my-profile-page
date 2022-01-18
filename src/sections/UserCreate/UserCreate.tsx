@@ -163,6 +163,22 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     }
   }, [rolesArray])
 
+  useEffect(() => {
+    if (status === 'D' && requestType !== 'modify' && requestType !== '') {
+      setErrorRequestType('Only Modify request can be raised for Deleted users')
+    }
+    if (
+      status === 'I' &&
+      requestType !== 'modify' &&
+      requestType !== 'remove' &&
+      requestType !== ''
+    ) {
+      setErrorRequestType(
+        'Only Modify/Remove request can be raised for Inactive users'
+      )
+    }
+  }, [status, requestType])
+
   const Option = (props: any) => {
     return (
       <div>
@@ -537,7 +553,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
         setOpenAdditional((prevState) => !prevState)
       }}
       fullWidth={true}
-      // maxWidth={'lg'}
+      maxWidth={false}
     >
       <Box
         sx={{
@@ -624,7 +640,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             className={`p-datatable-sm ${classes.viewlogTable}`}
             // className={classes.viewlogTable}
             scrollable
-            // scrollHeight="400px"
+            scrollHeight="flex"
           >
             {constants.getAdditionalInfoHeader.map((column: any) => {
               return (
@@ -653,7 +669,12 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   )
 
   const viewLog = (
-    <Dialog open={viewLogOpen} onClose={handleCloseViewLog}>
+    <Dialog
+      open={viewLogOpen}
+      onClose={handleCloseViewLog}
+      fullWidth={true}
+      maxWidth={false}
+    >
       <Box
         sx={{
           // width: dialogwidth,
@@ -731,7 +752,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             }}
             className={`p-datatable-sm ${classes.viewlogTable}`}
             scrollable
-            scrollHeight="400px"
+            scrollHeight="flex"
           >
             {constants.viewLogColumns.map((column) => {
               return (
@@ -989,6 +1010,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   const checkForm = (btnName: string) => {
     let flag = 1
+    if (errorRequestType !== '') {
+      flag = 0
+    }
     if (
       requestType !== 'new' &&
       requestType !== 'modify' &&
@@ -1860,29 +1884,41 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                           <option
                             value={type.statusID}
                             key={type.statusID}
-                            // selected={type.statusID === status ? true : false}
+                            selected={type.statusID === status ? true : false}
                           >
                             {type.text}
                           </option>
                         )
                       })
-                  : constants.statuses
+                  : requestType === 'remove'
+                  ? constants.statuses
                       .filter(
-                        (type) =>
-                          type.statusID.toLowerCase() !== 'w' &&
-                          type.statusID.toLowerCase() !== 'i'
+                        (type) => type.statusID.toLowerCase() !== 'w'
+                        // &&
+                        // type.statusID.toLowerCase() !== 'i'
                       )
                       .map((type) => {
                         return (
                           <option
                             value={type.statusID}
                             key={type.statusID}
-                            // selected={type.statusID === status ? true : false}
+                            selected={type.statusID === status ? true : false}
                           >
                             {type.text}
                           </option>
                         )
-                      })}
+                      })
+                  : constants.statuses.map((type) => {
+                      return (
+                        <option
+                          value={type.statusID}
+                          key={type.statusID}
+                          selected={type.statusID === status ? true : false}
+                        >
+                          {type.text}
+                        </option>
+                      )
+                    })}
               </select>
             </Typography>
           </Box>
@@ -2303,8 +2339,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             justifyContent="center"
           >
             {createForm}
-            {viewLog}
             {viewGroups}
+            {viewLog}
             {viewAdditionalInfo}
             {viewConfirmApprove}
             {viewConfirmSubmit}

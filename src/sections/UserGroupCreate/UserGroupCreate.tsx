@@ -673,7 +673,7 @@ function UserGroupCreate() {
         return {
           hierarchyLevel: location.hierarchyLevel,
           hierarchyId: location.hierarchyId,
-          hierarchyLabel: null,
+          hierarchyName: null,
           startDate: new Date().toISOString().split('T')[0],
           endDate: location.endDate,
         }
@@ -682,7 +682,7 @@ function UserGroupCreate() {
         return {
           hierarchyLevel: product.hierarchyLevel,
           hierarchyId: product.hierarchyId,
-          hierarchyLabel: product.value,
+          hierarchyName: product.value,
           startDate: new Date().toISOString().split('T')[0],
           endDate: product.endDate,
         }
@@ -710,10 +710,11 @@ function UserGroupCreate() {
     //   )
     putUserGroupAPI &&
       // putUserGroupAPI(formData, groupId)
-      putUserGroupAPI(formData, '@none')
+      putUserGroupAPI(formData, '@None')
         .then((res) => {
           //console.log(res);
           //console.log(res.data.message);
+          setGroupId(res.data.message.split('groupId:')[1].trim())
           toast.current.show({
             severity: 'success',
             summary: '',
@@ -897,7 +898,7 @@ function UserGroupCreate() {
                           type="text"
                           name="groupId"
                           id="groupId"
-                          placeholder="eg. 012345"
+                          placeholder="To be autocreated"
                           className={classes.inputFields}
                           onChange={ongroupIDChange}
                           value={groupId}
