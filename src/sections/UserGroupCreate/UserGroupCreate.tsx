@@ -710,7 +710,7 @@ function UserGroupCreate() {
     //   )
     putUserGroupAPI &&
       // putUserGroupAPI(formData, groupId)
-      putUserGroupAPI(formData, '@None')
+      putUserGroupAPI(formData, '')
         .then((res) => {
           //console.log(res);
           //console.log(res.data.message);
