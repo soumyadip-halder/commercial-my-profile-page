@@ -549,6 +549,7 @@ function UserGroupUpdate(props: any) {
               display: 'flex',
               flexGrow: 1,
               justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <Typography variant="subtitle1">Add Product Hierarchies</Typography>
@@ -587,7 +588,9 @@ function UserGroupUpdate(props: any) {
           >
             {/* {productSelect} */}
             <Box>
-              <label>Hierarchy Level</label>
+              <Typography variant="subtitle1" color="primary">
+                Hierarchy Level
+              </Typography>
             </Box>
             <Box>
               {/* <select
@@ -633,7 +636,9 @@ function UserGroupUpdate(props: any) {
           }}
         >
           <Box>
-            <label>Search Hierrachies</label>
+            <Typography variant="subtitle1" color="primary">
+              Search Hierrachies
+            </Typography>
           </Box>
           <Box
             sx={{

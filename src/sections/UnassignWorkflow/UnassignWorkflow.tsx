@@ -84,23 +84,23 @@ function UnassignWorkflow(props: any) {
           putClaimTaskAPI(assignPayload, taskIds[i])
             .then((res) => {
               console.log(res.data)
-              if (res.data.status.toLowerCase() !== 'failed') {
-                toast.current.show({
-                  severity: 'success',
-                  summary: taskIds[i],
-                  detail: res.data.comments,
-                  life: 6000,
-                  className: 'login-toast',
-                })
-              } else {
-                toast.current.show({
-                  severity: 'error',
-                  summary: 'Error!',
-                  detail: res.data.comments,
-                  life: 6000,
-                  className: 'login-toast',
-                })
-              }
+              // if (res.data.status.toLowerCase() !== 'failed') {
+              toast.current.show({
+                severity: 'success',
+                summary: taskIds[i],
+                detail: res.data.comments,
+                life: 6000,
+                className: 'login-toast',
+              })
+              // } else {
+              //   toast.current.show({
+              //     severity: 'error',
+              //     summary: 'Error!',
+              //     detail: res.data.comments,
+              //     life: 6000,
+              //     className: 'login-toast',
+              //   })
+              // }
             })
             .catch((err) => {
               toast.current.show({
