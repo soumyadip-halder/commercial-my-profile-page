@@ -3,7 +3,6 @@ import {
   Typography,
   Button,
   Dialog,
-  DialogTitle,
   useTheme,
   useMediaQuery,
   Paper,
@@ -38,7 +37,7 @@ import { constants } from '../UserCreate/DataConstants'
 import AttachFileIcon from '@material-ui/icons/AttachFile'
 import { reset_pendingAction } from '../../redux/Actions/PendingAction'
 import { pendingActionUpdateTableHeaders } from './tableHeader'
-import { routes, extensions } from '../../util/Constants'
+import { routes, extensions, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
 // import { viewLogTemp } from '../Dashboard/DataConstant'
 
@@ -100,6 +99,8 @@ function PendingActionUpdate(props: any) {
   const [errorStatus, setErrorStatus] = React.useState('')
   const [errorRoles, setErrorRoles] = React.useState('')
   const [errorGroups, setErrorGroups] = React.useState('')
+  const [checkCount, setCheckCount] = React.useState(1)
+  const [disabled, setDisabled] = React.useState(false)
   const [roles, setRoles] = React.useState([])
   const [roleNames, setRoleNames] = React.useState([])
   const [tasks, setTasks] = React.useState(taskList)
@@ -112,6 +113,7 @@ function PendingActionUpdate(props: any) {
   useEffect(() => {
     return () => reset_pendingAction()
   }, [])
+
   useEffect(() => {
     if (!pendingActionDetails) {
       history.push(`${DEFAULT}${DASHBOARD_PENDINGACTION}`)
@@ -163,6 +165,12 @@ function PendingActionUpdate(props: any) {
     DASHBOARD_PENDINGACTION,
     DEFAULT,
   ])
+
+  useEffect(() => {
+    console.log('Check count: ', checkCount)
+    if (checkCount === 0)
+      setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+  }, [checkCount, DASHBOARD, DEFAULT, history])
 
   useEffect(() => {
     if (requestedId && requestedId !== '') {
@@ -277,21 +285,24 @@ function PendingActionUpdate(props: any) {
     postTaskLogsAPI &&
       postTaskLogsAPI(logData)
         .then((res) => {
+          setCheckCount((prevState) => prevState - 1)
           toast.current.show({
             severity: 'success',
             summary: '',
             detail: res.data.message,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
         })
         .catch((err) => {
+          setCheckCount((prevState) => prevState - 1)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from tasklogapi`,
+            //detail: `${err.response.status} from tasklogapi`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
         })
@@ -338,7 +349,7 @@ function PendingActionUpdate(props: any) {
                     .requestType
                 : 'modify'
             )
-            setEmployeeID(res.data.tasklists[0].requestData.user.userId)
+            setEmployeeID(res.data.tasklists[0].requestData.user.employeeId)
             setFirstName(res.data.tasklists[0].requestData.user.firstName)
             setMiddleName(res.data.tasklists[0].requestData.user.middleName)
             setLastName(res.data.tasklists[0].requestData.user.lastName)
@@ -1053,7 +1064,8 @@ function PendingActionUpdate(props: any) {
         requestorDetails: {
           emailId: userDetail && userDetail.userdetails[0].user.emailId,
           requestBy: userDetail && userDetail.userdetails[0].user.userId,
-          requestedDate: new Date().toISOString().split('T')[0],
+          requestDate: new Date().toISOString().split('T')[0],
+          // requestedDate: new Date().toISOString().split('T')[0],
           requestType: requestType,
         },
         requestorRoles:
@@ -1065,7 +1077,8 @@ function PendingActionUpdate(props: any) {
           }),
       },
       user: {
-        EmployeeId: employeeID,
+        employeeId: employeeID,
+        // EmployeeId: employeeID,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
@@ -1129,6 +1142,7 @@ function PendingActionUpdate(props: any) {
             attachmentUrl: null,
           }
           if (referenceDocData.length > 0) {
+            setCheckCount(referenceDocData.length)
             referenceDocData.map((rf) => {
               const formdata1 = new FormData()
               formdata1.append('fileIn', rf.data)
@@ -1140,12 +1154,14 @@ function PendingActionUpdate(props: any) {
                     postTasklog(logData)
                   })
                   .catch((err) => {
+                    setCheckCount((prevState) => prevState - 1)
                     toast.current.show({
                       severity: 'error',
                       summary: 'Error!',
-                      detail: `${err.response.status} from tasklistapi`,
+                      // detail: `${err.response.status} from tasklistapi`,
+                      detail: err.response.data.errorMessage,
                       // detail: `${err.data.errorMessage} ${statusCode}`,
-                      life: 6000,
+                      life: life,
                       className: 'login-toast',
                     })
                     // logData.attachmentUrl = null
@@ -1154,18 +1170,18 @@ function PendingActionUpdate(props: any) {
               return null
             })
           } else {
-            console.log(logData)
+            setCheckCount(1)
             postTasklog(logData)
           }
           toast.current.show({
             severity: 'success',
             summary: '',
             detail: res.data.comments,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
 
-          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+          // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
           console.log(err.response)
@@ -1175,9 +1191,10 @@ function PendingActionUpdate(props: any) {
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from userdetailapi`,
+            //detail: `${err.response.status} from userdetailapi`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.response.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
           //history.push('/commercial-webapp/dashboard')
@@ -1246,13 +1263,15 @@ function PendingActionUpdate(props: any) {
 
   const handleUpdateUserforSubmit = () => {
     // e.preventDefault()
+    setDisabled(true)
     const formData = {
       camunda: {
         submitFlag: 'Submit',
         requestorDetails: {
           emailId: userDetail && userDetail.userdetails[0].user.emailId,
           requestBy: userDetail && userDetail.userdetails[0].user.userId,
-          requestedDate: new Date().toISOString().split('T')[0],
+          requestDate: new Date().toISOString().split('T')[0],
+          // requestedDate: new Date().toISOString().split('T')[0],
           requestType: requestType,
         },
         requestorRoles:
@@ -1264,7 +1283,8 @@ function PendingActionUpdate(props: any) {
           }),
       },
       user: {
-        EmployeeId: employeeID,
+        employeeId: employeeID,
+        // EmployeeId: employeeID,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
@@ -1328,6 +1348,7 @@ function PendingActionUpdate(props: any) {
             attachmentUrl: null,
           }
           if (referenceDocData.length > 0) {
+            setCheckCount(referenceDocData.length)
             referenceDocData.map((rf) => {
               const formdata1 = new FormData()
               formdata1.append('fileIn', rf.data)
@@ -1339,31 +1360,35 @@ function PendingActionUpdate(props: any) {
                     postTasklog(logData)
                   })
                   .catch((err) => {
+                    setCheckCount((prevState) => prevState - 1)
                     toast.current.show({
                       severity: 'error',
                       summary: 'Error!',
-                      detail: `${err.response.status} from tasklistapi`,
+                      // detail: `${err.response.status} from tasklistapi`,
+                      detail: err.response.data.errorMessage,
                       // detail: `${err.data.errorMessage} ${statusCode}`,
-                      life: 6000,
+                      life: life,
                       className: 'login-toast',
                     })
                   })
               return null
             })
           } else {
+            setCheckCount(1)
             postTasklog(logData)
           }
           toast.current.show({
             severity: 'success',
             summary: '',
             detail: res.data.comments,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
 
-          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+          // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
+          setDisabled(false)
           console.log(err.response)
           // let statusCode = err.response.status
           // console.log(statusCode)
@@ -1371,9 +1396,10 @@ function PendingActionUpdate(props: any) {
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from userdetailapi`,
+            //detail: `${err.response.status} from userdetailapi`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.response.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
           //history.push('/commercial-webapp/dashboard')
@@ -1439,8 +1465,8 @@ function PendingActionUpdate(props: any) {
     //     })
     //   })
   }
-  const handleApprove = (e: any) => {
-    e.preventDefault()
+  const handleApprove = () => {
+    setDisabled(true)
     const formData = {
       requestorDetails: {
         emailId: userDetail && userDetail.userdetails[0].user.emailId,
@@ -1483,6 +1509,7 @@ function PendingActionUpdate(props: any) {
             attachmentUrl: null,
           }
           if (referenceDocData.length > 0) {
+            setCheckCount(referenceDocData.length)
             referenceDocData.map((rf) => {
               const formdata1 = new FormData()
               formdata1.append('fileIn', rf.data)
@@ -1494,18 +1521,21 @@ function PendingActionUpdate(props: any) {
                     postTasklog(logData)
                   })
                   .catch((err) => {
+                    setCheckCount((prevState) => prevState - 1)
                     toast.current.show({
                       severity: 'error',
                       summary: 'Error!',
-                      detail: `${err.response.status} from tasklistapi`,
+                      //detail: `${err.response.status} from tasklistapi`,
+                      detail: err.response.data.errorMessage,
                       // detail: `${err.data.errorMessage} ${statusCode}`,
-                      life: 6000,
+                      life: life,
                       className: 'login-toast',
                     })
                   })
               return null
             })
           } else {
+            setCheckCount(1)
             postTasklog(logData)
           }
           toast.current.show({
@@ -1513,20 +1543,22 @@ function PendingActionUpdate(props: any) {
             summary: '',
             detail: res.data.status,
             // detail: 'Success',
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
 
-          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+          // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
+          setDisabled(false)
           console.log(err.response)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from RejectTaskAPI`,
+            //detail: `${err.response.status} from RejectTaskAPI`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.response.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
         })
@@ -1534,12 +1566,14 @@ function PendingActionUpdate(props: any) {
 
   const handleReassign = () => {
     // e.preventDefault()
+    setDisabled(true)
     const formData = {
       requestorDetails: {
         emailId: userDetail && userDetail.userdetails[0].user.emailId,
         requestBy: userDetail && userDetail.userdetails[0].user.userId,
         requestDate: new Date().toISOString().split('T')[0],
-        requestType: requestType,
+        // requestType: requestType,
+        requestType: 'Reassign',
       },
       requestorRoles:
         userDetail &&
@@ -1548,7 +1582,7 @@ function PendingActionUpdate(props: any) {
             roleId: role.roleId,
           }
         }),
-      submitFlag: 'Reassign',
+      // submitFlag: 'Reassign',
     }
     console.log(formData)
     pendingActionDetails &&
@@ -1578,6 +1612,7 @@ function PendingActionUpdate(props: any) {
             attachmentUrl: null,
           }
           if (referenceDocData.length > 0) {
+            setCheckCount(referenceDocData.length)
             referenceDocData.map((rf) => {
               const formdata1 = new FormData()
               formdata1.append('fileIn', rf.data)
@@ -1589,18 +1624,21 @@ function PendingActionUpdate(props: any) {
                     postTasklog(logData)
                   })
                   .catch((err) => {
+                    setCheckCount((prevState) => prevState - 1)
                     toast.current.show({
                       severity: 'error',
                       summary: 'Error!',
-                      detail: `${err.response.status} from tasklistapi`,
+                      // detail: `${err.response.status} from tasklistapi`,
+                      detail: err.response.data.errorMessage,
                       // detail: `${err.data.errorMessage} ${statusCode}`,
-                      life: 6000,
+                      life: life,
                       className: 'login-toast',
                     })
                   })
               return null
             })
           } else {
+            setCheckCount(1)
             postTasklog(logData)
           }
           toast.current.show({
@@ -1608,11 +1646,11 @@ function PendingActionUpdate(props: any) {
             summary: '',
             detail: res.data.comments,
             // detail: 'Success',
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
 
-          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+          // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
           // } else {
           //   toast.current.show({
           //     severity: 'error',
@@ -1625,13 +1663,15 @@ function PendingActionUpdate(props: any) {
           // }
         })
         .catch((err) => {
+          setDisabled(false)
           console.log(err.response)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from RejectTaskAPI`,
+            // detail: `${err.response.status} from RejectTaskAPI`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.response.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
         })
@@ -1639,25 +1679,29 @@ function PendingActionUpdate(props: any) {
 
   const handleReject = () => {
     // e.preventDefault()
+    setDisabled(true)
     const formData = {
       requestorDetails: {
-        emailId: userDetail && userDetail.userdetails[0].user.emailId,
-        requestBy: userDetail && userDetail.userdetails[0].user.userId,
-        requestDate: new Date().toISOString().split('T')[0],
-        requestType: 'Reject',
+        requestorDetails: {
+          emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          requestDate: new Date().toISOString().split('T')[0],
+          requestType: 'Reject',
+        },
+        requestorRoles:
+          userDetail &&
+          userDetail.userdetails[0].roles.map((role: any) => {
+            return {
+              roleId: role.roleId,
+            }
+          }),
       },
-      requestorRoles:
-        userDetail &&
-        userDetail.userdetails[0].roles.map((role: any) => {
-          return {
-            roleId: role.roleId,
-          }
-        }),
+      taskId: pendingActionDetails[0].taskId,
     }
     console.log(formData)
     pendingActionDetails &&
       putRejectTaskAPI &&
-      putRejectTaskAPI(formData, pendingActionDetails[0].taskId)
+      putRejectTaskAPI(formData, pendingActionDetails[0].businessKey)
         .then((res) => {
           console.log(res)
           const rolelog =
@@ -1681,6 +1725,7 @@ function PendingActionUpdate(props: any) {
             attachmentUrl: null,
           }
           if (referenceDocData.length > 0) {
+            setCheckCount(referenceDocData.length)
             referenceDocData.map((rf) => {
               const formdata1 = new FormData()
               formdata1.append('fileIn', rf.data)
@@ -1692,18 +1737,21 @@ function PendingActionUpdate(props: any) {
                     postTasklog(logData)
                   })
                   .catch((err) => {
+                    setCheckCount((prevState) => prevState - 1)
                     toast.current.show({
                       severity: 'error',
                       summary: 'Error!',
-                      detail: `${err.response.status} from tasklistapi`,
+                      //detail: `${err.response.status} from tasklistapi`,
+                      detail: err.response.data.errorMessage,
                       // detail: `${err.data.errorMessage} ${statusCode}`,
-                      life: 6000,
+                      life: life,
                       className: 'login-toast',
                     })
                   })
               return null
             })
           } else {
+            setCheckCount(1)
             postTasklog(logData)
           }
           toast.current.show({
@@ -1711,20 +1759,22 @@ function PendingActionUpdate(props: any) {
             summary: '',
             //  detail: res.data.comments,
             detail: 'Success',
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
 
-          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+          // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
+          setDisabled(false)
           console.log(err.response)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from RejectTaskAPI`,
+            //detail: `${err.response.status} from RejectTaskAPI`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.response.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
         })
@@ -2698,6 +2748,7 @@ function PendingActionUpdate(props: any) {
               size="small"
               // onClick={handleReject}
               onClick={handleRejectAfterDialog}
+              disabled={disabled}
             >
               Reject
             </Button>
@@ -2726,6 +2777,7 @@ function PendingActionUpdate(props: any) {
               size="small"
               // onClick={handleUpdateUserforSubmit}
               onClick={handleSubmitAfterDialog}
+              disabled={disabled}
             >
               Submit
             </Button>
@@ -2745,6 +2797,7 @@ function PendingActionUpdate(props: any) {
               size="small"
               // onClick={handleReassign}
               onClick={handleReassignAfterDialog}
+              disabled={disabled}
             >
               Reassign
             </Button>
@@ -2766,6 +2819,7 @@ function PendingActionUpdate(props: any) {
               // onClick={handleUpdateUserforApprove}
               // onClick={handleApprove}
               onClick={handleApproveAfterDialog}
+              disabled={disabled}
             >
               Approve
             </Button>

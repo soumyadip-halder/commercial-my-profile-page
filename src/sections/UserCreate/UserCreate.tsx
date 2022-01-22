@@ -5,14 +5,12 @@ import {
   Button,
   Paper,
   Dialog,
-  DialogTitle,
   useTheme,
   useMediaQuery,
   OutlinedInput,
   IconButton,
   InputAdornment,
 } from '@material-ui/core'
-
 import { styled } from '@material-ui/styles'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
@@ -24,7 +22,6 @@ import { constants } from './DataConstants'
 // import axios from "axios";
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
-import { FormControl } from '@material-ui/core'
 // import 'primeicons/primeicons.css';
 // import 'primereact/resources/themes/fluent-light/theme.css';
 import 'primereact/resources/themes/saga-green/theme.css'
@@ -44,7 +41,7 @@ import {
   getUserAPI,
 } from '../../api/Fetch'
 import { UtilityFunctions } from '../../util/UtilityFunctions'
-import { routes, extensions } from '../../util/Constants'
+import { routes, extensions, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
 
 const Input = styled('input')({
@@ -96,6 +93,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const [errorStatus, setErrorStatus] = React.useState('')
   const [errorRoles, setErrorRoles] = React.useState('')
   const [errorGroups, setErrorGroups] = React.useState('')
+  const [checkCount, setCheckCount] = React.useState(1)
+  const [disabled, setDisabled] = React.useState(false)
   //integration changes start
   const [roles, setRoles] = useState([])
   const [groupsData, setGroupsData] = useState([])
@@ -143,6 +142,12 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           console.log(err)
         })
   }, [])
+
+  useEffect(() => {
+    console.log('Check count: ', checkCount)
+    if (checkCount === 0)
+      setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+  }, [checkCount, DASHBOARD, DEFAULT, history])
 
   useEffect(() => {
     if (rolesArray) {
@@ -300,21 +305,24 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     postTaskLogsAPI &&
       postTaskLogsAPI(logData)
         .then((res) => {
+          setCheckCount((prevState) => prevState - 1)
           toast.current.show({
             severity: 'success',
             summary: '',
             detail: res.data.message,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
         })
         .catch((err) => {
+          setCheckCount((prevState) => prevState - 1)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from tasklogapi`,
+            // detail: `${err.response.status} from tasklogapi`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
         })
@@ -1001,7 +1009,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 severity: 'error',
                 summary: 'Error!',
                 detail: 'Invalid Employee ID',
-                life: 6000,
+                life: life,
                 className: 'login-toast',
               })
             })
@@ -1060,6 +1068,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const handleCreateRequestforApprove = () => {
     // e.preventDefault()
     if (shoutOut === '') {
+      setDisabled(true)
       const colleague: any =
         colleagueData && constants.getColleagueDetails(colleagueData)
       const colleaguestring =
@@ -1072,7 +1081,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           requestorDetails: {
             emailId: userDetail && userDetail.userdetails[0].user.emailId,
             requestBy: userDetail && userDetail.userdetails[0].user.userId,
-            requestedDate: new Date().toISOString().split('T')[0],
+            requestDate: new Date().toISOString().split('T')[0],
+            // requestedDate: new Date().toISOString().split('T')[0],
             requestType: requestType,
           },
           requestorRoles:
@@ -1084,7 +1094,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             }),
         },
         user: {
-          EmployeeId: employeeID,
+          employeeId: employeeID,
+          // EmployeeId: employeeID,
           firstName: firstName,
           middleName: middleName,
           lastName: lastName,
@@ -1152,6 +1163,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               attachmentUrl: null,
             }
             if (referenceDocData.length > 0) {
+              setCheckCount(referenceDocData.length)
               referenceDocData.map((rf) => {
                 const formdata1 = new FormData()
                 formdata1.append('fileIn', rf.data)
@@ -1163,12 +1175,14 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                       postTasklog(logData)
                     })
                     .catch((err) => {
+                      setCheckCount((prevState) => prevState - 1)
                       toast.current.show({
                         severity: 'error',
                         summary: 'Error!',
-                        detail: `${err.response.status} from tasklistapi`,
+                        //detail: `${err.response.status} from tasklistapi`,
+                        detail: err.response.data.errorMessage,
                         // detail: `${err.data.errorMessage} ${statusCode}`,
-                        life: 6000,
+                        life: life,
                         className: 'login-toast',
                       })
                       // logData.attachmentUrl = null
@@ -1177,20 +1191,21 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 return null
               })
             } else {
-              console.log(logData)
+              setCheckCount(1)
               postTasklog(logData)
             }
             toast.current.show({
               severity: 'success',
               summary: '',
               detail: res.data.comments,
-              life: 6000,
+              life: life,
               className: 'login-toast',
             })
 
-            setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+            // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
           })
           .catch((err) => {
+            setDisabled(false)
             console.log(err.response)
             // let statusCode = err.status
             //console.log(statusCode)
@@ -1198,9 +1213,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             toast.current.show({
               severity: 'error',
               summary: 'Error!',
-              detail: `${err.response.status} from userdetailapi`,
+              //detail: `${err.response.status} from userdetailapi`,
+              detail: err.response.data.errorMessage,
               // detail: `${err.data.errorMessage} ${statusCode}`,
-              life: 6000,
+              life: life,
               className: 'login-toast',
             })
             //history.push('/commercial-webapp/dashboard')
@@ -1258,6 +1274,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const handleCreateRequestforSubmit = () => {
     // e.preventDefault()
     if (shoutOut === '') {
+      setDisabled(true)
       const colleague: any =
         colleagueData && constants.getColleagueDetails(colleagueData)
       const colleaguestring =
@@ -1270,7 +1287,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           requestorDetails: {
             emailId: userDetail && userDetail.userdetails[0].user.emailId,
             requestBy: userDetail && userDetail.userdetails[0].user.userId,
-            requestedDate: new Date().toISOString().split('T')[0],
+            requestDate: new Date().toISOString().split('T')[0],
+            // requestedDate: new Date().toISOString().split('T')[0],
             requestType: requestType,
           },
           requestorRoles:
@@ -1282,7 +1300,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             }),
         },
         user: {
-          EmployeeId: employeeID,
+          employeeId: employeeID,
+          // EmployeeId: employeeID,
           firstName: firstName,
           middleName: middleName,
           lastName: lastName,
@@ -1349,6 +1368,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               attachmentUrl: null,
             }
             if (referenceDocData.length > 0) {
+              setCheckCount(referenceDocData.length)
               referenceDocData.map((rf) => {
                 const formdata1 = new FormData()
                 formdata1.append('fileIn', rf.data)
@@ -1360,31 +1380,35 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                       postTasklog(logData)
                     })
                     .catch((err) => {
+                      setCheckCount((prevState) => prevState - 1)
                       toast.current.show({
                         severity: 'error',
                         summary: 'Error!',
-                        detail: `${err.response.status} from tasklistapi`,
+                        // detail: `${err.response.status} from tasklistapi`,
+                        detail: err.response.data.errorMessage,
                         // detail: `${err.data.errorMessage} ${statusCode}`,
-                        life: 6000,
+                        life: life,
                         className: 'login-toast',
                       })
                     })
                 return null
               })
             } else {
+              setCheckCount(1)
               postTasklog(logData)
             }
             toast.current.show({
               severity: 'success',
               summary: '',
               detail: res.data.comments,
-              life: 6000,
+              life: life,
               className: 'login-toast',
             })
 
-            setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+            // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
           })
           .catch((err) => {
+            setDisabled(false)
             console.log(err)
             // let statusCode = err.status
             //console.log(statusCode)
@@ -1392,9 +1416,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             toast.current.show({
               severity: 'error',
               summary: 'Error!',
-              detail: `${err.response.status} from userdetailapi`,
+              // detail: `${err.response.status} from userdetailapi`,
+              detail: err.response.data.errorMessage,
               // detail: `${err.data.errorMessage} ${statusCode}`,
-              life: 6000,
+              life: life,
               className: 'login-toast',
             })
             // history.push('/commercial-webapp/dashboard')
@@ -2273,6 +2298,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               size="small"
               // onClick={handleCreateRequestforSubmit}
               onClick={handleSubmitAfterDialog}
+              disabled={disabled}
               // onClick={() => {
               //   setSubmitFn(handleCreateRequestforSubmit)
               // }}
@@ -2315,6 +2341,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               // onClick={() => setSubmitFn(handleCreateRequestforApprove)}
               // onClick={handleCreateRequestforApprove}
               onClick={handleApproveAfterDialog}
+              disabled={disabled}
             >
               Approve
             </Button>

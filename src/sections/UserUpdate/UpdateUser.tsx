@@ -3,13 +3,11 @@ import {
   Typography,
   Button,
   Dialog,
-  DialogTitle,
   useTheme,
   useMediaQuery,
   Paper,
   Grid,
 } from '@material-ui/core'
-
 import { styled } from '@material-ui/styles'
 import React, { useRef } from 'react'
 import { useHistory } from 'react-router-dom'
@@ -42,7 +40,7 @@ import {
   postFileAttachmentAPI,
 } from '../../api/Fetch'
 import { UtilityFunctions } from '../../util/UtilityFunctions'
-import { routes, extensions } from '../../util/Constants'
+import { routes, extensions, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
 
 const Input = styled('input')({
@@ -75,7 +73,7 @@ function UpdateUser(props: any) {
   const [comments, setComments] = React.useState('')
   const [wrongExtn, setWrongExtn] = React.useState(false)
   const [referenceDoc, setReferenceDoc] = React.useState<Array<any>>([])
-  const [viewLogEl, setViewLogEl] = React.useState(null)
+  const [viewLogEl, setViewLogEl] = React.useState(false)
   const viewLogOpen = Boolean(viewLogEl)
   const [roleAccess, setRoleAccess] = React.useState('')
   const [groupAccess, setGroupAccess] = React.useState('')
@@ -92,6 +90,8 @@ function UpdateUser(props: any) {
   const [errorStatus, setErrorStatus] = React.useState('')
   const [errorRoles, setErrorRoles] = React.useState('')
   const [errorGroups, setErrorGroups] = React.useState('')
+  const [checkCount, setCheckCount] = React.useState(1)
+  const [disabled, setDisabled] = React.useState(false)
   const [roles, setRoles] = React.useState([])
   const [tasks, setTasks] = React.useState(taskList)
   const [referenceDocData, setReferenceDocData] = React.useState<Array<any>>([])
@@ -161,6 +161,12 @@ function UpdateUser(props: any) {
           })
     }
   }, [rolesArray, empDetails, history, USERCONFIG_USERMANAGE, DEFAULT])
+
+  useEffect(() => {
+    console.log('Check count: ', checkCount)
+    if (checkCount === 0)
+      setTimeout(() => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`), life)
+  }, [checkCount, USERCONFIG_USERMANAGE, DEFAULT, history])
 
   useEffect(() => {
     if (requestId && requestId !== '') {
@@ -302,21 +308,24 @@ function UpdateUser(props: any) {
     postTaskLogsAPI &&
       postTaskLogsAPI(logData)
         .then((res) => {
+          setCheckCount((prevState) => prevState - 1)
           toast.current.show({
             severity: 'success',
             summary: '',
             detail: res.data.message,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
         })
         .catch((err) => {
+          setCheckCount((prevState) => prevState - 1)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from tasklogapi`,
+            //detail: `${err.response.status} from tasklogapi`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
         })
@@ -560,7 +569,7 @@ function UpdateUser(props: any) {
   const unAssignTasks = () => {
     let _tasks = tasks.filter((value) => !taskSelected.includes(value))
     setTasks(_tasks)
-    setTaskSelected(null)
+    setTaskSelected('')
     setTaskOpen(false)
   }
 
@@ -692,7 +701,7 @@ function UpdateUser(props: any) {
     if (viewLogRows.length > 0) setViewLogEl(e.currentTarget)
   }
   const handleCloseViewLog = () => {
-    setViewLogEl(null)
+    setViewLogEl(false)
   }
 
   const attachmentTemplate = (rowData: any) => {
@@ -1011,13 +1020,15 @@ function UpdateUser(props: any) {
 
   const handleUpdateUserforApprove = () => {
     // e.preventDefault()
+    setDisabled(true)
     const formData = {
       camunda: {
         submitFlag: 'Approved',
         requestorDetails: {
           emailId: userDetail && userDetail.userdetails[0].user.emailId,
           requestBy: userDetail && userDetail.userdetails[0].user.userId,
-          requestedDate: new Date().toISOString().split('T')[0],
+          requestDate: new Date().toISOString().split('T')[0],
+          // requestedDate: new Date().toISOString().split('T')[0],
           requestType: requestType,
         },
         requestorRoles:
@@ -1029,7 +1040,8 @@ function UpdateUser(props: any) {
           }),
       },
       user: {
-        EmployeeId: employeeID,
+        employeeId: employeeID,
+        // EmployeeId: employeeID,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
@@ -1093,6 +1105,7 @@ function UpdateUser(props: any) {
             attachmentUrl: null,
           }
           if (referenceDocData.length > 0) {
+            setCheckCount(referenceDocData.length)
             referenceDocData.map((rf) => {
               const formdata1 = new FormData()
               formdata1.append('fileIn', rf.data)
@@ -1104,12 +1117,14 @@ function UpdateUser(props: any) {
                     postTasklog(logData)
                   })
                   .catch((err) => {
+                    setCheckCount((prevState) => prevState - 1)
                     toast.current.show({
                       severity: 'error',
                       summary: 'Error!',
-                      detail: `${err.response.status} from tasklistapi`,
+                      //detail: `${err.response.status} from tasklistapi`,
+                      detail: err.response.data.errorMessage,
                       // detail: `${err.data.errorMessage} ${statusCode}`,
-                      life: 6000,
+                      life: life,
                       className: 'login-toast',
                     })
                     // logData.attachmentUrl = null
@@ -1118,20 +1133,21 @@ function UpdateUser(props: any) {
               return null
             })
           } else {
-            console.log(logData)
+            setCheckCount(1)
             postTasklog(logData)
           }
           toast.current.show({
             severity: 'success',
             summary: '',
             detail: res.data.comments,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
 
-          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+          // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
+          setDisabled(false)
           console.log(err.response)
           // let statusCode = err.response.status
           // console.log(statusCode)
@@ -1139,9 +1155,10 @@ function UpdateUser(props: any) {
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from userdetailapi`,
+            //detail: `${err.response.status} from userdetailapi`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.response.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
           //history.push('/commercial-webapp/dashboard')
@@ -1210,13 +1227,15 @@ function UpdateUser(props: any) {
 
   const handleUpdateUserforSubmit = () => {
     // e.preventDefault()
+    setDisabled(true)
     const formData = {
       camunda: {
         submitFlag: 'Submit',
         requestorDetails: {
           emailId: userDetail && userDetail.userdetails[0].user.emailId,
           requestBy: userDetail && userDetail.userdetails[0].user.userId,
-          requestedDate: new Date().toISOString().split('T')[0],
+          requestDate: new Date().toISOString().split('T')[0],
+          // requestedDate: new Date().toISOString().split('T')[0],
           requestType: requestType,
         },
         requestorRoles:
@@ -1228,7 +1247,8 @@ function UpdateUser(props: any) {
           }),
       },
       user: {
-        EmployeeId: employeeID,
+        employeeId: employeeID,
+        // EmployeeId: employeeID,
         firstName: firstName,
         middleName: middleName,
         lastName: lastName,
@@ -1292,6 +1312,7 @@ function UpdateUser(props: any) {
             attachmentUrl: null,
           }
           if (referenceDocData.length > 0) {
+            setCheckCount(referenceDocData.length)
             referenceDocData.map((rf) => {
               const formdata1 = new FormData()
               formdata1.append('fileIn', rf.data)
@@ -1303,31 +1324,35 @@ function UpdateUser(props: any) {
                     postTasklog(logData)
                   })
                   .catch((err) => {
+                    setCheckCount((prevState) => prevState - 1)
                     toast.current.show({
                       severity: 'error',
                       summary: 'Error!',
-                      detail: `${err.response.status} from tasklistapi`,
+                      // detail: `${err.response.status} from tasklistapi`,
+                      detail: err.response.data.errorMessage,
                       // detail: `${err.data.errorMessage} ${statusCode}`,
-                      life: 6000,
+                      life: life,
                       className: 'login-toast',
                     })
                   })
               return null
             })
           } else {
+            setCheckCount(1)
             postTasklog(logData)
           }
           toast.current.show({
             severity: 'success',
             summary: '',
             detail: res.data.comments,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
 
-          setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
+          // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
+          setDisabled(false)
           console.log(err)
           // let statusCode = err.response.status
           // console.log(statusCode)
@@ -1335,9 +1360,10 @@ function UpdateUser(props: any) {
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: `${err.response.status} from userdetailapi`,
+            //detail: `${err.response.status} from userdetailapi`,
+            detail: err.response.data.errorMessage,
             // detail: `${err.response.data.errorMessage} ${statusCode}`,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
           //history.push('/commercial-webapp/dashboard')
@@ -2231,6 +2257,7 @@ function UpdateUser(props: any) {
               size="small"
               // onClick={handleUpdateUserforSubmit}
               onClick={handleSubmitAfterDialog}
+              disabled={disabled}
             >
               Submit
             </Button>
@@ -2269,6 +2296,7 @@ function UpdateUser(props: any) {
               size="small"
               // onClick={handleUpdateUserforApprove}
               onClick={handleApproveAfterDialog}
+              disabled={disabled}
             >
               Approve
             </Button>

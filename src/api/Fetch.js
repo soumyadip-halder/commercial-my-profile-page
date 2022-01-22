@@ -245,9 +245,9 @@ export const putCompleteTaskAPI = (req, taskId) => {
   return serviceRequest(url, 'PUT', reqBody)
 }
 
-export const putRejectTaskAPI = (req, taskId) => {
+export const putRejectTaskAPI = (req, businessKey) => {
   let url = `${BASE_URL}${PUT_REJECT_TASK_CAMUNDA}`
-  url = url.replace('{businessKey}', taskId)
+  url = url.replace('{businessKey}', businessKey)
   let reqBody = `${JSON.stringify(req)}`
   return serviceRequest(url, 'PUT', reqBody)
 }

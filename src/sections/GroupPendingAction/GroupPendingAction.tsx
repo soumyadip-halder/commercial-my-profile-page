@@ -19,7 +19,7 @@ import {
   groupPendingActionTableHeaders,
 } from './tableHeaders'
 import { reset_mygrouppendingAction } from '../../redux/Actions/PendingAction/Action'
-import { routes } from '../../util/Constants'
+import { routes, life } from '../../util/Constants'
 import { putClaimTaskAPI } from '../../api/Fetch'
 
 function GroupPendingAction(props: any) {
@@ -73,7 +73,7 @@ function GroupPendingAction(props: any) {
               roleId: role.roleId,
             }
           }),
-        submitFlag: 'Assign',
+        // submitFlag: 'Assign',
       }
       const taskIds =
         unassignUser && unassignUser.map((item: any) => item.taskId)
@@ -88,7 +88,7 @@ function GroupPendingAction(props: any) {
                 severity: 'success',
                 summary: taskIds[i],
                 detail: res.data.comments,
-                life: 6000,
+                life: life,
                 className: 'login-toast',
               })
               // } else {
@@ -105,8 +105,9 @@ function GroupPendingAction(props: any) {
               toast.current.show({
                 severity: 'error',
                 summary: 'Error!',
-                detail: 'Server error. Cant assign tasks',
-                life: 6000,
+                // detail: `${err.response.status} from tasklistapi`,
+                detail: err.response.data.errorMessage,
+                life: life,
                 className: 'login-toast',
               })
             })

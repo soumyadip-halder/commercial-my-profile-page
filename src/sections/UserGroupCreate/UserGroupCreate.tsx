@@ -26,7 +26,7 @@ import {
 import config from '../../config/Config'
 import { getProductHierarchyAPI, putUserGroupAPI } from '../../api/Fetch'
 import { useHistory } from 'react-router-dom'
-import { routes } from '../../util/Constants'
+import { routes, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
 
 function UserGroupCreate() {
@@ -49,6 +49,7 @@ function UserGroupCreate() {
   // const BASE = "https://pre-api.morrisons.com";
   const [error, setError] = useState('')
   const [disabled, setDisabled] = useState(true)
+  const [disabled1, setDisabled1] = useState(false)
   const [selected, setSelected] = useState<any>([])
   const [data, setData] = useState<any>([])
   const [uniquediv, setUniqueDiv] = useState<any>([])
@@ -220,7 +221,7 @@ function UserGroupCreate() {
             severity: 'error',
             summary: 'Error!',
             detail: 'Product hierarchy service has issue',
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
           break
@@ -342,6 +343,7 @@ function UserGroupCreate() {
   }
   const handleReset = () => {
     // setGroupId('')
+    setDisabled1(true)
     setGroupname('')
     setDescription('')
     setPayload([])
@@ -349,6 +351,7 @@ function UserGroupCreate() {
     setStatus('')
     setErrorGroupName('')
     setErrorStatus('')
+    setDisabled1(false)
   }
   const Option = (props: any) => {
     return (
@@ -669,7 +672,7 @@ function UserGroupCreate() {
 
   const handleCreateGroup = () => {
     // e.preventDefault()
-
+    setDisabled1(true)
     const formData = {
       groupName: groupname,
       groupDesc: description,
@@ -724,20 +727,21 @@ function UserGroupCreate() {
             severity: 'success',
             summary: '',
             detail: res.data.message,
-            life: 6000,
+            life: life,
             className: 'login-toast',
           })
-          setTimeout(() => goBack(), 6000)
+          setTimeout(() => goBack(), life)
         })
         .catch((err) => {
-          //console.log(err);
-          let statusCode = err.response.data.error
-          console.log(statusCode)
+          setDisabled1(false)
+          // //console.log(err);
+          // let statusCode = err.response.data.error
+          // console.log(statusCode)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
-            detail: err.response.data.error,
-            life: 6000,
+            detail: err.response.data.errorMessage,
+            life: life,
             className: 'login-toast',
           })
         })
@@ -1144,6 +1148,7 @@ function UserGroupCreate() {
                           className={classes.submitButton}
                           // onClick={handleReset}
                           onClick={handleResetAfterDialog}
+                          disabled={disabled1}
                         >
                           Reset
                         </Button>
@@ -1160,6 +1165,7 @@ function UserGroupCreate() {
                           className={classes.buttons}
                           // onClick={handleCreateGroup}
                           onClick={handleCreateGroupAfterDialog}
+                          disabled={disabled1}
                         >
                           Submit
                         </Button>
