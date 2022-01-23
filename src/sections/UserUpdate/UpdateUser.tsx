@@ -91,6 +91,7 @@ function UpdateUser(props: any) {
   const [errorRoles, setErrorRoles] = React.useState('')
   const [errorGroups, setErrorGroups] = React.useState('')
   const [checkCount, setCheckCount] = React.useState(1)
+  const [failureCount, setFailureCount] = React.useState(0)
   const [disabled, setDisabled] = React.useState(false)
   const [roles, setRoles] = React.useState([])
   const [tasks, setTasks] = React.useState(taskList)
@@ -163,10 +164,41 @@ function UpdateUser(props: any) {
   }, [rolesArray, empDetails, history, USERCONFIG_USERMANAGE, DEFAULT])
 
   useEffect(() => {
-    console.log('Check count: ', checkCount)
-    if (checkCount === 0)
+    // console.log('Check count: ', checkCount)
+    // console.log('Failure count: ', failureCount)
+    let detail
+    let severity
+    if (checkCount === 0) {
+      if (failureCount === 0 && referenceDocData.length === 0) {
+        detail = 'Log posted successfully'
+        severity = 'success'
+      } else if (failureCount === 0 && referenceDocData.length > 0) {
+        detail = `All attached files uploaded and logged successfully`
+        severity = 'success'
+      } else if (failureCount > 0 && referenceDocData.length === 0) {
+        detail = `Log posting failed due to service error`
+        severity = 'error'
+      } else if (failureCount > 0 && referenceDocData.length > 0) {
+        detail = `${failureCount} files failed to upload and log due to service error`
+        severity = 'error'
+      }
+      toast.current.show({
+        severity: severity,
+        summary: '',
+        detail: detail,
+        life: life,
+        className: 'login-toast',
+      })
       setTimeout(() => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`), life)
-  }, [checkCount, USERCONFIG_USERMANAGE, DEFAULT, history])
+    }
+  }, [
+    checkCount,
+    USERCONFIG_USERMANAGE,
+    DEFAULT,
+    history,
+    failureCount,
+    referenceDocData,
+  ])
 
   useEffect(() => {
     if (requestId && requestId !== '') {
@@ -308,26 +340,27 @@ function UpdateUser(props: any) {
     postTaskLogsAPI &&
       postTaskLogsAPI(logData)
         .then((res) => {
+          setFailureCount((prevState) => prevState - 1)
           setCheckCount((prevState) => prevState - 1)
-          toast.current.show({
-            severity: 'success',
-            summary: '',
-            detail: res.data.message,
-            life: life,
-            className: 'login-toast',
-          })
+          // toast.current.show({
+          //   severity: 'success',
+          //   summary: '',
+          //   detail: res.data.message,
+          //   life: life,
+          //   className: 'login-toast',
+          // })
         })
         .catch((err) => {
           setCheckCount((prevState) => prevState - 1)
-          toast.current.show({
-            severity: 'error',
-            summary: 'Error!',
-            //detail: `${err.response.status} from tasklogapi`,
-            detail: err.response.data.errorMessage,
-            // detail: `${err.data.errorMessage} ${statusCode}`,
-            life: life,
-            className: 'login-toast',
-          })
+          // toast.current.show({
+          //   severity: 'error',
+          //   summary: 'Error!',
+          //   //detail: `${err.response.status} from tasklogapi`,
+          //   detail: err.response.data.errorMessage,
+          //   // detail: `${err.data.errorMessage} ${statusCode}`,
+          //   life: life,
+          //   className: 'login-toast',
+          // })
         })
   }
 
@@ -1105,6 +1138,7 @@ function UpdateUser(props: any) {
             attachmentUrl: null,
           }
           if (referenceDocData.length > 0) {
+            setFailureCount(referenceDocData.length)
             setCheckCount(referenceDocData.length)
             referenceDocData.map((rf) => {
               const formdata1 = new FormData()
@@ -1118,21 +1152,22 @@ function UpdateUser(props: any) {
                   })
                   .catch((err) => {
                     setCheckCount((prevState) => prevState - 1)
-                    toast.current.show({
-                      severity: 'error',
-                      summary: 'Error!',
-                      //detail: `${err.response.status} from tasklistapi`,
-                      detail: err.response.data.errorMessage,
-                      // detail: `${err.data.errorMessage} ${statusCode}`,
-                      life: life,
-                      className: 'login-toast',
-                    })
+                    // toast.current.show({
+                    //   severity: 'error',
+                    //   summary: 'Error!',
+                    //   //detail: `${err.response.status} from tasklistapi`,
+                    //   detail: err.response.data.errorMessage,
+                    //   // detail: `${err.data.errorMessage} ${statusCode}`,
+                    //   life: life,
+                    //   className: 'login-toast',
+                    // })
                     // logData.attachmentUrl = null
                     // postTasklog(logData)
                   })
               return null
             })
           } else {
+            setFailureCount(1)
             setCheckCount(1)
             postTasklog(logData)
           }
@@ -1312,6 +1347,7 @@ function UpdateUser(props: any) {
             attachmentUrl: null,
           }
           if (referenceDocData.length > 0) {
+            setFailureCount(referenceDocData.length)
             setCheckCount(referenceDocData.length)
             referenceDocData.map((rf) => {
               const formdata1 = new FormData()
@@ -1325,19 +1361,20 @@ function UpdateUser(props: any) {
                   })
                   .catch((err) => {
                     setCheckCount((prevState) => prevState - 1)
-                    toast.current.show({
-                      severity: 'error',
-                      summary: 'Error!',
-                      // detail: `${err.response.status} from tasklistapi`,
-                      detail: err.response.data.errorMessage,
-                      // detail: `${err.data.errorMessage} ${statusCode}`,
-                      life: life,
-                      className: 'login-toast',
-                    })
+                    // toast.current.show({
+                    //   severity: 'error',
+                    //   summary: 'Error!',
+                    //   // detail: `${err.response.status} from tasklistapi`,
+                    //   detail: err.response.data.errorMessage,
+                    //   // detail: `${err.data.errorMessage} ${statusCode}`,
+                    //   life: life,
+                    //   className: 'login-toast',
+                    // })
                   })
               return null
             })
           } else {
+            setFailureCount(1)
             setCheckCount(1)
             postTasklog(logData)
           }
