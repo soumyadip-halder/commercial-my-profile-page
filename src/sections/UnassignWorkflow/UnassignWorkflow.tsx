@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
-import { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { teal } from '@material-ui/core/colors'
@@ -21,6 +21,7 @@ import {
 import { reset_mygroupunassignAction } from '../../redux/Actions/PendingAction/Action'
 import { routes, life } from '../../util/Constants'
 import { putClaimTaskAPI } from '../../api/Fetch'
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 
 function UnassignWorkflow(props: any) {
   const { reset_mygroupunassignAction, mygroupUnassignTasks, userDetail } =
@@ -34,6 +35,9 @@ function UnassignWorkflow(props: any) {
   const toast = useRef<any>(null)
   const active = useMediaQuery(theme.breakpoints.down('sm'))
   const [myGroupUnassignedTasks, setMyGroupUnassignedTasks] = useState([])
+  //
+  const [isProgressLoader, setIsProgressLoader] = React.useState(false)
+  //
 
   const goBack = () => {
     reset_mygroupunassignAction()
@@ -58,6 +62,7 @@ function UnassignWorkflow(props: any) {
   }, [unassignUser])
 
   const handleAssign = () => {
+    setIsProgressLoader(true)
     if (unassignUser.length > 0) {
       const assignPayload = {
         requestorDetails: {
@@ -85,6 +90,7 @@ function UnassignWorkflow(props: any) {
             .then((res) => {
               console.log(res.data)
               // if (res.data.status.toLowerCase() !== 'failed') {
+              setIsProgressLoader(false)
               toast.current.show({
                 severity: 'success',
                 summary: taskIds[i],
@@ -103,6 +109,7 @@ function UnassignWorkflow(props: any) {
               // }
             })
             .catch((err) => {
+              setIsProgressLoader(false)
               toast.current.show({
                 severity: 'error',
                 summary: 'Error!',
@@ -298,6 +305,7 @@ function UnassignWorkflow(props: any) {
               </Box>
             </Grid>
           </Grid>
+          <LoadingComponent showLoader={isProgressLoader} />
         </div>
       </div>
     </>

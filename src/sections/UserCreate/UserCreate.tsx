@@ -43,6 +43,7 @@ import {
 import { UtilityFunctions } from '../../util/UtilityFunctions'
 import { routes, extensions, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 
 const Input = styled('input')({
   display: 'none',
@@ -96,6 +97,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const [checkCount, setCheckCount] = React.useState(1)
   const [failureCount, setFailureCount] = React.useState(0)
   const [disabled, setDisabled] = React.useState(false)
+  //
+  const [isProgressLoader, setIsProgressLoader] = React.useState(false)
+  const [returnText, setReturnText] = React.useState('')
+  //
   //integration changes start
   const [roles, setRoles] = useState([])
   const [groupsData, setGroupsData] = useState([])
@@ -163,16 +168,34 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
         detail = `${failureCount} files failed to upload and log due to service error`
         severity = 'error'
       }
-      toast.current.show({
-        severity: severity,
-        summary: '',
-        detail: detail,
-        life: life,
-        className: 'login-toast',
-      })
+      setIsProgressLoader(false)
+      toast.current.show([
+        {
+          severity: 'success',
+          summary: '',
+          detail: returnText,
+          life: life,
+          className: 'login-toast',
+        },
+        {
+          severity: severity,
+          summary: '',
+          detail: detail,
+          life: life,
+          className: 'login-toast',
+        },
+      ])
       setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
     }
-  }, [checkCount, DASHBOARD, DEFAULT, history, failureCount, referenceDocData])
+  }, [
+    checkCount,
+    DASHBOARD,
+    DEFAULT,
+    history,
+    failureCount,
+    referenceDocData,
+    returnText,
+  ])
 
   useEffect(() => {
     if (rolesArray) {
@@ -1093,6 +1116,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   const handleCreateRequestforApprove = () => {
     // e.preventDefault()
+    setIsProgressLoader(true)
     if (shoutOut === '') {
       setDisabled(true)
       const colleague: any =
@@ -1108,7 +1132,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             emailId: userDetail && userDetail.userdetails[0].user.emailId,
             requestBy: userDetail && userDetail.userdetails[0].user.userId,
             requestDate: new Date().toISOString().split('T')[0],
-            // requestedDate: new Date().toISOString().split('T')[0],
+            //requestedDate: new Date().toISOString().split('T')[0],
             requestType: requestType,
           },
           requestorRoles:
@@ -1163,10 +1187,12 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       // employeeID &&
       //   roleNames &&
       //   groups &&
+      setReturnText('')
       userDetail &&
         putUserDetailsCamundaAPI(formData)
           .then((res) => {
             console.log(res)
+            setReturnText(res.data.comments)
             const rolelog =
               userDetail &&
               userDetail.userdetails[0].roles
@@ -1222,18 +1248,19 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               setCheckCount(1)
               postTasklog(logData)
             }
-            toast.current.show({
-              severity: 'success',
-              summary: '',
-              detail: res.data.comments,
-              life: life,
-              className: 'login-toast',
-            })
+            // toast.current.show({
+            //   severity: 'success',
+            //   summary: '',
+            //   detail: res.data.comments,
+            //   life: life,
+            //   className: 'login-toast',
+            // })
 
             // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
           })
           .catch((err) => {
             setDisabled(false)
+            setIsProgressLoader(false)
             console.log(err.response)
             // let statusCode = err.status
             //console.log(statusCode)
@@ -1301,6 +1328,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   const handleCreateRequestforSubmit = () => {
     // e.preventDefault()
+    setIsProgressLoader(true)
     if (shoutOut === '') {
       setDisabled(true)
       const colleague: any =
@@ -1371,11 +1399,13 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       // employeeID &&
       //   roleNames &&
       //   groups &&
+      setReturnText('')
       userDetail &&
         putUserDetailsCamundaAPI &&
         putUserDetailsCamundaAPI(formData)
           .then((res) => {
             console.log(res)
+            setReturnText(res.data.comments)
             const rolelog =
               userDetail &&
               userDetail.userdetails[0].roles
@@ -1428,18 +1458,19 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               setCheckCount(1)
               postTasklog(logData)
             }
-            toast.current.show({
-              severity: 'success',
-              summary: '',
-              detail: res.data.comments,
-              life: life,
-              className: 'login-toast',
-            })
+            // toast.current.show({
+            //   severity: 'success',
+            //   summary: '',
+            //   detail: res.data.comments,
+            //   life: life,
+            //   className: 'login-toast',
+            // })
 
             // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
           })
           .catch((err) => {
             setDisabled(false)
+            setIsProgressLoader(false)
             console.log(err)
             // let statusCode = err.status
             //console.log(statusCode)
@@ -2379,6 +2410,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           </Box>
         </Box>
       </form>
+      <LoadingComponent showLoader={isProgressLoader} />
     </Box>
   )
 

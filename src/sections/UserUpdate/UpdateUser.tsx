@@ -42,6 +42,7 @@ import {
 import { UtilityFunctions } from '../../util/UtilityFunctions'
 import { routes, extensions, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 
 const Input = styled('input')({
   display: 'none',
@@ -102,6 +103,10 @@ function UpdateUser(props: any) {
   const [taskId, setTaskId] = React.useState('')
   const [viewLogRows, setViewLogRows] = React.useState<Array<any>>([])
   const toast = useRef<any>(null)
+  //
+  const [isProgressLoader, setIsProgressLoader] = React.useState(false)
+  const [returnText, setReturnText] = React.useState('')
+  //
 
   useEffect(() => {
     return () => reset_empID()
@@ -182,13 +187,23 @@ function UpdateUser(props: any) {
         detail = `${failureCount} files failed to upload and log due to service error`
         severity = 'error'
       }
-      toast.current.show({
-        severity: severity,
-        summary: '',
-        detail: detail,
-        life: life,
-        className: 'login-toast',
-      })
+      setIsProgressLoader(false)
+      toast.current.show([
+        {
+          severity: 'success',
+          summary: '',
+          detail: returnText,
+          life: life,
+          className: 'login-toast',
+        },
+        {
+          severity: severity,
+          summary: '',
+          detail: detail,
+          life: life,
+          className: 'login-toast',
+        },
+      ])
       setTimeout(() => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`), life)
     }
   }, [
@@ -198,6 +213,7 @@ function UpdateUser(props: any) {
     history,
     failureCount,
     referenceDocData,
+    returnText,
   ])
 
   useEffect(() => {
@@ -1053,6 +1069,7 @@ function UpdateUser(props: any) {
 
   const handleUpdateUserforApprove = () => {
     // e.preventDefault()
+    setIsProgressLoader(true)
     setDisabled(true)
     const formData = {
       camunda: {
@@ -1112,10 +1129,12 @@ function UpdateUser(props: any) {
     //       },
     //     }
     //   )
+    setReturnText('')
     userDetail &&
       putUserDetailsCamundaAPI(formData)
         .then((res) => {
           console.log(res)
+          setReturnText(res.data.comments)
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
@@ -1171,18 +1190,19 @@ function UpdateUser(props: any) {
             setCheckCount(1)
             postTasklog(logData)
           }
-          toast.current.show({
-            severity: 'success',
-            summary: '',
-            detail: res.data.comments,
-            life: life,
-            className: 'login-toast',
-          })
+          // toast.current.show({
+          //   severity: 'success',
+          //   summary: '',
+          //   detail: res.data.comments,
+          //   life: life,
+          //   className: 'login-toast',
+          // })
 
           // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
           setDisabled(false)
+          setIsProgressLoader(false)
           console.log(err.response)
           // let statusCode = err.response.status
           // console.log(statusCode)
@@ -1262,6 +1282,7 @@ function UpdateUser(props: any) {
 
   const handleUpdateUserforSubmit = () => {
     // e.preventDefault()
+    setIsProgressLoader(true)
     setDisabled(true)
     const formData = {
       camunda: {
@@ -1321,11 +1342,13 @@ function UpdateUser(props: any) {
     //       },
     //     }
     //   )
+    setReturnText('')
     userDetail &&
       putUserDetailsCamundaAPI &&
       putUserDetailsCamundaAPI(formData)
         .then((res) => {
           console.log(res)
+          setReturnText(res.data.comments)
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
@@ -1378,18 +1401,19 @@ function UpdateUser(props: any) {
             setCheckCount(1)
             postTasklog(logData)
           }
-          toast.current.show({
-            severity: 'success',
-            summary: '',
-            detail: res.data.comments,
-            life: life,
-            className: 'login-toast',
-          })
+          // toast.current.show({
+          //   severity: 'success',
+          //   summary: '',
+          //   detail: res.data.comments,
+          //   life: life,
+          //   className: 'login-toast',
+          // })
 
           // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
           setDisabled(false)
+          setIsProgressLoader(false)
           console.log(err)
           // let statusCode = err.response.status
           // console.log(statusCode)
@@ -2340,6 +2364,7 @@ function UpdateUser(props: any) {
           </Box>
         </Box>
       </form>
+      <LoadingComponent showLoader={isProgressLoader} />
     </Box>
   )
 

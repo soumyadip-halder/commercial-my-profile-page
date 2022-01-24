@@ -39,6 +39,7 @@ import { reset_pendingAction } from '../../redux/Actions/PendingAction'
 import { pendingActionUpdateTableHeaders } from './tableHeader'
 import { routes, extensions, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 // import { viewLogTemp } from '../Dashboard/DataConstant'
 
 const Input = styled('input')({
@@ -110,6 +111,10 @@ function PendingActionUpdate(props: any) {
   const [taskOpen, setTaskOpen] = React.useState(false)
   const [viewLogRows, setViewLogRows] = React.useState<Array<any>>([])
   const toast = useRef<any>(null)
+  //
+  const [isProgressLoader, setIsProgressLoader] = React.useState(false)
+  const [returnText, setReturnText] = React.useState('')
+  //
 
   useEffect(() => {
     return () => reset_pendingAction()
@@ -186,16 +191,34 @@ function PendingActionUpdate(props: any) {
         detail = `${failureCount} files failed to upload and log due to service error`
         severity = 'error'
       }
-      toast.current.show({
-        severity: severity,
-        summary: '',
-        detail: detail,
-        life: life,
-        className: 'login-toast',
-      })
+      setIsProgressLoader(false)
+      toast.current.show([
+        {
+          severity: 'success',
+          summary: '',
+          detail: returnText,
+          life: life,
+          className: 'login-toast',
+        },
+        {
+          severity: severity,
+          summary: '',
+          detail: detail,
+          life: life,
+          className: 'login-toast',
+        },
+      ])
       setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
     }
-  }, [checkCount, DASHBOARD, DEFAULT, history, failureCount, referenceDocData])
+  }, [
+    checkCount,
+    DASHBOARD,
+    DEFAULT,
+    history,
+    failureCount,
+    referenceDocData,
+    returnText,
+  ])
 
   useEffect(() => {
     if (requestedId && requestedId !== '') {
@@ -1142,10 +1165,12 @@ function PendingActionUpdate(props: any) {
     //       },
     //     }
     //   )
+    setReturnText('')
     userDetail &&
       putUserDetailsCamundaAPI(formData)
         .then((res) => {
           console.log(res)
+          setReturnText(res.data.comments)
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
@@ -1201,13 +1226,13 @@ function PendingActionUpdate(props: any) {
             setCheckCount(1)
             postTasklog(logData)
           }
-          toast.current.show({
-            severity: 'success',
-            summary: '',
-            detail: res.data.comments,
-            life: life,
-            className: 'login-toast',
-          })
+          // toast.current.show({
+          //   severity: 'success',
+          //   summary: '',
+          //   detail: res.data.comments,
+          //   life: life,
+          //   className: 'login-toast',
+          // })
 
           // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
@@ -1293,6 +1318,7 @@ function PendingActionUpdate(props: any) {
   const handleUpdateUserforSubmit = () => {
     // e.preventDefault()
     setDisabled(true)
+    setIsProgressLoader(true)
     const formData = {
       camunda: {
         submitFlag: 'Submit',
@@ -1351,11 +1377,13 @@ function PendingActionUpdate(props: any) {
     //       },
     //     }
     //   )
+    setReturnText('')
     userDetail &&
       putUserDetailsCamundaAPI &&
       putUserDetailsCamundaAPI(formData)
         .then((res) => {
           console.log(res)
+          setReturnText(res.data.comments)
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
@@ -1408,18 +1436,19 @@ function PendingActionUpdate(props: any) {
             setCheckCount(1)
             postTasklog(logData)
           }
-          toast.current.show({
-            severity: 'success',
-            summary: '',
-            detail: res.data.comments,
-            life: life,
-            className: 'login-toast',
-          })
+          // toast.current.show({
+          //   severity: 'success',
+          //   summary: '',
+          //   detail: res.data.comments,
+          //   life: life,
+          //   className: 'login-toast',
+          // })
 
           // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
           setDisabled(false)
+          setIsProgressLoader(false)
           console.log(err.response)
           // let statusCode = err.response.status
           // console.log(statusCode)
@@ -1498,6 +1527,7 @@ function PendingActionUpdate(props: any) {
   }
   const handleApprove = () => {
     setDisabled(true)
+    setIsProgressLoader(true)
     const formData = {
       requestorDetails: {
         emailId: userDetail && userDetail.userdetails[0].user.emailId,
@@ -1514,11 +1544,13 @@ function PendingActionUpdate(props: any) {
         }),
     }
     console.log(formData)
+    setReturnText('')
     pendingActionDetails &&
       putCompleteTaskAPI &&
       putCompleteTaskAPI(formData, pendingActionDetails[0].taskId)
         .then((res) => {
           console.log(res)
+          setReturnText(res.data.status)
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
@@ -1571,19 +1603,20 @@ function PendingActionUpdate(props: any) {
             setCheckCount(1)
             postTasklog(logData)
           }
-          toast.current.show({
-            severity: 'success',
-            summary: '',
-            detail: res.data.status,
-            // detail: 'Success',
-            life: life,
-            className: 'login-toast',
-          })
+          // toast.current.show({
+          //   severity: 'success',
+          //   summary: '',
+          //   detail: res.data.status,
+          //   // detail: 'Success',
+          //   life: life,
+          //   className: 'login-toast',
+          // })
 
           // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
           setDisabled(false)
+          setIsProgressLoader(false)
           console.log(err.response)
           toast.current.show({
             severity: 'error',
@@ -1599,6 +1632,7 @@ function PendingActionUpdate(props: any) {
 
   const handleReassign = () => {
     // e.preventDefault()
+    setIsProgressLoader(true)
     setDisabled(true)
     const formData = {
       requestorDetails: {
@@ -1618,11 +1652,13 @@ function PendingActionUpdate(props: any) {
       // submitFlag: 'Reassign',
     }
     console.log(formData)
+    setReturnText('')
     pendingActionDetails &&
       putClaimTaskAPI &&
       putClaimTaskAPI(formData, pendingActionDetails[0].taskId)
         .then((res) => {
           console.log(res)
+          setReturnText(res.data.comments)
           // if (res.data.status.toLowerCase() !== 'failed') {
           const rolelog =
             userDetail &&
@@ -1676,14 +1712,14 @@ function PendingActionUpdate(props: any) {
             setCheckCount(1)
             postTasklog(logData)
           }
-          toast.current.show({
-            severity: 'success',
-            summary: '',
-            detail: res.data.comments,
-            // detail: 'Success',
-            life: life,
-            className: 'login-toast',
-          })
+          // toast.current.show({
+          //   severity: 'success',
+          //   summary: '',
+          //   detail: res.data.comments,
+          //   // detail: 'Success',
+          //   life: life,
+          //   className: 'login-toast',
+          // })
 
           // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
           // } else {
@@ -1699,6 +1735,7 @@ function PendingActionUpdate(props: any) {
         })
         .catch((err) => {
           setDisabled(false)
+          setIsProgressLoader(false)
           console.log(err.response)
           toast.current.show({
             severity: 'error',
@@ -1715,6 +1752,7 @@ function PendingActionUpdate(props: any) {
   const handleReject = () => {
     // e.preventDefault()
     setDisabled(true)
+    setIsProgressLoader(true)
     const formData = {
       requestorDetails: {
         requestorDetails: {
@@ -1734,11 +1772,13 @@ function PendingActionUpdate(props: any) {
       taskId: pendingActionDetails[0].taskId,
     }
     console.log(formData)
+    setReturnText('')
     pendingActionDetails &&
       putRejectTaskAPI &&
       putRejectTaskAPI(formData, pendingActionDetails[0].businessKey)
         .then((res) => {
           console.log(res)
+          setReturnText(res.data.status)
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
@@ -1791,19 +1831,20 @@ function PendingActionUpdate(props: any) {
             setCheckCount(1)
             postTasklog(logData)
           }
-          toast.current.show({
-            severity: 'success',
-            summary: '',
-            //  detail: res.data.comments,
-            detail: 'Success',
-            life: life,
-            className: 'login-toast',
-          })
+          // toast.current.show({
+          //   severity: 'success',
+          //   summary: '',
+          //   //  detail: res.data.comments,
+          //   detail: 'Success',
+          //   life: life,
+          //   className: 'login-toast',
+          // })
 
           // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), 6000)
         })
         .catch((err) => {
           setDisabled(false)
+          setIsProgressLoader(false)
           console.log(err.response)
           toast.current.show({
             severity: 'error',
@@ -2863,6 +2904,7 @@ function PendingActionUpdate(props: any) {
           </Box>
         </Box>
       </form>
+      <LoadingComponent showLoader={isProgressLoader} />
     </Box>
   )
   return (

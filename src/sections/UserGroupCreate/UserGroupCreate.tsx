@@ -28,6 +28,7 @@ import { getProductHierarchyAPI, putUserGroupAPI } from '../../api/Fetch'
 import { useHistory } from 'react-router-dom'
 import { routes, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 
 function UserGroupCreate() {
   const theme = useTheme()
@@ -45,6 +46,9 @@ function UserGroupCreate() {
   const [locationNames, setLocationNames] = useState([])
   const [viewLocationEl, setViewLocationEl] = useState(null)
   const toast = useRef<any>(null)
+  //
+  const [isProgressLoader, setIsProgressLoader] = React.useState(false)
+  //
   //product changes start.............................................
   // const BASE = "https://pre-api.morrisons.com";
   const [error, setError] = useState('')
@@ -673,6 +677,7 @@ function UserGroupCreate() {
   const handleCreateGroup = () => {
     // e.preventDefault()
     setDisabled1(true)
+    setIsProgressLoader(true)
     const formData = {
       groupName: groupname,
       groupDesc: description,
@@ -722,6 +727,7 @@ function UserGroupCreate() {
         .then((res) => {
           //console.log(res);
           //console.log(res.data.message);
+          setIsProgressLoader(false)
           setGroupId(res.data.message.split('groupId:')[1].trim())
           toast.current.show({
             severity: 'success',
@@ -737,6 +743,7 @@ function UserGroupCreate() {
           // //console.log(err);
           // let statusCode = err.response.data.error
           // console.log(statusCode)
+          setIsProgressLoader(false)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
@@ -1173,6 +1180,7 @@ function UserGroupCreate() {
                     </Box>
                   </Box>
                 </form>
+                <LoadingComponent showLoader={isProgressLoader} />
               </Box>
             </Grid>
           </Grid>
