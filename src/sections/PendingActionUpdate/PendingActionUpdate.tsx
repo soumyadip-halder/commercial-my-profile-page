@@ -235,6 +235,25 @@ function PendingActionUpdate(props: any) {
     }
   }, [requestedId])
 
+  useEffect(() => {
+    if (status === 'D' && requestType !== 'modify' && requestType !== '') {
+      setErrorRequestType('Only Modify request can be raised for Deleted users')
+    }
+    if (
+      status === 'I' &&
+      requestType !== 'modify' &&
+      requestType !== 'remove' &&
+      requestType !== ''
+    ) {
+      setErrorRequestType(
+        'Only Modify/Remove request can be raised for Inactive users'
+      )
+    }
+    if (status === 'W' && requestType !== 'new' && requestType !== '') {
+      setErrorRequestType('Only New request can be raised for inprogress users')
+    }
+  }, [status, requestType])
+
   const goBack = () => {
     reset_pendingAction()
     history.goBack()
@@ -258,7 +277,10 @@ function PendingActionUpdate(props: any) {
   }
   const onstatusChange = (e: any) => {
     setStatus(e.target.value)
-    if (e.target.value !== '') setErrorStatus('')
+    if (e.target.value !== '') {
+      setErrorStatus('')
+      setErrorRequestType('')
+    }
   }
   const onrequestTypeChange = (e: any) => {
     setRequestType(e.target.value)
@@ -957,8 +979,8 @@ function PendingActionUpdate(props: any) {
           }}
         >
           <Typography variant="body2" style={{ overflowX: 'auto' }}>
-            {/* Request ID:<b> {requestedId}</b> */}
-            Request ID:<b> {taskId}</b>
+            Request ID:<b> {requestedId}</b>
+            {/* Request ID:<b> {taskId}</b> */}
           </Typography>
         </Box>
         <Box
@@ -1047,6 +1069,9 @@ function PendingActionUpdate(props: any) {
 
   const checkForm = (btnName: string) => {
     let flag = 1
+    if (errorRequestType !== '') {
+      flag = 0
+    }
     if (
       requestType !== 'new' &&
       requestType !== 'modify' &&
@@ -1170,7 +1195,7 @@ function PendingActionUpdate(props: any) {
       putUserDetailsCamundaAPI(formData)
         .then((res) => {
           console.log(res)
-          setReturnText(res.data.comments)
+          setReturnText(`${res.data.comments} with ID ${res.data.requestId}`)
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
@@ -1182,7 +1207,7 @@ function PendingActionUpdate(props: any) {
           const timepart = time.split('T')[1].split('.')[0]
           const logData = {
             // requestId: userDetail && userDetail.userdetails[0].user.userId,
-            requestId: res.data.businessKey,
+            requestId: res.data.requestId,
             // timestamp: `${datepart} ${timepart}`,
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
@@ -1383,7 +1408,7 @@ function PendingActionUpdate(props: any) {
       putUserDetailsCamundaAPI(formData)
         .then((res) => {
           console.log(res)
-          setReturnText(res.data.comments)
+          setReturnText(`${res.data.comments} with ID ${res.data.requestId}`)
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
@@ -1394,7 +1419,7 @@ function PendingActionUpdate(props: any) {
           const timepart = time.split('T')[1].split('.')[0]
           const logData = {
             // requestId: userDetail && userDetail.userdetails[0].user.userId,
-            requestId: res.data.businessKey,
+            requestId: res.data.requestId,
             // timestamp: `${datepart} ${timepart}`,
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
@@ -1566,7 +1591,7 @@ function PendingActionUpdate(props: any) {
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
-            camundaRequestId: pendingActionDetails[0].requestId,
+            camundaRequestId: pendingActionDetails[0].businessKey,
             actionTaken: 'Approved',
             comments: comments,
             attachmentUrl: null,
@@ -1675,7 +1700,7 @@ function PendingActionUpdate(props: any) {
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
-            camundaRequestId: pendingActionDetails[0].requestId,
+            camundaRequestId: pendingActionDetails[0].businessKey,
             actionTaken: 'Reassign',
             comments: comments,
             attachmentUrl: null,
@@ -1794,7 +1819,7 @@ function PendingActionUpdate(props: any) {
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
-            camundaRequestId: pendingActionDetails[0].requestId,
+            camundaRequestId: pendingActionDetails[0].businessKey,
             actionTaken: 'Reject',
             comments: comments,
             attachmentUrl: null,
@@ -2458,39 +2483,39 @@ function PendingActionUpdate(props: any) {
                           </option>
                         )
                       })
-                  : requestType === 'modify'
-                  ? constants.statuses
-                      .filter((type) => type.statusID.toLowerCase() !== 'w')
-                      .map((type) => {
-                        return (
-                          <option
-                            value={type.statusID}
-                            key={type.statusID}
-                            selected={type.statusID === status ? true : false}
-                          >
-                            {type.text}
-                          </option>
-                        )
-                      })
-                  : requestType === 'remove'
-                  ? constants.statuses
-                      .filter(
-                        (type) => type.statusID.toLowerCase() !== 'w'
-                        // &&
-                        // type.statusID.toLowerCase() !== 'i'
-                      )
-                      .map((type) => {
-                        return (
-                          <option
-                            value={type.statusID}
-                            key={type.statusID}
-                            selected={type.statusID === status ? true : false}
-                          >
-                            {type.text}
-                          </option>
-                        )
-                      })
-                  : constants.statuses.map((type) => {
+                  : // : requestType === 'modify'
+                    // ? constants.statuses
+                    //     .filter((type) => type.statusID.toLowerCase() !== 'w')
+                    //     .map((type) => {
+                    //       return (
+                    //         <option
+                    //           value={type.statusID}
+                    //           key={type.statusID}
+                    //           selected={type.statusID === status ? true : false}
+                    //         >
+                    //           {type.text}
+                    //         </option>
+                    //       )
+                    //     })
+                    // : requestType === 'remove'
+                    // ? constants.statuses
+                    //     .filter(
+                    //       (type) => type.statusID.toLowerCase() !== 'w'
+                    //       // &&
+                    //       // type.statusID.toLowerCase() !== 'i'
+                    //     )
+                    //     .map((type) => {
+                    //       return (
+                    //         <option
+                    //           value={type.statusID}
+                    //           key={type.statusID}
+                    //           selected={type.statusID === status ? true : false}
+                    //         >
+                    //           {type.text}
+                    //         </option>
+                    //       )
+                    //     })
+                    constants.statuses.map((type) => {
                       return (
                         <option
                           value={type.statusID}

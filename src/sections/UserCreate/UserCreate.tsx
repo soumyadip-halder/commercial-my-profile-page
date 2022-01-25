@@ -230,6 +230,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
         'Only Modify/Remove request can be raised for Inactive users'
       )
     }
+    if (status === 'W' && requestType !== 'new' && requestType !== '') {
+      setErrorRequestType('Only New request can be raised for inprogress users')
+    }
   }, [status, requestType])
 
   const Option = (props: any) => {
@@ -303,7 +306,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   }
   const onstatusChange = (e: any) => {
     setStatus(e.target.value)
-    if (e.target.value !== '') setErrorStatus('')
+    if (e.target.value !== '') {
+      setErrorStatus('')
+      setErrorRequestType('')
+    }
   }
   const onrequestTypeChange = (e: any) => {
     if (e.target.value !== '') setErrorRequestType('')
@@ -994,7 +1000,6 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           setDesignation(res.data.userdetails[0].user.designation)
           setAdditionalInfo(res.data.userdetails[0].user.additionalInfo)
           setStatus(res.data.userdetails[0].user.status)
-
           setRoleNames(
             res.data.userdetails[0].roles.map((role: any) => {
               return {
@@ -1192,7 +1197,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
         putUserDetailsCamundaAPI(formData)
           .then((res) => {
             console.log(res)
-            setReturnText(res.data.comments)
+            setReturnText(`${res.data.comments} with ID ${res.data.requestId}`)
             const rolelog =
               userDetail &&
               userDetail.userdetails[0].roles
@@ -1204,7 +1209,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             const timepart = time.split('T')[1].split('.')[0]
             const logData = {
               // requestId: userDetail && userDetail.userdetails[0].user.userId,
-              requestId: res.data.businessKey,
+              requestId: res.data.requestId,
               // timestamp: `${datepart} ${timepart}`,
               timestamp: `${datepart}`,
               userId: userDetail && userDetail.userdetails[0].user.userId,
@@ -1405,7 +1410,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
         putUserDetailsCamundaAPI(formData)
           .then((res) => {
             console.log(res)
-            setReturnText(res.data.comments)
+            setReturnText(`${res.data.comments} with ID ${res.data.requestId}`)
             const rolelog =
               userDetail &&
               userDetail.userdetails[0].roles
@@ -1416,7 +1421,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             const timepart = time.split('T')[1].split('.')[0]
             const logData = {
               // requestId: userDetail && userDetail.userdetails[0].user.userId,
-              requestId: res.data.businessKey,
+              requestId: res.data.requestId,
               // timestamp: `${datepart} ${timepart}`,
               timestamp: `${datepart}`,
               userId: userDetail && userDetail.userdetails[0].user.userId,
@@ -1963,39 +1968,39 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                           </option>
                         )
                       })
-                  : requestType === 'modify'
-                  ? constants.statuses
-                      .filter((type) => type.statusID.toLowerCase() !== 'w')
-                      .map((type) => {
-                        return (
-                          <option
-                            value={type.statusID}
-                            key={type.statusID}
-                            selected={type.statusID === status ? true : false}
-                          >
-                            {type.text}
-                          </option>
-                        )
-                      })
-                  : requestType === 'remove'
-                  ? constants.statuses
-                      .filter(
-                        (type) => type.statusID.toLowerCase() !== 'w'
-                        // &&
-                        // type.statusID.toLowerCase() !== 'i'
-                      )
-                      .map((type) => {
-                        return (
-                          <option
-                            value={type.statusID}
-                            key={type.statusID}
-                            selected={type.statusID === status ? true : false}
-                          >
-                            {type.text}
-                          </option>
-                        )
-                      })
-                  : constants.statuses.map((type) => {
+                  : // : requestType === 'modify'
+                    // ? constants.statuses
+                    //     .filter((type) => type.statusID.toLowerCase() !== 'w')
+                    //     .map((type) => {
+                    //       return (
+                    //         <option
+                    //           value={type.statusID}
+                    //           key={type.statusID}
+                    //           selected={type.statusID === status ? true : false}
+                    //         >
+                    //           {type.text}
+                    //         </option>
+                    //       )
+                    //     })
+                    // : requestType === 'remove'
+                    // ? constants.statuses
+                    //     .filter(
+                    //       (type) => type.statusID.toLowerCase() !== 'w'
+                    //       // &&
+                    //       // type.statusID.toLowerCase() !== 'i'
+                    //     )
+                    //     .map((type) => {
+                    //       return (
+                    //         <option
+                    //           value={type.statusID}
+                    //           key={type.statusID}
+                    //           selected={type.statusID === status ? true : false}
+                    //         >
+                    //           {type.text}
+                    //         </option>
+                    //       )
+                    //     })
+                    constants.statuses.map((type) => {
                       return (
                         <option
                           value={type.statusID}

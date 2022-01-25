@@ -32,7 +32,7 @@ export const pendingActionTableHeaders = [
   {
     field: 'requestId',
     headerName: 'Requested ID',
-    width: 100,
+    width: 150,
   },
   {
     field: 'assignedToUserId',
