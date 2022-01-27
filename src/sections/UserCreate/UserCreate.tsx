@@ -44,6 +44,7 @@ import { UtilityFunctions } from '../../util/UtilityFunctions'
 import { routes, extensions, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
+import { allMessages } from '../../util/Messages'
 
 const Input = styled('input')({
   display: 'none',
@@ -156,16 +157,16 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     let severity
     if (checkCount === 0) {
       if (failureCount === 0 && referenceDocData.length === 0) {
-        detail = 'Log posted successfully'
+        detail = allMessages.success.successPost
         severity = 'success'
       } else if (failureCount === 0 && referenceDocData.length > 0) {
-        detail = `All attached files uploaded and logged successfully`
+        detail = allMessages.success.successPostAttach
         severity = 'success'
       } else if (failureCount > 0 && referenceDocData.length === 0) {
-        detail = `Log posting failed due to service error`
+        detail = allMessages.error.logpostFailureSingle
         severity = 'error'
       } else if (failureCount > 0 && referenceDocData.length > 0) {
-        detail = `${failureCount} files failed to upload and log due to service error`
+        detail = `${failureCount} ${allMessages.error.logpostFailureAttach}`
         severity = 'error'
       }
       setIsProgressLoader(false)
@@ -218,7 +219,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   useEffect(() => {
     if (status === 'D' && requestType !== 'modify' && requestType !== '') {
-      setErrorRequestType('Only Modify request can be raised for Deleted users')
+      setErrorRequestType(allMessages.error.deletedError)
     }
     if (
       status === 'I' &&
@@ -226,12 +227,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       requestType !== 'remove' &&
       requestType !== ''
     ) {
-      setErrorRequestType(
-        'Only Modify/Remove request can be raised for Inactive users'
-      )
+      setErrorRequestType(allMessages.error.inactiveError)
     }
     if (status === 'W' && requestType !== 'new' && requestType !== '') {
-      setErrorRequestType('Only New request can be raised for inprogress users')
+      setErrorRequestType(allMessages.error.inprogressError)
     }
   }, [status, requestType])
 
@@ -334,13 +333,13 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   const checkIt = (type: string, empAvail: boolean) => {
     if (empIdInput !== '' && type.toLowerCase() === 'new' && empAvail) {
-      setShoutOut('Cannot create for an already existing Employee')
+      setShoutOut(allMessages.error.existingEmp)
     } else if (
       empIdInput !== '' &&
       (type.toLowerCase() === 'modify' || type.toLowerCase() === 'remove') &&
       !empAvail
     ) {
-      setShoutOut('Cannot modify for a non existing Employee')
+      setShoutOut(allMessages.error.modifyEmp)
     } else {
       setShoutOut('')
     }
@@ -384,39 +383,29 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   }
 
   const roleSelect1 = (
-    <>
-      <Select
-        options={roles}
-        isMulti
-        onChange={handleRoleChange1}
-        components={{
-          Option,
-        }}
-        value={roleNames}
-        closeMenuOnSelect={false}
-        hideSelectedOptions={false}
-        className={classes.multiSelect}
-        styles={roleSelectStyle}
-        isDisabled={
-          UtilityFunctions.isHidden(
-            '8',
-            appFuncList ? appFuncList : [],
-            roleAccess
-          )
-            ? true
-            : false
-        }
-        //required
-      />
-      <input
-        tabIndex={-1}
-        autoComplete="off"
-        style={{ opacity: 0, height: 0 }}
-        value={roleNames}
-        onChange={() => {}}
-        required
-      />
-    </>
+    <Select
+      options={roles}
+      isMulti
+      onChange={handleRoleChange1}
+      components={{
+        Option,
+      }}
+      value={roleNames}
+      closeMenuOnSelect={false}
+      hideSelectedOptions={false}
+      className={classes.multiSelect}
+      styles={roleSelectStyle}
+      isDisabled={
+        UtilityFunctions.isHidden(
+          '8',
+          appFuncList ? appFuncList : [],
+          roleAccess
+        )
+          ? true
+          : false
+      }
+      //required
+    />
   )
 
   const handleOpenGroups = (e: any) => {
@@ -425,6 +414,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   }
   const handleCloseGroups = (e: any) => {
     e.preventDefault()
+    setGroupInput(groups)
     setGroupOpen(false)
   }
   const updateGroups = () => {
@@ -535,8 +525,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           className={classes.inputFieldBox}
         >
           <Button
-            type="button"
-            className={classes.whiteButton}
+            type="submit"
+            variant="contained"
+            color="primary"
             onClick={updateGroups}
             disabled={
               UtilityFunctions.isHidden(
@@ -616,7 +607,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
         setOpenAdditional((prevState) => !prevState)
       }}
       fullWidth={true}
-      maxWidth={false}
+      // maxWidth={false}
+      classes={{ paperScrollPaper: classes.customMaxWidth }}
     >
       <Box
         sx={{
@@ -736,7 +728,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       open={viewLogOpen}
       onClose={handleCloseViewLog}
       fullWidth={true}
-      maxWidth={false}
+      // maxWidth={false}
+      classes={{ paperScrollPaper: classes.customMaxWidth }}
     >
       <Box
         sx={{
@@ -986,91 +979,94 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     //     Authorization: `Basic dnFhaURSWnpTUWhBNkNQQXkwclNvdHNRQWtSZXBwclg6THhhVk01SllpckJya1FRdQ==`,
     //   },
     // })
-    getUserAPI &&
-      getUserAPI(empIdInput)
-        .then((res) => {
-          setColleagueData('')
-          setEmpAvailable(true)
-          checkIt(requestType, true)
-          setEmployeeID(res.data.userdetails[0].user.userId)
-          setFirstName(res.data.userdetails[0].user.firstName)
-          setLastName(res.data.userdetails[0].user.lastName)
-          setMiddleName(res.data.userdetails[0].user.middleName)
-          setEmail(res.data.userdetails[0].user.emailId)
-          setDesignation(res.data.userdetails[0].user.designation)
-          setAdditionalInfo(res.data.userdetails[0].user.additionalInfo)
-          setStatus(res.data.userdetails[0].user.status)
-          setRoleNames(
-            res.data.userdetails[0].roles.map((role: any) => {
-              return {
-                label: role.roleName,
-                value: role.roleId,
-              }
-            })
-          )
-          setGroupInput(
-            res.data.userdetails[0].usergroups.map((group: any) => {
-              return {
-                label: group.groupName,
-                value: group.groupId,
-                status: group.status,
-              }
-            })
-          )
-          setGroups(
-            res.data.userdetails[0].usergroups.map((group: any) => {
-              return {
-                label: group.groupName,
-                value: group.groupId,
-                status: group.status,
-              }
-            })
-          )
-          setErrorRoles('')
-          setErrorGroups('')
-          setErrorRequestType('')
-          setErrorEmployeeId('')
-          setErrorStatus('')
-        })
-        .catch((err) => {
-          setEmpAvailable(false)
-          setErrorRoles('')
-          setErrorGroups('')
-          setErrorRequestType('')
-          setErrorEmployeeId('')
-          setErrorStatus('')
-          getColleagueAPI(empIdInput)
-            .then((response: any) => {
-              //console.log(response);
-              checkIt(requestType, false)
-              let userData = response.data
-              setEmployeeID(empIdInput)
-              setFirstName(userData.FirstName)
-              setLastName(userData.LastName)
-              setEmail(userData.email)
-              setDesignation(userData.jobRole.jobTitle)
-              setColleagueData(userData)
-              setStatus('W')
-              setRoleNames([])
-              setGroupInput([])
-              setGroups([])
-              //setStatus(userData.employee_status);
-            })
-            .catch((err) => {
-              //console.log(err);
-              handleReset()
-              toast.current.show({
-                severity: 'error',
-                summary: 'Error!',
-                detail: 'Invalid Employee ID',
-                life: life,
-                className: 'login-toast',
+    empIdInput !== ''
+      ? getUserAPI &&
+        getUserAPI(empIdInput)
+          .then((res) => {
+            setColleagueData('')
+            setEmpAvailable(true)
+            checkIt(requestType, true)
+            setEmployeeID(res.data.userdetails[0].user.userId)
+            setFirstName(res.data.userdetails[0].user.firstName)
+            setLastName(res.data.userdetails[0].user.lastName)
+            setMiddleName(res.data.userdetails[0].user.middleName)
+            setEmail(res.data.userdetails[0].user.emailId)
+            setDesignation(res.data.userdetails[0].user.designation)
+            setAdditionalInfo(res.data.userdetails[0].user.additionalInfo)
+            setStatus(res.data.userdetails[0].user.status)
+            setRoleNames(
+              res.data.userdetails[0].roles.map((role: any) => {
+                return {
+                  label: role.roleName,
+                  value: role.roleId,
+                }
               })
-            })
-        })
+            )
+            setGroupInput(
+              res.data.userdetails[0].usergroups.map((group: any) => {
+                return {
+                  label: group.groupName,
+                  value: group.groupId,
+                  status: group.status,
+                }
+              })
+            )
+            setGroups(
+              res.data.userdetails[0].usergroups.map((group: any) => {
+                return {
+                  label: group.groupName,
+                  value: group.groupId,
+                  status: group.status,
+                }
+              })
+            )
+            setErrorRoles('')
+            setErrorGroups('')
+            setErrorRequestType('')
+            setErrorEmployeeId('')
+            setErrorStatus('')
+          })
+          .catch((err) => {
+            setEmpAvailable(false)
+            setErrorRoles('')
+            setErrorGroups('')
+            setErrorRequestType('')
+            setErrorEmployeeId('')
+            setErrorStatus('')
+            getColleagueAPI(empIdInput)
+              .then((response: any) => {
+                //console.log(response);
+                checkIt(requestType, false)
+                let userData = response.data
+                setEmployeeID(empIdInput)
+                setFirstName(userData.FirstName)
+                setLastName(userData.LastName)
+                setEmail(userData.email)
+                setDesignation(userData.jobRole.jobTitle)
+                setColleagueData(userData)
+                setStatus('W')
+                setRoleNames([])
+                setGroupInput([])
+                setGroups([])
+                //setStatus(userData.employee_status);
+              })
+              .catch((err) => {
+                //console.log(err);
+                handleReset()
+                // toast.current.show({
+                //   severity: 'error',
+                //   summary: 'Error!',
+                //   detail: 'Invalid Employee ID',
+                //   life: life,
+                //   className: 'login-toast',
+                // })
+                setErrorEmployeeId(allMessages.error.invalidEmployee)
+              })
+          })
+      : setErrorEmployeeId(allMessages.error.noEmployeeId)
   }
 
-  const checkForm = (btnName: string) => {
+  const checkForm = async (btnName: string) => {
     let flag = 1
     if (errorRequestType !== '') {
       flag = 0
@@ -1080,22 +1076,26 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       requestType !== 'modify' &&
       requestType !== 'remove'
     ) {
-      setErrorRequestType('Please select request type')
+      setErrorRequestType(allMessages.error.noRequestType)
       flag = 0
     }
     if (empIdInput === '') {
-      setErrorEmployeeId('Provide employee id and search')
+      setErrorEmployeeId(allMessages.error.noEmployeeId)
+      flag = 0
+    }
+    if (empIdInput !== '' && email === '' && designation === '') {
+      setErrorEmployeeId(allMessages.error.noSearchPress)
       flag = 0
     }
     if (status === '') {
-      setErrorStatus('Please select a status')
+      setErrorStatus(allMessages.error.noStatus)
     }
     if (roleNames.length === 0) {
-      setErrorRoles('Please select atleast one role')
+      setErrorRoles(allMessages.error.noRoles)
       flag = 0
     }
     if (groups.length === 0) {
-      setErrorGroups('Please select atleast one group')
+      setErrorGroups(allMessages.error.noGroups)
       flag = 0
     }
     if (flag === 1 && btnName === 'approve') {
@@ -1725,6 +1725,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                     setEmpAvailable(false)
                   }
                   setEmpIdInput(e.target.value)
+                  setFirstName('')
+                  setLastName('')
+                  setEmail('')
+                  setDesignation('')
                   setErrorEmployeeId('')
                 }}
                 className={classes.inputFields}
@@ -2066,54 +2070,43 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           </Box>
 
           <Box className={classes.inputFieldBox}>
-            <Typography variant="subtitle1">
-              {groups ? (
-                groups.length > 0 ? (
-                  <button
-                    className={classes.backButton}
-                    onClick={handleOpenGroups}
-                  >
-                    Groups ( {groups.length} )
-                  </button>
-                ) : (
-                  <button
-                    // className={
-                    //   UtilityFunctions.isHidden(
-                    //     '8',
-                    //     appFuncList ? appFuncList : [],
-                    //     groupAccess
-                    //   )
-                    //     ? classes.hideit
-                    //     : classes.backButton
-                    // }
-                    className={classes.backButton}
-                    disabled={UtilityFunctions.isHidden(
-                      '8',
-                      appFuncList ? appFuncList : [],
-                      groupAccess
-                    )}
-                    onClick={handleOpenGroups}
-                  >
-                    Add
-                  </button>
-                )
-              ) : (
+            {/* <Typography variant="subtitle1"> */}
+            {groups ? (
+              groups.length > 0 ? (
                 <button
                   className={classes.backButton}
                   onClick={handleOpenGroups}
                 >
+                  Groups ( {groups.length} )
+                </button>
+              ) : (
+                <button
+                  // className={
+                  //   UtilityFunctions.isHidden(
+                  //     '8',
+                  //     appFuncList ? appFuncList : [],
+                  //     groupAccess
+                  //   )
+                  //     ? classes.hideit
+                  //     : classes.backButton
+                  // }
+                  className={classes.backButton}
+                  disabled={UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    groupAccess
+                  )}
+                  onClick={handleOpenGroups}
+                >
                   Add
                 </button>
-              )}
-              <input
-                tabIndex={-1}
-                autoComplete="off"
-                style={{ opacity: 0, height: 0 }}
-                value={groups}
-                onChange={() => {}}
-                required
-              />
-            </Typography>
+              )
+            ) : (
+              <button className={classes.backButton} onClick={handleOpenGroups}>
+                Add
+              </button>
+            )}
+            {/* </Typography> */}
           </Box>
         </Box>
         {groups.length === 0 && errorGroups !== '' && (
@@ -2205,7 +2198,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             <Box className={classes.inputLabel}></Box>
             <Box className={classes.inputFieldBox}>
               <Typography variant="subtitle2" color={'secondary'}>
-                Files with invalid extensions omitted
+                {allMessages.error.invalidExtension}
               </Typography>
             </Box>
           </Box>
@@ -2237,8 +2230,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   </Button>
                 </Box>             
               ))} */}
+            <Box className={classes.inputLabel}></Box>
             <Box
-              className={!active ? classes.filelist : classes.inputFieldBox}
+              // className={!active ? classes.filelist : classes.inputFieldBox}
+              className={classes.inputFieldBox}
               sx={{ overflow: 'auto' }}
             >
               <table>
@@ -2256,6 +2251,11 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                               setReferenceDocData([...newone])
                             }}
                             color="primary"
+                            size="small"
+                            style={{
+                              justifyContent: 'flex-start',
+                              minWidth: '30px',
+                            }}
                           >
                             X
                           </Button>

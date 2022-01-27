@@ -40,6 +40,7 @@ import { pendingActionUpdateTableHeaders } from './tableHeader'
 import { routes, extensions, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
+import { allMessages } from '../../util/Messages'
 // import { viewLogTemp } from '../Dashboard/DataConstant'
 
 const Input = styled('input')({
@@ -179,16 +180,16 @@ function PendingActionUpdate(props: any) {
     let severity
     if (checkCount === 0) {
       if (failureCount === 0 && referenceDocData.length === 0) {
-        detail = 'Log posted successfully'
+        detail = allMessages.success.successPost
         severity = 'success'
       } else if (failureCount === 0 && referenceDocData.length > 0) {
-        detail = `All attached files uploaded and logged successfully`
+        detail = allMessages.success.successPostAttach
         severity = 'success'
       } else if (failureCount > 0 && referenceDocData.length === 0) {
-        detail = `Log posting failed due to service error`
+        detail = allMessages.error.logpostFailureSingle
         severity = 'error'
       } else if (failureCount > 0 && referenceDocData.length > 0) {
-        detail = `${failureCount} files failed to upload and log due to service error`
+        detail = `${failureCount} ${allMessages.error.logpostFailureAttach}`
         severity = 'error'
       }
       setIsProgressLoader(false)
@@ -237,7 +238,7 @@ function PendingActionUpdate(props: any) {
 
   useEffect(() => {
     if (status === 'D' && requestType !== 'modify' && requestType !== '') {
-      setErrorRequestType('Only Modify request can be raised for Deleted users')
+      setErrorRequestType(allMessages.error.deletedError)
     }
     if (
       status === 'I' &&
@@ -245,12 +246,10 @@ function PendingActionUpdate(props: any) {
       requestType !== 'remove' &&
       requestType !== ''
     ) {
-      setErrorRequestType(
-        'Only Modify/Remove request can be raised for Inactive users'
-      )
+      setErrorRequestType(allMessages.error.inactiveError)
     }
     if (status === 'W' && requestType !== 'new' && requestType !== '') {
-      setErrorRequestType('Only New request can be raised for inprogress users')
+      setErrorRequestType(allMessages.error.inprogressError)
     }
   }, [status, requestType])
 
@@ -379,30 +378,28 @@ function PendingActionUpdate(props: any) {
         })
   }
   const roleSelect1 = (
-    <>
-      <Select
-        options={roles}
-        isMulti
-        onChange={handleRoleChange1}
-        components={{
-          Option,
-        }}
-        value={roleNames}
-        closeMenuOnSelect={false}
-        hideSelectedOptions={false}
-        className={classes.multiSelect}
-        styles={roleSelectStyle}
-        isDisabled={
-          UtilityFunctions.isHidden(
-            '8',
-            appFuncList ? appFuncList : [],
-            roleAccess
-          )
-            ? true
-            : false
-        }
-      />
-    </>
+    <Select
+      options={roles}
+      isMulti
+      onChange={handleRoleChange1}
+      components={{
+        Option,
+      }}
+      value={roleNames}
+      closeMenuOnSelect={false}
+      hideSelectedOptions={false}
+      className={classes.multiSelect}
+      styles={roleSelectStyle}
+      isDisabled={
+        UtilityFunctions.isHidden(
+          '8',
+          appFuncList ? appFuncList : [],
+          roleAccess
+        )
+          ? true
+          : false
+      }
+    />
   )
   React.useEffect(() => {
     setRequestedId(selectEmployeeID.requestId)
@@ -511,6 +508,7 @@ function PendingActionUpdate(props: any) {
   }
   const handleCloseGroups = (e: any) => {
     e.preventDefault()
+    setGroupInput(groups)
     setGroupOpen(false)
   }
   const updateGroups = () => {
@@ -617,8 +615,9 @@ function PendingActionUpdate(props: any) {
           className={classes.inputFieldBox}
         >
           <Button
-            type="button"
-            className={classes.whiteButton}
+            type="submit"
+            variant="contained"
+            color="primary"
             onClick={updateGroups}
             disabled={
               UtilityFunctions.isHidden(
@@ -805,7 +804,8 @@ function PendingActionUpdate(props: any) {
         setOpenAdditional((prevState) => !prevState)
       }}
       fullWidth={true}
-      maxWidth={false}
+      // maxWidth={false}
+      classes={{ paperScrollPaper: classes.customMaxWidth }}
     >
       <Box
         sx={{
@@ -921,7 +921,8 @@ function PendingActionUpdate(props: any) {
       open={viewLogOpen}
       onClose={handleCloseViewLog}
       fullWidth={true}
-      maxWidth={false}
+      // maxWidth={false}
+      classes={{ paperScrollPaper: classes.customMaxWidth }}
     >
       <Box
         sx={{
@@ -1077,22 +1078,22 @@ function PendingActionUpdate(props: any) {
       requestType !== 'modify' &&
       requestType !== 'remove'
     ) {
-      setErrorRequestType('Please select request type')
+      setErrorRequestType(allMessages.error.noRequestType)
       flag = 0
     }
     if (employeeID === '') {
-      setErrorEmployeeId('Provide employee id and search')
+      setErrorEmployeeId(allMessages.error.noEmployeeId)
       flag = 0
     }
     if (status === '') {
-      setErrorStatus('Please select a status')
+      setErrorStatus(allMessages.error.noStatus)
     }
     if (roleNames.length === 0) {
-      setErrorRoles('Please select atleast one role')
+      setErrorRoles(allMessages.error.noRoles)
       flag = 0
     }
     if (groups.length === 0) {
-      setErrorGroups('Please select atleast one group')
+      setErrorGroups(allMessages.error.noGroups)
       flag = 0
     }
     if (flag === 1 && btnName === 'approve') {
@@ -2571,62 +2572,59 @@ function PendingActionUpdate(props: any) {
           </Box>
 
           <Box className={classes.inputFieldBox}>
-            <Typography variant="subtitle1">
-              {groups ? (
-                groups.length > 0 ? (
-                  <button
-                    className={classes.backButton}
-                    onClick={handleOpenGroups}
-                  >
-                    Groups ( {groups.length} )
-                  </button>
-                ) : (
-                  <button
-                    // className={
-                    //   UtilityFunctions.isHidden(
-                    //     '8',
-                    //     appFuncList ? appFuncList : [],
-                    //     groupAccess
-                    //   )
-                    //     ? classes.hideit
-                    //     : classes.backButton
-                    // }
-                    className={classes.backButton}
-                    disabled={UtilityFunctions.isHidden(
-                      '8',
-                      appFuncList ? appFuncList : [],
-                      groupAccess
-                    )}
-                    onClick={handleOpenGroups}
-                  >
-                    Add
-                  </button>
-                )
-              ) : (
+            {/* <Typography variant="subtitle1"> */}
+            {groups ? (
+              groups.length > 0 ? (
                 <button
                   className={classes.backButton}
                   onClick={handleOpenGroups}
                 >
+                  Groups ( {groups.length} )
+                </button>
+              ) : (
+                <button
+                  // className={
+                  //   UtilityFunctions.isHidden(
+                  //     '8',
+                  //     appFuncList ? appFuncList : [],
+                  //     groupAccess
+                  //   )
+                  //     ? classes.hideit
+                  //     : classes.backButton
+                  // }
+                  className={classes.backButton}
+                  disabled={UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    groupAccess
+                  )}
+                  onClick={handleOpenGroups}
+                >
                   Add
                 </button>
-              )}
-              &nbsp;&nbsp; &nbsp;&nbsp;
-              <button
-                // className={
-                //   UtilityFunctions.isHidden(
-                //     '8',
-                //     appFuncList ? appFuncList : [],
-                //     'manage_task'
-                //   )
-                //     ? classes.hideit
-                //     : classes.backButton
-                // }
-                className={classes.hideit}
-                onClick={handleOpenTasks}
-              >
-                Manage Task ( {tasks.length} )
+              )
+            ) : (
+              <button className={classes.backButton} onClick={handleOpenGroups}>
+                Add
               </button>
-            </Typography>
+            )}
+            &nbsp;&nbsp; &nbsp;&nbsp;
+            <button
+              // className={
+              //   UtilityFunctions.isHidden(
+              //     '8',
+              //     appFuncList ? appFuncList : [],
+              //     'manage_task'
+              //   )
+              //     ? classes.hideit
+              //     : classes.backButton
+              // }
+              className={classes.hideit}
+              onClick={handleOpenTasks}
+            >
+              Manage Task ( {tasks.length} )
+            </button>
+            {/* </Typography> */}
           </Box>
         </Box>
         {groups.length === 0 && errorGroups !== '' && (
@@ -2718,7 +2716,7 @@ function PendingActionUpdate(props: any) {
             <Box className={classes.inputLabel}></Box>
             <Box className={classes.inputFieldBox}>
               <Typography variant="subtitle2" color={'secondary'}>
-                Files with invalid extensions omitted
+                {allMessages.error.invalidExtension}
               </Typography>
             </Box>
           </Box>
@@ -2750,8 +2748,10 @@ function PendingActionUpdate(props: any) {
                   </Button>
                 </Box>             
               ))} */}
+            <Box className={classes.inputLabel}></Box>
             <Box
-              className={!active ? classes.filelist : classes.inputFieldBox}
+              // className={!active ? classes.filelist : classes.inputFieldBox}
+              className={classes.inputFieldBox}
               sx={{ overflow: 'auto' }}
             >
               <table>
@@ -2769,6 +2769,11 @@ function PendingActionUpdate(props: any) {
                               setReferenceDocData([...newone])
                             }}
                             color="primary"
+                            size="small"
+                            style={{
+                              justifyContent: 'flex-start',
+                              minWidth: '30px',
+                            }}
                           >
                             X
                           </Button>

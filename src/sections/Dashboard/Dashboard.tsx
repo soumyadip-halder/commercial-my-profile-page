@@ -8,6 +8,8 @@ import {
   IconButton,
   Divider,
   Tooltip,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -37,8 +39,31 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: 'white',
   },
-  bold: {
-    fontWeight: 'bold',
+  wide: {
+    [theme.breakpoints.up(900)]: {
+      maxWidth: 600,
+      fontSize: '14px',
+    },
+    [theme.breakpoints.down(900)]: {
+      maxWidth: 400,
+      fontSize: '14px',
+    },
+    [theme.breakpoints.down(750)]: {
+      maxWidth: 400,
+      fontSize: '14px',
+    },
+    [theme.breakpoints.down(500)]: {
+      width: 300,
+      fontSize: '12px',
+    },
+    [theme.breakpoints.down(400)]: {
+      width: 200,
+      fontSize: '12px',
+    },
+    [theme.breakpoints.down(300)]: {
+      width: 200,
+      fontSize: '12px',
+    },
   },
   color90: {
     color: theme.palette.primary.main,
@@ -61,6 +86,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 function Dashboard(props: any) {
   const [newMap, setNewMap] = useState<Array<any>>([])
+  const theme = useTheme()
+  const active = useMediaQuery(theme.breakpoints.down(700))
   // let newMap1: Array<any> = []
 
   const {
@@ -184,7 +211,11 @@ function Dashboard(props: any) {
     <div style={{ padding: '20px' }}>
       <Typography variant="h6" color="primary" className={classes.tabHead}>
         Task Dashboard{' '}
-        <Tooltip title={ServiceResponse.getMessage('dashboard', 'task')}>
+        <Tooltip
+          title={ServiceResponse.getMessage('dashboard', 'task')}
+          classes={{ tooltip: classes.wide }}
+          placement={!active ? 'right-start' : 'bottom'}
+        >
           <IconButton>
             <InfoOutlinedIcon />
           </IconButton>
@@ -221,7 +252,7 @@ function Dashboard(props: any) {
                           <tr>
                             <td>
                               <Typography variant="body2" color="primary">
-                                Pending Actions
+                                &#8226; Pending Actions
                               </Typography>
                             </td>
 
@@ -250,7 +281,7 @@ function Dashboard(props: any) {
                           <tr>
                             <td>
                               <Typography variant="body2" color="primary">
-                                In-Progress Tasks
+                                &#8226; In-Progress Tasks
                               </Typography>
                             </td>
 
@@ -292,7 +323,7 @@ function Dashboard(props: any) {
                           <tr>
                             <td>
                               <Typography variant="body2" color="primary">
-                                Pending Actions
+                                &#8226; Pending Actions
                               </Typography>
                             </td>
 
@@ -320,7 +351,7 @@ function Dashboard(props: any) {
                           <tr>
                             <td>
                               <Typography variant="body2" color="primary">
-                                Unassigned Workflows
+                                &#8226; Unassigned Workflows
                               </Typography>
                             </td>
 
