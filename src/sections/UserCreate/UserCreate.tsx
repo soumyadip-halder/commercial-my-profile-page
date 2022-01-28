@@ -321,11 +321,13 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       // setStatus('W')
       setRoleAccess('mod_role')
       setGroupAccess('mod_group')
+      setStatus('A')
     }
     if (e.target.value.toLowerCase() === 'remove') {
       // setStatus('W')
       setRoleAccess('rem_role')
       setGroupAccess('rem_group')
+      setStatus('A')
     }
     setRequestType(e.target.value)
     checkIt(e.target.value, emplAvailable)
@@ -1022,7 +1024,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             )
             setErrorRoles('')
             setErrorGroups('')
-            setErrorRequestType('')
+            // setErrorRequestType('')
             setErrorEmployeeId('')
             setErrorStatus('')
           })
@@ -1044,7 +1046,12 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 setEmail(userData.email)
                 setDesignation(userData.jobRole.jobTitle)
                 setColleagueData(userData)
-                setStatus('W')
+                if (requestType === 'new') {
+                  setStatus('W')
+                } else {
+                  setStatus('A')
+                }
+                // setStatus('W')
                 setRoleNames([])
                 setGroupInput([])
                 setGroups([])
@@ -1061,6 +1068,14 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 //   className: 'login-toast',
                 // })
                 setErrorEmployeeId(allMessages.error.invalidEmployee)
+                if (requestType === 'new') {
+                  setErrorRequestType('')
+                  setStatus('W')
+                } else {
+                  setErrorRequestType('')
+                  setStatus('A')
+                }
+                setShoutOut('')
               })
           })
       : setErrorEmployeeId(allMessages.error.noEmployeeId)
@@ -1721,9 +1736,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               <OutlinedInput
                 value={empIdInput}
                 onChange={(e) => {
-                  if (e.target.value === '') {
-                    setEmpAvailable(false)
-                  }
+                  // if (e.target.value === '') {
+                  setEmpAvailable(false)
+                  // }
                   setEmpIdInput(e.target.value)
                   setFirstName('')
                   setLastName('')

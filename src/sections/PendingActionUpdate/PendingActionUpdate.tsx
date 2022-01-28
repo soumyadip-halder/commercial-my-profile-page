@@ -292,9 +292,11 @@ function PendingActionUpdate(props: any) {
     } else if (requestType.toLowerCase() === 'modify') {
       setGroupAccess('mod_group')
       setRoleAccess('mod_role')
+      setStatus('A')
     } else if (requestType.toLowerCase() === 'remove') {
       setGroupAccess('rem_group')
       setRoleAccess('rem_role')
+      setStatus('A')
     }
   }, [requestType])
   const handleFileUpload = (event: any) => {

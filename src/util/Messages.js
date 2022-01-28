@@ -10,10 +10,11 @@ export const allMessages = {
     existingEmp: 'Cannot create an already existing Employee',
     modifyEmp: 'Cannot modify for a non existing Employee',
     inprogressError:
-      'Only New request can be raised for user status Inprogress',
+      'Only New request can be raised for user status Inprogress. Either change Status or the Request Type',
     inactiveError:
-      'Only Modify/Remove request can be raised for user status Inactive',
-    deletedError: 'Only Modify request can be raised for user status Deleted',
+      'Only Modify/Remove request can be raised for user status Inactive. Either change Status or the Request Type',
+    deletedError:
+      'Only Modify request can be raised for user status Deleted. Either change Status or the Request Type',
     logpostFailureSingle: 'Log posting failed due to service error',
     logpostFailureAttach: 'files failed to upload and log due to service error',
     noGroupName: 'Please provide Group Name',

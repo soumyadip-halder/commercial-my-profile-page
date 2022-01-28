@@ -324,11 +324,13 @@ function UpdateUser(props: any) {
       // setStatus('W')
       setRoleAccess('mod_role')
       setGroupAccess('mod_group')
+      setStatus('A')
     }
     if (e.target.value.toLowerCase() === 'remove') {
       // setStatus('W')
       setRoleAccess('rem_role')
       setGroupAccess('rem_group')
+      setStatus('A')
     }
     setRequestType(e.target.value)
   }
