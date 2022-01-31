@@ -143,7 +143,7 @@ export const constants = {
     { field: 'timestamp', headerName: 'Timestamp', width: 150 },
     { field: 'userId', headerName: 'User ID', width: 100 },
     { field: 'role', headerName: 'Role', width: 100 },
-    { field: 'actionTaken', headerName: 'Action', width: 100 },
+    { field: 'actionTaken', headerName: 'Action', width: 200 },
     {
       field: 'attachmentUrl',
       headerName: 'Attachment',

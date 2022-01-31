@@ -31,6 +31,7 @@ import { reset_empID } from '../../redux/Actions/ManageUser/Action'
 import { Toast } from 'primereact/toast'
 import { fieldWidth, useStyles } from './Styles'
 import {
+  getColleagueAPI,
   getUserGroupAPI,
   putUserDetailsAPI,
   putUserDetailsCamundaAPI,
@@ -87,6 +88,7 @@ function UpdateUser(props: any) {
   const [cancelOpenSubmit, setCancelOpenSubmit] = React.useState(false)
   const [additionalInfo, setAdditionalInfo] = React.useState('')
   const [openAdditional, setOpenAdditional] = React.useState(false)
+  const [colleagueData, setColleagueData] = React.useState('')
   const [errorRequestType, setErrorRequestType] = React.useState('')
   const [errorEmployeeId, setErrorEmployeeId] = React.useState('')
   const [errorStatus, setErrorStatus] = React.useState('')
@@ -420,7 +422,19 @@ function UpdateUser(props: any) {
       setLastName(selectEmployeeID.lastName)
       setEmail(selectEmployeeID.emailId)
       setDesignation(selectEmployeeID.designation)
-      setAdditionalInfo(selectEmployeeID.additionalInfo)
+      // setAdditionalInfo(selectEmployeeID.additionalInfo)
+      if (
+        selectEmployeeID.additionalInfo &&
+        selectEmployeeID.additionalInfo !== ''
+      ) {
+        setAdditionalInfo(selectEmployeeID.additionalInfo)
+      } else {
+        getColleagueAPI(selectEmployeeID.userId)
+          .then((res: any) => {
+            setColleagueData(res.data)
+          })
+          .catch((err) => setColleagueData(''))
+      }
       if (selectEmployeeID.status === 'A') {
         setStatus(selectEmployeeID.status)
         setStatusWithValue('ACTIVE')
@@ -851,7 +865,12 @@ function UpdateUser(props: any) {
         >
           <DataTable
             value={
-              additionalInfo ? constants.getAdditionalInfo(additionalInfo) : []
+              // additionalInfo ? constants.getAdditionalInfo(additionalInfo) : []
+              colleagueData
+                ? constants.getColleagueDetails(colleagueData)
+                : additionalInfo
+                ? constants.getAdditionalInfo(additionalInfo)
+                : []
             }
             // paginator
             // paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
@@ -1080,6 +1099,11 @@ function UpdateUser(props: any) {
     // e.preventDefault()
     setIsProgressLoader(true)
     setDisabled(true)
+    const colleague: any =
+      colleagueData && constants.getColleagueDetails(colleagueData)
+    const colleaguestring =
+      colleagueData &&
+      `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
     const formData = {
       camunda: {
         submitFlag: 'Approved',
@@ -1105,7 +1129,7 @@ function UpdateUser(props: any) {
         middleName: middleName,
         lastName: lastName,
         emailId: email,
-        additionalInfo: additionalInfo,
+        additionalInfo: colleagueData !== '' ? colleaguestring : additionalInfo,
         designation: designation.toUpperCase(),
         status: status,
       },
@@ -1160,7 +1184,7 @@ function UpdateUser(props: any) {
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
-            camundaRequestId: res.data.businessKey,
+            camundaRequestId: res.data.businessKey ? res.data.businessKey : '',
             actionTaken: 'Approved',
             comments: comments,
             attachmentUrl: null,
@@ -1293,6 +1317,11 @@ function UpdateUser(props: any) {
     // e.preventDefault()
     setIsProgressLoader(true)
     setDisabled(true)
+    const colleague: any =
+      colleagueData && constants.getColleagueDetails(colleagueData)
+    const colleaguestring =
+      colleagueData &&
+      `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
     const formData = {
       camunda: {
         submitFlag: 'Submit',
@@ -1318,7 +1347,7 @@ function UpdateUser(props: any) {
         middleName: middleName,
         lastName: lastName,
         emailId: email,
-        additionalInfo: additionalInfo,
+        additionalInfo: colleagueData !== '' ? colleaguestring : additionalInfo,
         designation: designation.toUpperCase(),
         status: status,
       },
@@ -1373,7 +1402,7 @@ function UpdateUser(props: any) {
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
-            camundaRequestId: res.data.businessKey,
+            camundaRequestId: res.data.businessKey ? res.data.businessKey : '',
             actionTaken: 'Submited',
             comments: comments,
             attachmentUrl: null,
@@ -1855,7 +1884,7 @@ function UpdateUser(props: any) {
                     ? classes.hideit
                     : classes.backButton
                 }
-                disabled={additionalInfo ? false : true}
+                disabled={colleagueData || additionalInfo ? false : true}
                 onClick={(e) => {
                   e.preventDefault()
                   setOpenAdditional((prevState) => !prevState)

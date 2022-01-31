@@ -109,7 +109,7 @@ function PendingAction(props: any) {
                   paddingLeft: 20,
                 }}
               >
-                <button className={classes.exploreButton} onClick={goBack}>
+                <button className={classes.backButton} onClick={goBack}>
                   Back
                 </button>
               </Box>

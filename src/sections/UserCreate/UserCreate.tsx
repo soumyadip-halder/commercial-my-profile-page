@@ -994,7 +994,19 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             setMiddleName(res.data.userdetails[0].user.middleName)
             setEmail(res.data.userdetails[0].user.emailId)
             setDesignation(res.data.userdetails[0].user.designation)
-            setAdditionalInfo(res.data.userdetails[0].user.additionalInfo)
+            // setAdditionalInfo(res.data.userdetails[0].user.additionalInfo)
+            if (
+              res.data.userdetails[0].user.additionalInfo &&
+              res.data.userdetails[0].user.additionalInfo !== ''
+            ) {
+              setAdditionalInfo(res.data.userdetails[0].user.additionalInfo)
+            } else {
+              getColleagueAPI(empIdInput)
+                .then((res: any) => {
+                  setColleagueData(res.data)
+                })
+                .catch((err) => setColleagueData(''))
+            }
             setStatus(res.data.userdetails[0].user.status)
             setRoleNames(
               res.data.userdetails[0].roles.map((role: any) => {
@@ -1229,7 +1241,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               timestamp: `${datepart}`,
               userId: userDetail && userDetail.userdetails[0].user.userId,
               role: rolelog,
-              camundaRequestId: res.data.businessKey,
+              camundaRequestId: res.data.businessKey
+                ? res.data.businessKey
+                : '',
               actionTaken: 'Approved',
               comments: comments,
               attachmentUrl: null,
@@ -1441,7 +1455,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               timestamp: `${datepart}`,
               userId: userDetail && userDetail.userdetails[0].user.userId,
               role: rolelog,
-              camundaRequestId: res.data.businessKey,
+              camundaRequestId: res.data.businessKey
+                ? res.data.businessKey
+                : '',
               actionTaken: 'Submited',
               comments: comments,
               attachmentUrl: null,

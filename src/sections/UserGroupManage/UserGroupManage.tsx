@@ -366,7 +366,7 @@ function UserGroupManage(props: any) {
       <button
         value={rowData.groupId}
         onClick={handleNameClick}
-        className={classes.links}
+        className={classes.exploreButton}
       >
         {rowData.groupId}
       </button>

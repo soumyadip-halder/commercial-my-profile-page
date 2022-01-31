@@ -21,6 +21,7 @@ import { Column } from 'primereact/column'
 import { fieldWidth, useStyles } from './Styles'
 import { taskList } from '../../util/Constants'
 import {
+  getColleagueAPI,
   getUserGroupAPI,
   putUserDetailsAPI,
   putUserDetailsCamundaAPI,
@@ -96,6 +97,7 @@ function PendingActionUpdate(props: any) {
   const [cancelOpenReject, setCancelOpenReject] = React.useState(false)
   const [additionalInfo, setAdditionalInfo] = React.useState('')
   const [openAdditional, setOpenAdditional] = React.useState(false)
+  const [colleagueData, setColleagueData] = React.useState('')
   const [errorRequestType, setErrorRequestType] = React.useState('')
   const [errorEmployeeId, setErrorEmployeeId] = React.useState('')
   const [errorStatus, setErrorStatus] = React.useState('')
@@ -424,9 +426,23 @@ function PendingActionUpdate(props: any) {
             setMiddleName(res.data.tasklists[0].requestData.user.middleName)
             setLastName(res.data.tasklists[0].requestData.user.lastName)
             setEmail(res.data.tasklists[0].requestData.user.emailId)
-            setAdditionalInfo(
-              res.data.tasklists[0].requestData.user.additionalInfo
-            )
+            // setAdditionalInfo(
+            //   res.data.tasklists[0].requestData.user.additionalInfo
+            // )
+            if (
+              res.data.tasklists[0].requestData.user.additionalInfo &&
+              res.data.tasklists[0].requestData.user.additionalInfo !== ''
+            ) {
+              setAdditionalInfo(
+                res.data.tasklists[0].requestData.user.additionalInfo
+              )
+            } else {
+              getColleagueAPI(res.data.tasklists[0].requestData.user.employeeId)
+                .then((res: any) => {
+                  setColleagueData(res.data)
+                })
+                .catch((err) => setColleagueData(''))
+            }
             setDesignation(res.data.tasklists[0].requestData.user.designation)
             if (res.data.tasklists[0].requestData.user.status === 'D') {
               setStatus(res.data.tasklists[0].requestData.user.status)
@@ -876,7 +892,12 @@ function PendingActionUpdate(props: any) {
         >
           <DataTable
             value={
-              additionalInfo ? constants.getAdditionalInfo(additionalInfo) : []
+              // additionalInfo ? constants.getAdditionalInfo(additionalInfo) : []
+              colleagueData
+                ? constants.getColleagueDetails(colleagueData)
+                : additionalInfo
+                ? constants.getAdditionalInfo(additionalInfo)
+                : []
             }
             // paginator
             // paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
@@ -1135,6 +1156,13 @@ function PendingActionUpdate(props: any) {
 
   const handleUpdateUserforApprove = () => {
     // e.preventDefault()
+    setIsProgressLoader(true)
+    setDisabled(true)
+    const colleague: any =
+      colleagueData && constants.getColleagueDetails(colleagueData)
+    const colleaguestring =
+      colleagueData &&
+      `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
     const formData = {
       camunda: {
         submitFlag: 'Approved',
@@ -1160,7 +1188,7 @@ function PendingActionUpdate(props: any) {
         middleName: middleName,
         lastName: lastName,
         emailId: email,
-        additionalInfo: additionalInfo,
+        additionalInfo: colleagueData !== '' ? colleaguestring : additionalInfo,
         designation: designation.toUpperCase(),
         status: status,
       },
@@ -1215,7 +1243,7 @@ function PendingActionUpdate(props: any) {
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
-            camundaRequestId: res.data.businessKey,
+            camundaRequestId: res.data.businessKey ? res.data.businessKey : '',
             actionTaken: 'Approved',
             comments: comments,
             attachmentUrl: null,
@@ -1266,6 +1294,7 @@ function PendingActionUpdate(props: any) {
         })
         .catch((err) => {
           setDisabled(false)
+          setIsProgressLoader(false)
           console.log(err.response)
           // let statusCode = err.response.status
           // console.log(statusCode)
@@ -1347,6 +1376,11 @@ function PendingActionUpdate(props: any) {
     // e.preventDefault()
     setDisabled(true)
     setIsProgressLoader(true)
+    const colleague: any =
+      colleagueData && constants.getColleagueDetails(colleagueData)
+    const colleaguestring =
+      colleagueData &&
+      `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
     const formData = {
       camunda: {
         submitFlag: 'Submit',
@@ -1372,7 +1406,7 @@ function PendingActionUpdate(props: any) {
         middleName: middleName,
         lastName: lastName,
         emailId: email,
-        additionalInfo: additionalInfo,
+        additionalInfo: colleagueData !== '' ? colleaguestring : additionalInfo,
         designation: designation.toUpperCase(),
         status: status,
       },
@@ -1427,7 +1461,7 @@ function PendingActionUpdate(props: any) {
             timestamp: `${datepart}`,
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
-            camundaRequestId: res.data.businessKey,
+            camundaRequestId: res.data.businessKey ? res.data.businessKey : '',
             actionTaken: 'Submited',
             comments: comments,
             attachmentUrl: null,
@@ -2409,7 +2443,7 @@ function PendingActionUpdate(props: any) {
                     ? classes.hideit
                     : classes.backButton
                 }
-                disabled={additionalInfo ? false : true}
+                disabled={colleagueData || additionalInfo ? false : true}
                 onClick={(e) => {
                   e.preventDefault()
                   setOpenAdditional((prevState) => !prevState)

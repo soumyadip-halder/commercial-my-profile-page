@@ -116,7 +116,11 @@ export const useStyles = makeStyles((theme) => ({
     color: 'blue',
     // backgroundColor: "white",
     cursor: 'pointer',
-    fontSize: '16px',
+    fontSize: '18px',
+    '&:disabled': {
+      color: 'grey',
+      cursor: 'default',
+    },
   },
   eachRow: {
     display: 'flex',

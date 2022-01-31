@@ -19,9 +19,11 @@ export const allMessages = {
     logpostFailureAttach: 'files failed to upload and log due to service error',
     noGroupName: 'Please provide Group Name',
     invalidExtension: 'Files with invalid extensions omitted.',
+    errorAssign: 'tasks failed to assign due to service error',
   },
   success: {
     successPost: 'Log posted successfully',
     successPostAttach: 'All attached files uploaded and logged successfully',
+    successAssign: 'All tasks assigned successfully',
   },
 }

@@ -57,7 +57,7 @@ export const pendingActionTableHeaders = [
   {
     field: 'taskName',
     headerName: 'Action',
-    width: 100,
+    width: 200,
   },
   {
     field: 'comments',

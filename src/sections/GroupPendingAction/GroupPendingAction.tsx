@@ -22,6 +22,7 @@ import { reset_mygrouppendingAction } from '../../redux/Actions/PendingAction/Ac
 import { routes, life } from '../../util/Constants'
 import { putClaimTaskAPI } from '../../api/Fetch'
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
+import { allMessages } from '../../util/Messages'
 
 function GroupPendingAction(props: any) {
   const { reset_mygrouppendingAction, mygroupPendingAction, userDetail } = props
@@ -31,6 +32,8 @@ function GroupPendingAction(props: any) {
   const history = useHistory()
   const [globalFilter, setGlobalFilter] = useState('')
   const [unassignUser, setUnassignUser] = useState([])
+  const [checkCount, setCheckCount] = React.useState(1)
+  const [failureCount, setFailureCount] = React.useState(0)
   const toast = useRef<any>(null)
   const [myGroupPendingActionDetails, setMyGroupPendingActionDetails] =
     useState([])
@@ -61,9 +64,38 @@ function GroupPendingAction(props: any) {
     console.log(unassignUser)
   }, [unassignUser])
 
+  useEffect(() => {
+    // console.log('Check count: ', checkCount)
+    // console.log('Failure count: ', failureCount)
+    let detail
+    let severity
+    if (checkCount === 0) {
+      if (failureCount === 0) {
+        detail = allMessages.success.successAssign
+        severity = 'success'
+      } else if (failureCount > 0) {
+        detail = allMessages.error.errorAssign
+        severity = 'error'
+      }
+      setIsProgressLoader(false)
+      toast.current.show([
+        {
+          severity: severity,
+          summary: '',
+          detail: detail,
+          life: life,
+          className: 'login-toast',
+        },
+      ])
+      setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+    }
+  }, [checkCount, DASHBOARD, DEFAULT, history, failureCount])
+
   const handleAssign = () => {
     setIsProgressLoader(true)
     if (unassignUser.length > 0) {
+      setFailureCount(unassignUser.length)
+      setCheckCount(unassignUser.length)
       const assignPayload = {
         requestorDetails: {
           emailId: userDetail && userDetail.userdetails[0].user.emailId,
@@ -88,15 +120,17 @@ function GroupPendingAction(props: any) {
           putClaimTaskAPI(assignPayload, taskIds[i])
             .then((res) => {
               console.log(res.data)
+              setFailureCount((prevState) => prevState - 1)
+              setCheckCount((prevState) => prevState - 1)
               // if (res.data.status.toLowerCase() !== 'failed') {
-              setIsProgressLoader(false)
-              toast.current.show({
-                severity: 'success',
-                summary: taskIds[i],
-                detail: res.data.comments,
-                life: life,
-                className: 'login-toast',
-              })
+              // setIsProgressLoader(false)
+              // toast.current.show({
+              //   severity: 'success',
+              //   summary: taskIds[i],
+              //   detail: res.data.comments,
+              //   life: life,
+              //   className: 'login-toast',
+              // })
               // } else {
               //   toast.current.show({
               //     severity: 'error',
@@ -108,15 +142,16 @@ function GroupPendingAction(props: any) {
               // }
             })
             .catch((err) => {
-              setIsProgressLoader(false)
-              toast.current.show({
-                severity: 'error',
-                summary: 'Error!',
-                // detail: `${err.response.status} from tasklistapi`,
-                detail: err.response.data.errorMessage,
-                life: life,
-                className: 'login-toast',
-              })
+              setCheckCount((prevState) => prevState - 1)
+              // setIsProgressLoader(false)
+              // toast.current.show({
+              //   severity: 'error',
+              //   summary: 'Error!',
+              //   // detail: `${err.response.status} from tasklistapi`,
+              //   detail: err.response.data.errorMessage,
+              //   life: life,
+              //   className: 'login-toast',
+              // })
             })
       }
     }
@@ -166,7 +201,7 @@ function GroupPendingAction(props: any) {
                     paddingLeft: 20,
                   }}
                 >
-                  <button className={classes.exploreButton} onClick={goBack}>
+                  <button className={classes.backButton} onClick={goBack}>
                     Back
                   </button>
                 </Box>
