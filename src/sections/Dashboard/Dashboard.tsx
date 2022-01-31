@@ -18,12 +18,14 @@ import { connect } from 'react-redux'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 // import { pendingStatusDetails } from './DataConstant'
 import { userTaskDashboard } from './DataConstant'
+import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 
 import {
   set_mygrouppendingAction,
   set_mygroupunassignAction,
   set_myinprogressAction,
   set_mypendingAction,
+  reset_all,
 } from '../../redux/Actions/PendingAction/Action'
 import { getStatusCamundaAPI } from '../../api/Fetch'
 import { ServiceResponse } from '../../pages/Login/Messages'
@@ -88,6 +90,7 @@ function Dashboard(props: any) {
   const [newMap, setNewMap] = useState<Array<any>>([])
   const theme = useTheme()
   const active = useMediaQuery(theme.breakpoints.down(700))
+  const [isProgressLoader, setIsProgressLoader] = React.useState(false)
   // let newMap1: Array<any> = []
 
   const {
@@ -99,19 +102,24 @@ function Dashboard(props: any) {
     set_myinprogressAction,
     set_mygrouppendingAction,
     set_mygroupunassignAction,
+    reset_all,
   } = props
   const classes = useStyles()
 
   useEffect(() => {
+    console.log('Called ....')
+    // setIsProgressLoader(true)
     let pendingTasks: Array<any> = []
     let inprogressTasks: Array<any> = []
     let mygroupPendingTasks: Array<any> = []
     let mygroupUnassignTasks: Array<any> = []
+    setNewMap([...userTaskDashboard])
     getStatusCamundaAPI &&
       getStatusCamundaAPI()
         .then((res) => {
           const pendingStatusDetails = res.data
 
+          // setIsProgressLoader(false)
           if (pendingStatusDetails && pendingStatusDetails.status) {
             pendingTasks =
               pendingStatusDetails &&
@@ -153,12 +161,14 @@ function Dashboard(props: any) {
           }
         })
         .catch((error) => {
+          // setIsProgressLoader(false)
           set_mypendingAction([])
           set_myinprogressAction([])
           set_mygrouppendingAction([])
           set_mygroupunassignAction([])
         })
     // }, [pendingStatusDetails])
+    return reset_all()
   }, [])
 
   useEffect(() => {
@@ -209,6 +219,7 @@ function Dashboard(props: any) {
 
   return (
     <div style={{ padding: '20px' }}>
+      <LoadingComponent showLoader={isProgressLoader} />
       <Typography variant="h6" color="primary" className={classes.tabHead}>
         Task Dashboard{' '}
         <Tooltip
@@ -223,6 +234,7 @@ function Dashboard(props: any) {
       </Typography>
       <Grid container>
         {newMap &&
+          newMap.length > 0 &&
           newMap.map((dash, index) => (
             <Grid item xl={6} lg={6} md={6} sm={6} xs={12} key={index}>
               <Card className={classes.card}>
@@ -408,6 +420,7 @@ const matchDispatchToProps = (dispatch: any) => {
       dispatch(set_mygrouppendingAction(mygroupPendingTasks)),
     set_mygroupunassignAction: (mygroupUnassignTasks: any) =>
       dispatch(set_mygroupunassignAction(mygroupUnassignTasks)),
+    reset_all: () => dispatch(reset_all()),
   }
 }
 

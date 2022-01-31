@@ -11,6 +11,7 @@ import {
   resetAppsArray,
   resetUserdetails,
 } from '../../redux/Actions/Login/Action'
+import { reset_all } from '../../redux/Actions/PendingAction/Action'
 import ScrollToTop from '../../components/ScrollToTop/ScrollToTop'
 import { useStyles, drawerWidth } from './Styles'
 import NavigationDrawer from '../../sections/NavigationDrawer/NavigationDrawer'
@@ -35,6 +36,7 @@ const Home = (props: any) => {
     refreshApps,
     resetUserdetails,
     userDetail,
+    reset_all,
   } = props
   // let role = userDetail && userDetail.role;
   const [open, setOpen] = useState(false)
@@ -73,9 +75,17 @@ const Home = (props: any) => {
     refreshRoles()
     refreshApps()
     resetUserdetails()
+    reset_all()
     history.push('/login')
     logoutUser()
-  }, [history, logoutUser, refreshRoles, refreshApps, resetUserdetails])
+  }, [
+    history,
+    logoutUser,
+    refreshRoles,
+    refreshApps,
+    resetUserdetails,
+    reset_all,
+  ])
 
   useEffect(() => {
     if (isTokenExpired) {
@@ -134,6 +144,7 @@ const mapDispatchToProps = (dispatch: any) => {
     refreshApps: () => dispatch(resetAppsArray()),
     resetUserdetails: () => dispatch(resetUserdetails()),
     getUser: (empId: String) => dispatch(getUser(empId)),
+    reset_all: () => dispatch(reset_all()),
   }
 }
 
