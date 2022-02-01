@@ -78,6 +78,7 @@ function UserGroupCreate() {
   const [cancelOpenSubmit, setCancelOpenSubmit] = React.useState(false)
   const [errorGroupName, setErrorGroupName] = useState('')
   const [errorStatus, setErrorStatus] = useState('')
+  const focusGroupName = useRef<any>(null)
   //product changes end ................................................
 
   //product changes start...........................................
@@ -819,6 +820,7 @@ function UserGroupCreate() {
   const checkForm = (btnName: string) => {
     let flag = 1
     if (groupname === '') {
+      focusGroupName.current.focus()
       setErrorGroupName(allMessages.error.noGroupName)
       flag = 0
     }
@@ -991,6 +993,7 @@ function UserGroupCreate() {
                         <input
                           type="text"
                           name="groupname"
+                          ref={focusGroupName}
                           id="groupname"
                           placeholder="eg. group name 1"
                           className={classes.inputFields}
