@@ -210,6 +210,7 @@ function UserGroupManage(props: any) {
         >
           <DataTable
             value={productData}
+            rowHover
             paginator
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
             rows={5}
@@ -320,6 +321,7 @@ function UserGroupManage(props: any) {
         >
           <DataTable
             value={locationData}
+            rowHover
             paginator
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
             rows={5}
@@ -497,6 +499,7 @@ function UserGroupManage(props: any) {
       >
         <DataTable
           value={userGroupsData}
+          rowHover
           paginator
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
           rows={6}

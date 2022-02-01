@@ -215,6 +215,7 @@ function GroupPendingAction(props: any) {
                 {!active ? (
                   <DataTable
                     value={myGroupPendingActionDetails}
+                    rowHover
                     paginator
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                     rows={10}
@@ -266,6 +267,7 @@ function GroupPendingAction(props: any) {
                 ) : (
                   <DataTable
                     value={myGroupPendingActionDetails}
+                    rowHover
                     paginator
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                     rows={10}

@@ -103,6 +103,7 @@ function InprogressTask(props: any) {
               {!active ? (
                 <DataTable
                   value={inProgressTasksDetails}
+                  rowHover
                   paginator
                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   rows={10}
@@ -144,6 +145,7 @@ function InprogressTask(props: any) {
               ) : (
                 <DataTable
                   value={inProgressTasksDetails}
+                  rowHover
                   paginator
                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   rows={10}

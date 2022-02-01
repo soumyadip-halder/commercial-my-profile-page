@@ -216,6 +216,7 @@ function UnassignWorkflow(props: any) {
                 {!active ? (
                   <DataTable
                     value={myGroupUnassignedTasks}
+                    rowHover
                     paginator
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                     rows={10}
@@ -267,6 +268,7 @@ function UnassignWorkflow(props: any) {
                 ) : (
                   <DataTable
                     value={myGroupUnassignedTasks}
+                    rowHover
                     paginator
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                     rows={10}

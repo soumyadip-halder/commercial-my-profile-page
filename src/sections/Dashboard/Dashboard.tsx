@@ -107,8 +107,7 @@ function Dashboard(props: any) {
   const classes = useStyles()
 
   useEffect(() => {
-    console.log('Called ....')
-    // setIsProgressLoader(true)
+    setIsProgressLoader(true)
     let pendingTasks: Array<any> = []
     let inprogressTasks: Array<any> = []
     let mygroupPendingTasks: Array<any> = []
@@ -119,7 +118,7 @@ function Dashboard(props: any) {
         .then((res) => {
           const pendingStatusDetails = res.data
 
-          // setIsProgressLoader(false)
+          setIsProgressLoader(false)
           if (pendingStatusDetails && pendingStatusDetails.status) {
             pendingTasks =
               pendingStatusDetails &&
@@ -161,7 +160,7 @@ function Dashboard(props: any) {
           }
         })
         .catch((error) => {
-          // setIsProgressLoader(false)
+          setIsProgressLoader(false)
           set_mypendingAction([])
           set_myinprogressAction([])
           set_mygrouppendingAction([])

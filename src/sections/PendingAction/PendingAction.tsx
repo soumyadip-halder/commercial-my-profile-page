@@ -123,6 +123,7 @@ function PendingAction(props: any) {
               {!active ? (
                 <DataTable
                   value={pendingActionDetails}
+                  rowHover
                   paginator
                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   rows={10}
@@ -162,6 +163,7 @@ function PendingAction(props: any) {
               ) : (
                 <DataTable
                   value={pendingActionDetails}
+                  rowHover
                   paginator
                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   rows={10}

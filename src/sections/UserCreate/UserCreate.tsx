@@ -106,6 +106,11 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const [roles, setRoles] = useState([])
   const [groupsData, setGroupsData] = useState([])
   const toast = useRef<any>(null)
+  const focusRequestType = useRef<any>(null)
+  const focusEmpId = useRef<any>(null)
+  const focusStatus = useRef<any>(null)
+  const focusRole = useRef<any>(null)
+  const focusGroup = useRef<any>(null)
   //integration changes start
   useEffect(() => {
     setGroupInput(groups)
@@ -126,6 +131,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   //integration changes start
 
   useEffect(() => {
+    focusRequestType.current.focus()
     getUserGroupAPI &&
       getUserGroupAPI()
         .then((res) => {
@@ -219,7 +225,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   useEffect(() => {
     if (status === 'D' && requestType !== 'modify' && requestType !== '') {
-      setErrorRequestType(allMessages.error.deletedError)
+      // setErrorRequestType(allMessages.error.deletedError)
+      focusStatus.current.focus()
+      setErrorStatus(allMessages.error.deletedError)
     }
     if (
       status === 'I' &&
@@ -227,10 +235,14 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       requestType !== 'remove' &&
       requestType !== ''
     ) {
-      setErrorRequestType(allMessages.error.inactiveError)
+      // setErrorRequestType(allMessages.error.inactiveError)
+      focusStatus.current.focus()
+      setErrorStatus(allMessages.error.inactiveError)
     }
     if (status === 'W' && requestType !== 'new' && requestType !== '') {
-      setErrorRequestType(allMessages.error.inprogressError)
+      // setErrorRequestType(allMessages.error.inprogressError)
+      focusStatus.current.focus()
+      setErrorStatus(allMessages.error.inprogressError)
     }
   }, [status, requestType])
 
@@ -260,6 +272,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const handleReset = () => {
     setEmpIdInput('')
     setFirstName('')
+    setMiddleName('')
     setLastName('')
     setEmail('')
     setDesignation('')
@@ -311,7 +324,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     }
   }
   const onrequestTypeChange = (e: any) => {
-    if (e.target.value !== '') setErrorRequestType('')
+    if (e.target.value !== '') {
+      setErrorRequestType('')
+      setErrorStatus('')
+    }
     if (e.target.value.toLowerCase() === 'new') {
       // setStatus('W')
       setRoleAccess('new_role')
@@ -335,12 +351,14 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   const checkIt = (type: string, empAvail: boolean) => {
     if (empIdInput !== '' && type.toLowerCase() === 'new' && empAvail) {
+      focusEmpId.current.focus()
       setShoutOut(allMessages.error.existingEmp)
     } else if (
       empIdInput !== '' &&
       (type.toLowerCase() === 'modify' || type.toLowerCase() === 'remove') &&
       !empAvail
     ) {
+      focusEmpId.current.focus()
       setShoutOut(allMessages.error.modifyEmp)
     } else {
       setShoutOut('')
@@ -388,6 +406,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     <Select
       options={roles}
       isMulti
+      ref={focusRole}
       onChange={handleRoleChange1}
       components={{
         Option,
@@ -981,6 +1000,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     //     Authorization: `Basic dnFhaURSWnpTUWhBNkNQQXkwclNvdHNRQWtSZXBwclg6THhhVk01SllpckJya1FRdQ==`,
     //   },
     // })
+    if (empIdInput === '') focusEmpId.current.focus()
     empIdInput !== ''
       ? getUserAPI &&
         getUserAPI(empIdInput)
@@ -995,18 +1015,18 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             setEmail(res.data.userdetails[0].user.emailId)
             setDesignation(res.data.userdetails[0].user.designation)
             // setAdditionalInfo(res.data.userdetails[0].user.additionalInfo)
-            if (
-              res.data.userdetails[0].user.additionalInfo &&
-              res.data.userdetails[0].user.additionalInfo !== ''
-            ) {
-              setAdditionalInfo(res.data.userdetails[0].user.additionalInfo)
-            } else {
-              getColleagueAPI(empIdInput)
-                .then((res: any) => {
-                  setColleagueData(res.data)
-                })
-                .catch((err) => setColleagueData(''))
-            }
+            // if (
+            //   res.data.userdetails[0].user.additionalInfo &&
+            //   res.data.userdetails[0].user.additionalInfo !== ''
+            // ) {
+            //   setAdditionalInfo(res.data.userdetails[0].user.additionalInfo)
+            // } else {
+            getColleagueAPI(empIdInput)
+              .then((res: any) => {
+                setColleagueData(res.data)
+              })
+              .catch((err) => setColleagueData(''))
+            // }
             setStatus(res.data.userdetails[0].user.status)
             setRoleNames(
               res.data.userdetails[0].roles.map((role: any) => {
@@ -1054,6 +1074,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 let userData = response.data
                 setEmployeeID(empIdInput)
                 setFirstName(userData.FirstName)
+                setMiddleName('')
                 setLastName(userData.LastName)
                 setEmail(userData.email)
                 setDesignation(userData.jobRole.jobTitle)
@@ -1079,6 +1100,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 //   life: life,
                 //   className: 'login-toast',
                 // })
+                focusEmpId.current.focus()
                 setErrorEmployeeId(allMessages.error.invalidEmployee)
                 if (requestType === 'new') {
                   setErrorRequestType('')
@@ -1096,6 +1118,11 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const checkForm = async (btnName: string) => {
     let flag = 1
     if (errorRequestType !== '') {
+      focusRequestType.current.focus()
+      flag = 0
+    }
+    if (errorStatus !== '') {
+      focusStatus.current.focus()
       flag = 0
     }
     if (
@@ -1103,25 +1130,31 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       requestType !== 'modify' &&
       requestType !== 'remove'
     ) {
+      focusRequestType.current.focus()
       setErrorRequestType(allMessages.error.noRequestType)
       flag = 0
     }
     if (empIdInput === '') {
+      focusEmpId.current.focus()
       setErrorEmployeeId(allMessages.error.noEmployeeId)
       flag = 0
     }
     if (empIdInput !== '' && email === '' && designation === '') {
+      focusEmpId.current.focus()
       setErrorEmployeeId(allMessages.error.noSearchPress)
       flag = 0
     }
     if (status === '') {
+      focusStatus.current.focus()
       setErrorStatus(allMessages.error.noStatus)
     }
     if (roleNames.length === 0) {
+      focusRole.current.focus()
       setErrorRoles(allMessages.error.noRoles)
       flag = 0
     }
     if (groups.length === 0) {
+      focusGroup.current.focus()
       setErrorGroups(allMessages.error.noGroups)
       flag = 0
     }
@@ -1151,11 +1184,11 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     setIsProgressLoader(true)
     if (shoutOut === '') {
       setDisabled(true)
-      const colleague: any =
-        colleagueData && constants.getColleagueDetails(colleagueData)
-      const colleaguestring =
-        colleagueData &&
-        `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
+      // const colleague: any =
+      //   colleagueData && constants.getColleagueDetails(colleagueData)
+      // const colleaguestring =
+      //   colleagueData &&
+      //   `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
 
       const formData = {
         camunda: {
@@ -1182,8 +1215,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           middleName: middleName,
           lastName: lastName,
           emailId: email,
-          additionalInfo:
-            colleagueData !== '' ? colleaguestring : additionalInfo,
+          additionalInfo: '',
+          // colleagueData !== '' ? colleaguestring : additionalInfo,
           status: status,
           designation: designation.toUpperCase(),
         },
@@ -1365,11 +1398,11 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     setIsProgressLoader(true)
     if (shoutOut === '') {
       setDisabled(true)
-      const colleague: any =
-        colleagueData && constants.getColleagueDetails(colleagueData)
-      const colleaguestring =
-        colleagueData &&
-        `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
+      // const colleague: any =
+      //   colleagueData && constants.getColleagueDetails(colleagueData)
+      // const colleaguestring =
+      //   colleagueData &&
+      //   `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
 
       const formData = {
         camunda: {
@@ -1396,8 +1429,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           middleName: middleName,
           lastName: lastName,
           emailId: email,
-          additionalInfo:
-            colleagueData !== '' ? colleaguestring : additionalInfo,
+          additionalInfo: '',
+          // colleagueData !== '' ? colleaguestring : additionalInfo,
           status: status,
           designation: designation.toUpperCase(),
         },
@@ -1458,7 +1491,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               camundaRequestId: res.data.businessKey
                 ? res.data.businessKey
                 : '',
-              actionTaken: 'Submited',
+              actionTaken: 'Submitted',
               comments: comments,
               attachmentUrl: null,
             }
@@ -1691,6 +1724,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             <Typography variant="subtitle2">
               <select
                 name="requesttype"
+                ref={focusRequestType}
                 id="requesttype"
                 className={classes.selectField}
                 defaultValue=""
@@ -1751,12 +1785,14 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               {/* {typeAheadSearch} */}
               <OutlinedInput
                 value={empIdInput}
+                inputRef={focusEmpId}
                 onChange={(e) => {
                   // if (e.target.value === '') {
                   setEmpAvailable(false)
                   // }
                   setEmpIdInput(e.target.value)
                   setFirstName('')
+                  setMiddleName('')
                   setLastName('')
                   setEmail('')
                   setDesignation('')
@@ -1973,6 +2009,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               <select
                 name="status"
                 id="status"
+                ref={focusStatus}
                 className={classes.selectField}
                 defaultValue=""
                 onChange={onstatusChange}
@@ -2107,6 +2144,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 <button
                   className={classes.backButton}
                   onClick={handleOpenGroups}
+                  ref={focusGroup}
                 >
                   Groups ( {groups.length} )
                 </button>
@@ -2128,12 +2166,17 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                     groupAccess
                   )}
                   onClick={handleOpenGroups}
+                  ref={focusGroup}
                 >
                   Add
                 </button>
               )
             ) : (
-              <button className={classes.backButton} onClick={handleOpenGroups}>
+              <button
+                className={classes.backButton}
+                onClick={handleOpenGroups}
+                ref={focusGroup}
+              >
                 Add
               </button>
             )}

@@ -18,6 +18,7 @@ import { useEffect } from 'react'
 import { getAllUsersAPI } from '../../api/Fetch'
 import { useStyles } from './Styles'
 import { routes } from '../../util/Constants'
+import { constants } from '../../sections/UserCreate/DataConstants'
 
 function UserManage(props: any) {
   const { set_empID } = props
@@ -45,20 +46,26 @@ function UserManage(props: any) {
     getAllUsersAPI()
       .then((res) => {
         console.log(res.data.userdetails)
-        const userValues = res.data.userdetails.map((user: any) => {
-          return {
-            userId: user.user.userId,
-            firstName: user.user.firstName,
-            middleName: user.user.middleName,
-            lastName: user.user.lastName,
-            emailId: user.user.emailId,
-            additionalInfo: user.user.additionalInfo,
-            designation: user.user.designation,
-            status: user.user.status,
-            roles: user.roles,
-            usergroups: user.usergroups,
-          }
-        })
+        const userValues = res.data.userdetails
+          .filter((user: any) => user.user.status !== 'W')
+          .map((user: any) => {
+            return {
+              userId: user.user.userId,
+              firstName: user.user.firstName,
+              middleName: user.user.middleName,
+              lastName: user.user.lastName,
+              emailId: user.user.emailId,
+              additionalInfo: user.user.additionalInfo,
+              designation: user.user.designation,
+              status: constants.statuses
+                .filter((stat: any) => stat.statusID === user.user.status)
+                .map((stat: any) => stat.text)
+                .toString(),
+              // status: user.user.status,
+              roles: user.roles,
+              usergroups: user.usergroups,
+            }
+          })
         console.log(userValues)
         setManageUserData(userValues)
       })
@@ -184,6 +191,7 @@ function UserManage(props: any) {
               {!active ? (
                 <DataTable
                   value={manageUserData}
+                  rowHover
                   paginator
                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   rows={10}
@@ -226,6 +234,7 @@ function UserManage(props: any) {
               ) : (
                 <DataTable
                   value={manageUserData}
+                  rowHover
                   paginator
                   paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   rows={10}

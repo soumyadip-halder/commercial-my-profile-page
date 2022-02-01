@@ -118,6 +118,11 @@ function PendingActionUpdate(props: any) {
   const [isProgressLoader, setIsProgressLoader] = React.useState(false)
   const [returnText, setReturnText] = React.useState('')
   //
+  const focusRequestType = useRef<any>(null)
+  const focusEmpId = useRef<any>(null)
+  const focusStatus = useRef<any>(null)
+  const focusRole = useRef<any>(null)
+  const focusGroup = useRef<any>(null)
 
   useEffect(() => {
     return () => reset_pendingAction()
@@ -240,7 +245,9 @@ function PendingActionUpdate(props: any) {
 
   useEffect(() => {
     if (status === 'D' && requestType !== 'modify' && requestType !== '') {
-      setErrorRequestType(allMessages.error.deletedError)
+      // setErrorRequestType(allMessages.error.deletedError)
+      focusStatus.current.focus()
+      setErrorStatus(allMessages.error.deletedError)
     }
     if (
       status === 'I' &&
@@ -248,10 +255,14 @@ function PendingActionUpdate(props: any) {
       requestType !== 'remove' &&
       requestType !== ''
     ) {
-      setErrorRequestType(allMessages.error.inactiveError)
+      // setErrorRequestType(allMessages.error.inactiveError)
+      focusStatus.current.focus()
+      setErrorStatus(allMessages.error.inactiveError)
     }
     if (status === 'W' && requestType !== 'new' && requestType !== '') {
-      setErrorRequestType(allMessages.error.inprogressError)
+      // setErrorRequestType(allMessages.error.inprogressError)
+      focusStatus.current.focus()
+      setErrorStatus(allMessages.error.inprogressError)
     }
   }, [status, requestType])
 
@@ -284,6 +295,10 @@ function PendingActionUpdate(props: any) {
     }
   }
   const onrequestTypeChange = (e: any) => {
+    if (e.target.value !== '') {
+      setErrorRequestType('')
+      setErrorStatus('')
+    }
     setRequestType(e.target.value)
   }
   useEffect(() => {
@@ -385,6 +400,7 @@ function PendingActionUpdate(props: any) {
     <Select
       options={roles}
       isMulti
+      ref={focusRole}
       onChange={handleRoleChange1}
       components={{
         Option,
@@ -429,20 +445,20 @@ function PendingActionUpdate(props: any) {
             // setAdditionalInfo(
             //   res.data.tasklists[0].requestData.user.additionalInfo
             // )
-            if (
-              res.data.tasklists[0].requestData.user.additionalInfo &&
-              res.data.tasklists[0].requestData.user.additionalInfo !== ''
-            ) {
-              setAdditionalInfo(
-                res.data.tasklists[0].requestData.user.additionalInfo
-              )
-            } else {
-              getColleagueAPI(res.data.tasklists[0].requestData.user.employeeId)
-                .then((res: any) => {
-                  setColleagueData(res.data)
-                })
-                .catch((err) => setColleagueData(''))
-            }
+            // if (
+            //   res.data.tasklists[0].requestData.user.additionalInfo &&
+            //   res.data.tasklists[0].requestData.user.additionalInfo !== ''
+            // ) {
+            //   setAdditionalInfo(
+            //     res.data.tasklists[0].requestData.user.additionalInfo
+            //   )
+            // } else {
+            getColleagueAPI(res.data.tasklists[0].requestData.user.employeeId)
+              .then((res: any) => {
+                setColleagueData(res.data)
+              })
+              .catch((err) => setColleagueData(''))
+            // }
             setDesignation(res.data.tasklists[0].requestData.user.designation)
             if (res.data.tasklists[0].requestData.user.status === 'D') {
               setStatus(res.data.tasklists[0].requestData.user.status)
@@ -1094,6 +1110,11 @@ function PendingActionUpdate(props: any) {
   const checkForm = (btnName: string) => {
     let flag = 1
     if (errorRequestType !== '') {
+      focusRequestType.current.focus()
+      flag = 0
+    }
+    if (errorStatus !== '') {
+      focusStatus.current.focus()
       flag = 0
     }
     if (
@@ -1101,21 +1122,26 @@ function PendingActionUpdate(props: any) {
       requestType !== 'modify' &&
       requestType !== 'remove'
     ) {
+      focusRequestType.current.focus()
       setErrorRequestType(allMessages.error.noRequestType)
       flag = 0
     }
     if (employeeID === '') {
+      focusEmpId.current.focus()
       setErrorEmployeeId(allMessages.error.noEmployeeId)
       flag = 0
     }
     if (status === '') {
+      focusStatus.current.focus()
       setErrorStatus(allMessages.error.noStatus)
     }
     if (roleNames.length === 0) {
+      focusRole.current.focus()
       setErrorRoles(allMessages.error.noRoles)
       flag = 0
     }
     if (groups.length === 0) {
+      focusGroup.current.focus()
       setErrorGroups(allMessages.error.noGroups)
       flag = 0
     }
@@ -1158,11 +1184,11 @@ function PendingActionUpdate(props: any) {
     // e.preventDefault()
     setIsProgressLoader(true)
     setDisabled(true)
-    const colleague: any =
-      colleagueData && constants.getColleagueDetails(colleagueData)
-    const colleaguestring =
-      colleagueData &&
-      `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
+    // const colleague: any =
+    //   colleagueData && constants.getColleagueDetails(colleagueData)
+    // const colleaguestring =
+    //   colleagueData &&
+    //   `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
     const formData = {
       camunda: {
         submitFlag: 'Approved',
@@ -1188,7 +1214,8 @@ function PendingActionUpdate(props: any) {
         middleName: middleName,
         lastName: lastName,
         emailId: email,
-        additionalInfo: colleagueData !== '' ? colleaguestring : additionalInfo,
+        additionalInfo: '',
+        // colleagueData !== '' ? colleaguestring : additionalInfo,
         designation: designation.toUpperCase(),
         status: status,
       },
@@ -1376,11 +1403,11 @@ function PendingActionUpdate(props: any) {
     // e.preventDefault()
     setDisabled(true)
     setIsProgressLoader(true)
-    const colleague: any =
-      colleagueData && constants.getColleagueDetails(colleagueData)
-    const colleaguestring =
-      colleagueData &&
-      `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
+    // const colleague: any =
+    //   colleagueData && constants.getColleagueDetails(colleagueData)
+    // const colleaguestring =
+    //   colleagueData &&
+    //   `${colleague[0].managerId}#!#${colleague[0].managerName}#!#${colleague[0].managersManagerId}#!#${colleague[0].hiringmanager}#!#${colleague[0].leavingDate}#!#${colleague[0].businessUnit}#!#${colleague[0].locationName}#!#${colleague[0].division}`
     const formData = {
       camunda: {
         submitFlag: 'Submit',
@@ -1406,7 +1433,8 @@ function PendingActionUpdate(props: any) {
         middleName: middleName,
         lastName: lastName,
         emailId: email,
-        additionalInfo: colleagueData !== '' ? colleaguestring : additionalInfo,
+        additionalInfo: '',
+        // colleagueData !== '' ? colleaguestring : additionalInfo,
         designation: designation.toUpperCase(),
         status: status,
       },
@@ -1462,7 +1490,7 @@ function PendingActionUpdate(props: any) {
             userId: userDetail && userDetail.userdetails[0].user.userId,
             role: rolelog,
             camundaRequestId: res.data.businessKey ? res.data.businessKey : '',
-            actionTaken: 'Submited',
+            actionTaken: 'Submitted',
             comments: comments,
             attachmentUrl: null,
           }
@@ -2218,6 +2246,7 @@ function PendingActionUpdate(props: any) {
             <Typography variant="subtitle2">
               <select
                 name="requesttype"
+                ref={focusRequestType}
                 id="requesttype"
                 className={classes.selectField}
                 defaultValue=""
@@ -2269,6 +2298,7 @@ function PendingActionUpdate(props: any) {
             <Typography variant="subtitle2">
               <input
                 type="text"
+                ref={focusEmpId}
                 className={classes.inputFields}
                 value={employeeID}
                 onChange={() => {}}
@@ -2490,6 +2520,7 @@ function PendingActionUpdate(props: any) {
               <select
                 name="status"
                 id="status"
+                ref={focusStatus}
                 className={classes.selectField}
                 defaultValue=""
                 onChange={onstatusChange}
@@ -2567,6 +2598,16 @@ function PendingActionUpdate(props: any) {
             </Typography>
           </Box>
         </Box>
+        {errorStatus !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {errorStatus}
+              </Typography>
+            </Box>
+          </Box>
+        )}
         <Box className={classes.eachRow}>
           <Box className={classes.inputLabel}>
             <Typography variant="subtitle2">
@@ -2614,6 +2655,7 @@ function PendingActionUpdate(props: any) {
                 <button
                   className={classes.backButton}
                   onClick={handleOpenGroups}
+                  ref={focusGroup}
                 >
                   Groups ( {groups.length} )
                 </button>
@@ -2635,12 +2677,17 @@ function PendingActionUpdate(props: any) {
                     groupAccess
                   )}
                   onClick={handleOpenGroups}
+                  ref={focusGroup}
                 >
                   Add
                 </button>
               )
             ) : (
-              <button className={classes.backButton} onClick={handleOpenGroups}>
+              <button
+                className={classes.backButton}
+                onClick={handleOpenGroups}
+                ref={focusGroup}
+              >
                 Add
               </button>
             )}
