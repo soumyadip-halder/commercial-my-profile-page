@@ -156,15 +156,15 @@ export const constants = {
   requestTypes: [
     {
       name: 'new',
-      text: 'New',
+      text: 'Create New User',
     },
     {
       name: 'modify',
-      text: 'Modify',
+      text: 'Modify Existing User',
     },
     {
       name: 'remove',
-      text: 'Remove',
+      text: 'Remove Existing User',
     },
   ],
 
