@@ -235,6 +235,13 @@ function PendingActionUpdate(props: any) {
           .then((res) => {
             console.log(res.data)
             setViewLogRows([...res.data.tasklogs])
+            let commentStr = ''
+            for (let i = 0; i < res.data.tasklogs.length; i++) {
+              commentStr =
+                commentStr +
+                `${res.data.tasklogs[i].timestamp} ${res.data.tasklogs[i].comments}\n`
+            }
+            setComments(commentStr)
           })
           .catch((err) => {
             setViewLogRows([])
@@ -522,7 +529,8 @@ function PendingActionUpdate(props: any) {
             setGroupInput([])
             setGroups([])
           })
-      setComments(selectEmployeeID.comments)
+
+      // setComments(selectEmployeeID.comments)
     } else {
       setEmployeeID('')
       setFirstName('')
@@ -2898,11 +2906,11 @@ function PendingActionUpdate(props: any) {
                 cols={10}
                 rows={5}
                 className={classes.textArea}
-                placeholder="Some Comments....."
+                placeholder={comments}
                 onChange={(e) => {
                   setComments(e.target.value)
                 }}
-                value={comments}
+                // value={comments}
               />
             </Typography>
           </Box>
