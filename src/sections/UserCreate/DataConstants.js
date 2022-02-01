@@ -142,13 +142,13 @@ export const constants = {
   viewLogColumns: [
     { field: 'timestamp', headerName: 'Timestamp', width: 120 },
     { field: 'userId', headerName: 'User ID', width: 80 },
-    { field: 'role', headerName: 'Role', width: 200 },
-    { field: 'actionTaken', headerName: 'Action', width: 200 },
+    { field: 'role', headerName: 'Role', width: 100 },
+    { field: 'actionTaken', headerName: 'Action', width: 150 },
     {
       field: 'attachmentUrl',
       headerName: 'Attachment',
       type: 'file',
-      width: 80,
+      width: 200,
     },
     { field: 'comments', headerName: 'Comments', width: 200 },
   ],

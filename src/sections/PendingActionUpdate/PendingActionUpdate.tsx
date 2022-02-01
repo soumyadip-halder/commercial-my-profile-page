@@ -81,6 +81,7 @@ function PendingActionUpdate(props: any) {
   const [status, setStatus] = React.useState('')
   const [statusWithValue, setStatusWithValue] = React.useState('')
   const [comments, setComments] = React.useState('')
+  const [comments1, setComments1] = React.useState('')
   const [wrongExtn, setWrongExtn] = React.useState(false)
   const [referenceDoc, setReferenceDoc] = React.useState<any>('')
   const [viewLogEl, setViewLogEl] = React.useState(false)
@@ -117,6 +118,10 @@ function PendingActionUpdate(props: any) {
   //
   const [isProgressLoader, setIsProgressLoader] = React.useState(false)
   const [returnText, setReturnText] = React.useState('')
+  const [attachmentUrlArr, setAttachmentUrlArr] = React.useState<Array<string>>(
+    []
+  )
+  const [logDataIn, setLogDataIn] = React.useState({})
   //
   const focusRequestType = useRef<any>(null)
   const focusEmpId = useRef<any>(null)
@@ -183,40 +188,105 @@ function PendingActionUpdate(props: any) {
   useEffect(() => {
     // console.log('Check count: ', checkCount)
     // console.log('Failure count: ', failureCount)
-    let detail
-    let severity
-    if (checkCount === 0) {
-      if (failureCount === 0 && referenceDocData.length === 0) {
-        detail = allMessages.success.successPost
-        severity = 'success'
-      } else if (failureCount === 0 && referenceDocData.length > 0) {
-        detail = allMessages.success.successPostAttach
-        severity = 'success'
-      } else if (failureCount > 0 && referenceDocData.length === 0) {
-        detail = allMessages.error.logpostFailureSingle
-        severity = 'error'
-      } else if (failureCount > 0 && referenceDocData.length > 0) {
-        detail = `${failureCount} ${allMessages.error.logpostFailureAttach}`
-        severity = 'error'
+    let detail = ''
+    let severity = ''
+    if (referenceDocData.length === 0) {
+      if (checkCount === 0) {
+        // if (failureCount === 0 && referenceDocData.length === 0) {
+        if (failureCount === 0) {
+          detail = allMessages.success.successPost
+          severity = 'success'
+          // } else if (failureCount === 0 && referenceDocData.length > 0) {
+          //   detail = allMessages.success.successPostAttach
+          //   severity = 'success'
+          // } else if (failureCount > 0 && referenceDocData.length === 0) {
+        } else if (failureCount > 0) {
+          detail = allMessages.error.logpostFailureSingle
+          severity = 'error'
+          // } else if (failureCount > 0 && referenceDocData.length > 0) {
+          //   detail = `${failureCount} ${allMessages.error.logpostFailureAttach}`
+          //   severity = 'error'
+        }
+        setIsProgressLoader(false)
+        toast.current.show([
+          {
+            severity: 'success',
+            summary: '',
+            detail: returnText,
+            life: life,
+            className: 'login-toast',
+          },
+          {
+            severity: severity,
+            summary: '',
+            detail: detail,
+            life: life,
+            className: 'login-toast',
+          },
+        ])
+        setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
       }
-      setIsProgressLoader(false)
-      toast.current.show([
-        {
-          severity: 'success',
-          summary: '',
-          detail: returnText,
-          life: life,
-          className: 'login-toast',
-        },
-        {
-          severity: severity,
-          summary: '',
-          detail: detail,
-          life: life,
-          className: 'login-toast',
-        },
-      ])
-      setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+    } else {
+      if (checkCount === 0) {
+        const attachListString = attachmentUrlArr.join('#!#')
+        console.log(logDataIn)
+        const data = {
+          ...logDataIn,
+          attachmentUrl: attachListString,
+        }
+        logDataIn &&
+          postTaskLogsAPI &&
+          postTaskLogsAPI(data)
+            .then((res) => {
+              if (failureCount === 0) {
+                detail = allMessages.success.successAttach
+                severity = 'success'
+              } else if (failureCount > 0) {
+                detail = `${failureCount} ${allMessages.error.logFailureAttach}`
+                severity = 'error'
+              }
+              setIsProgressLoader(false)
+              toast.current.show([
+                {
+                  severity: 'success',
+                  summary: '',
+                  detail: returnText,
+                  life: life,
+                  className: 'login-toast',
+                },
+                {
+                  severity: severity,
+                  summary: '',
+                  detail: detail,
+                  life: life,
+                  className: 'login-toast',
+                },
+              ])
+              setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+            })
+            .catch((err) => {
+              detail = allMessages.error.logpostFailureSingle
+              severity = 'error'
+              setIsProgressLoader(false)
+              toast.current.show([
+                {
+                  severity: 'success',
+                  summary: '',
+                  detail: returnText,
+                  life: life,
+                  className: 'login-toast',
+                },
+                {
+                  severity: severity,
+                  summary: '',
+                  detail: detail,
+                  life: life,
+                  className: 'login-toast',
+                },
+              ])
+              setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+            })
+      }
     }
   }, [
     checkCount,
@@ -226,6 +296,8 @@ function PendingActionUpdate(props: any) {
     failureCount,
     referenceDocData,
     returnText,
+    logDataIn,
+    attachmentUrlArr,
   ])
 
   useEffect(() => {
@@ -236,12 +308,14 @@ function PendingActionUpdate(props: any) {
             console.log(res.data)
             setViewLogRows([...res.data.tasklogs])
             let commentStr = ''
-            for (let i = 0; i < res.data.tasklogs.length; i++) {
-              commentStr =
-                commentStr +
-                `${res.data.tasklogs[i].timestamp} ${res.data.tasklogs[i].comments}\n`
-            }
-            setComments(commentStr)
+            // for (let i = 0; i < res.data.tasklogs.length; i++) {
+            //   commentStr =
+            //     commentStr +
+            //     `${res.data.tasklogs[i].timestamp} ${res.data.tasklogs[i].comments}\n`
+            // }
+            commentStr =
+              res.data.tasklogs[res.data.tasklogs.length - 1].comments
+            setComments1(commentStr)
           })
           .catch((err) => {
             setViewLogRows([])
@@ -826,14 +900,38 @@ function PendingActionUpdate(props: any) {
   }
 
   const attachmentTemplate = (rowData: any) => {
+    let values = []
+    if (rowData.attachmentUrl) {
+      const urls = rowData.attachmentUrl.split('#!#')
+      for (let i = 0; i < urls.length; i++) {
+        values.push({
+          name: urls[i].substr(urls[i].lastIndexOf('/') + 1),
+          data: urls[i],
+        })
+      }
+    }
+    // return rowData.attachmentUrl ? (
+    //   <a
+    //     href={rowData.attachmentUrl}
+    //     target="popup"
+    //     className={classes.backButton}
+    //   >
+    //     <AttachFileIcon fontSize="small" />
+    //   </a>
+    // ) : (
+    //   rowData.attachmentUrl
+    // )
     return rowData.attachmentUrl ? (
-      <a
-        href={rowData.attachmentUrl}
-        target="popup"
-        className={classes.backButton}
-      >
-        <AttachFileIcon fontSize="small" />
-      </a>
+      <div>
+        {values.map((item) => (
+          <div key={item.name}>
+            &#8226;{'  '}
+            <a href={item.data} target="popup" className={classes.attachIcon}>
+              {item.name}
+            </a>
+          </div>
+        ))}
+      </div>
     ) : (
       rowData.attachmentUrl
     )
@@ -1283,6 +1381,7 @@ function PendingActionUpdate(props: any) {
             comments: comments,
             attachmentUrl: null,
           }
+          setLogDataIn({ ...logData })
           if (referenceDocData.length > 0) {
             setFailureCount(referenceDocData.length)
             setCheckCount(referenceDocData.length)
@@ -1293,8 +1392,14 @@ function PendingActionUpdate(props: any) {
                 postFileAttachmentAPI &&
                 postFileAttachmentAPI(formdata1, employeeID)
                   .then((res) => {
-                    logData.attachmentUrl = res.data.attachmentUrl
-                    postTasklog(logData)
+                    // logData.attachmentUrl = res.data.attachmentUrl
+                    setAttachmentUrlArr((prevState) => [
+                      ...prevState,
+                      res.data.attachmentUrl,
+                    ])
+                    setFailureCount((prevState) => prevState - 1)
+                    setCheckCount((prevState) => prevState - 1)
+                    // postTasklog(logData)
                   })
                   .catch((err) => {
                     setCheckCount((prevState) => prevState - 1)
@@ -1502,6 +1607,7 @@ function PendingActionUpdate(props: any) {
             comments: comments,
             attachmentUrl: null,
           }
+          setLogDataIn({ ...logData })
           if (referenceDocData.length > 0) {
             setFailureCount(referenceDocData.length)
             setCheckCount(referenceDocData.length)
@@ -1512,8 +1618,14 @@ function PendingActionUpdate(props: any) {
                 postFileAttachmentAPI &&
                 postFileAttachmentAPI(formdata1, employeeID)
                   .then((res) => {
-                    logData.attachmentUrl = res.data.attachmentUrl
-                    postTasklog(logData)
+                    // logData.attachmentUrl = res.data.attachmentUrl
+                    setAttachmentUrlArr((prevState) => [
+                      ...prevState,
+                      res.data.attachmentUrl,
+                    ])
+                    setFailureCount((prevState) => prevState - 1)
+                    setCheckCount((prevState) => prevState - 1)
+                    // postTasklog(logData)
                   })
                   .catch((err) => {
                     setCheckCount((prevState) => prevState - 1)
@@ -1669,6 +1781,7 @@ function PendingActionUpdate(props: any) {
             comments: comments,
             attachmentUrl: null,
           }
+          setLogDataIn({ ...logData })
           if (referenceDocData.length > 0) {
             setFailureCount(referenceDocData.length)
             setCheckCount(referenceDocData.length)
@@ -1679,8 +1792,14 @@ function PendingActionUpdate(props: any) {
                 postFileAttachmentAPI &&
                 postFileAttachmentAPI(formdata1, employeeID)
                   .then((res) => {
-                    logData.attachmentUrl = res.data.attachmentUrl
-                    postTasklog(logData)
+                    // logData.attachmentUrl = res.data.attachmentUrl
+                    setAttachmentUrlArr((prevState) => [
+                      ...prevState,
+                      res.data.attachmentUrl,
+                    ])
+                    setFailureCount((prevState) => prevState - 1)
+                    setCheckCount((prevState) => prevState - 1)
+                    // postTasklog(logData)
                   })
                   .catch((err) => {
                     setCheckCount((prevState) => prevState - 1)
@@ -1778,6 +1897,7 @@ function PendingActionUpdate(props: any) {
             comments: comments,
             attachmentUrl: null,
           }
+          setLogDataIn({ ...logData })
           if (referenceDocData.length > 0) {
             setFailureCount(referenceDocData.length)
             setCheckCount(referenceDocData.length)
@@ -1788,8 +1908,14 @@ function PendingActionUpdate(props: any) {
                 postFileAttachmentAPI &&
                 postFileAttachmentAPI(formdata1, employeeID)
                   .then((res) => {
-                    logData.attachmentUrl = res.data.attachmentUrl
-                    postTasklog(logData)
+                    // logData.attachmentUrl = res.data.attachmentUrl
+                    setAttachmentUrlArr((prevState) => [
+                      ...prevState,
+                      res.data.attachmentUrl,
+                    ])
+                    setFailureCount((prevState) => prevState - 1)
+                    setCheckCount((prevState) => prevState - 1)
+                    // postTasklog(logData)
                   })
                   .catch((err) => {
                     setCheckCount((prevState) => prevState - 1)
@@ -1897,6 +2023,7 @@ function PendingActionUpdate(props: any) {
             comments: comments,
             attachmentUrl: null,
           }
+          setLogDataIn({ ...logData })
           if (referenceDocData.length > 0) {
             setFailureCount(referenceDocData.length)
             setCheckCount(referenceDocData.length)
@@ -1907,8 +2034,14 @@ function PendingActionUpdate(props: any) {
                 postFileAttachmentAPI &&
                 postFileAttachmentAPI(formdata1, employeeID)
                   .then((res) => {
-                    logData.attachmentUrl = res.data.attachmentUrl
-                    postTasklog(logData)
+                    // logData.attachmentUrl = res.data.attachmentUrl
+                    setAttachmentUrlArr((prevState) => [
+                      ...prevState,
+                      res.data.attachmentUrl,
+                    ])
+                    setFailureCount((prevState) => prevState - 1)
+                    setCheckCount((prevState) => prevState - 1)
+                    // postTasklog(logData)
                   })
                   .catch((err) => {
                     setCheckCount((prevState) => prevState - 1)
@@ -2906,7 +3039,7 @@ function PendingActionUpdate(props: any) {
                 cols={10}
                 rows={5}
                 className={classes.textArea}
-                placeholder={comments}
+                placeholder={comments1}
                 onChange={(e) => {
                   setComments(e.target.value)
                 }}

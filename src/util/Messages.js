@@ -17,6 +17,7 @@ export const allMessages = {
       'Only Modify request can be raised for user status Deleted. Either change Status or the Request Type',
     logpostFailureSingle: 'Log posting failed due to service error',
     logpostFailureAttach: 'files failed to upload and log due to service error',
+    logFailureAttach: 'files failed to upload due to service error',
     noGroupName: 'Please provide Group Name',
     invalidExtension: 'Files with invalid extensions omitted.',
     errorAssign: 'tasks failed to assign due to service error',
@@ -24,6 +25,7 @@ export const allMessages = {
   success: {
     successPost: 'Log posted successfully',
     successPostAttach: 'All attached files uploaded and logged successfully',
+    successAttach: 'All attached files uploaded successfully',
     successAssign: 'All tasks assigned successfully',
   },
 }

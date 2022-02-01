@@ -177,6 +177,14 @@ export const useStyles = makeStyles((theme) => {
         cursor: 'default',
       },
     },
+    attachIcon: {
+      border: 0,
+      color: 'blue',
+      // backgroundColor: "white",
+      cursor: 'pointer',
+      fontSize: '10px',
+      textDecoration: 'underline',
+    },
     viewLogTitle: {
       backgroundColor: theme.palette.primary.main,
       color: 'white',

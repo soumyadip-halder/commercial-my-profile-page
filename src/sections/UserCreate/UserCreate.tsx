@@ -101,6 +101,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   //
   const [isProgressLoader, setIsProgressLoader] = React.useState(false)
   const [returnText, setReturnText] = React.useState('')
+  const [attachmentUrlArr, setAttachmentUrlArr] = React.useState<Array<string>>(
+    []
+  )
+  const [logDataIn, setLogDataIn] = React.useState({})
   //
   //integration changes start
   const [roles, setRoles] = useState([])
@@ -159,40 +163,105 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   useEffect(() => {
     // console.log('Check count: ', checkCount)
     // console.log('Failure count: ', failureCount)
-    let detail
-    let severity
-    if (checkCount === 0) {
-      if (failureCount === 0 && referenceDocData.length === 0) {
-        detail = allMessages.success.successPost
-        severity = 'success'
-      } else if (failureCount === 0 && referenceDocData.length > 0) {
-        detail = allMessages.success.successPostAttach
-        severity = 'success'
-      } else if (failureCount > 0 && referenceDocData.length === 0) {
-        detail = allMessages.error.logpostFailureSingle
-        severity = 'error'
-      } else if (failureCount > 0 && referenceDocData.length > 0) {
-        detail = `${failureCount} ${allMessages.error.logpostFailureAttach}`
-        severity = 'error'
+    let detail = ''
+    let severity = ''
+    if (referenceDocData.length === 0) {
+      if (checkCount === 0) {
+        // if (failureCount === 0 && referenceDocData.length === 0) {
+        if (failureCount === 0) {
+          detail = allMessages.success.successPost
+          severity = 'success'
+          // } else if (failureCount === 0 && referenceDocData.length > 0) {
+          //   detail = allMessages.success.successPostAttach
+          //   severity = 'success'
+          // } else if (failureCount > 0 && referenceDocData.length === 0) {
+        } else if (failureCount > 0) {
+          detail = allMessages.error.logpostFailureSingle
+          severity = 'error'
+          // } else if (failureCount > 0 && referenceDocData.length > 0) {
+          //   detail = `${failureCount} ${allMessages.error.logpostFailureAttach}`
+          //   severity = 'error'
+        }
+        setIsProgressLoader(false)
+        toast.current.show([
+          {
+            severity: 'success',
+            summary: '',
+            detail: returnText,
+            life: life,
+            className: 'login-toast',
+          },
+          {
+            severity: severity,
+            summary: '',
+            detail: detail,
+            life: life,
+            className: 'login-toast',
+          },
+        ])
+        setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
       }
-      setIsProgressLoader(false)
-      toast.current.show([
-        {
-          severity: 'success',
-          summary: '',
-          detail: returnText,
-          life: life,
-          className: 'login-toast',
-        },
-        {
-          severity: severity,
-          summary: '',
-          detail: detail,
-          life: life,
-          className: 'login-toast',
-        },
-      ])
-      setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+    } else {
+      if (checkCount === 0) {
+        const attachListString = attachmentUrlArr.join('#!#')
+        console.log(logDataIn)
+        const data = {
+          ...logDataIn,
+          attachmentUrl: attachListString,
+        }
+        logDataIn &&
+          postTaskLogsAPI &&
+          postTaskLogsAPI(data)
+            .then((res) => {
+              if (failureCount === 0) {
+                detail = allMessages.success.successAttach
+                severity = 'success'
+              } else if (failureCount > 0) {
+                detail = `${failureCount} ${allMessages.error.logFailureAttach}`
+                severity = 'error'
+              }
+              setIsProgressLoader(false)
+              toast.current.show([
+                {
+                  severity: 'success',
+                  summary: '',
+                  detail: returnText,
+                  life: life,
+                  className: 'login-toast',
+                },
+                {
+                  severity: severity,
+                  summary: '',
+                  detail: detail,
+                  life: life,
+                  className: 'login-toast',
+                },
+              ])
+              setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+            })
+            .catch((err) => {
+              detail = allMessages.error.logpostFailureSingle
+              severity = 'error'
+              setIsProgressLoader(false)
+              toast.current.show([
+                {
+                  severity: 'success',
+                  summary: '',
+                  detail: returnText,
+                  life: life,
+                  className: 'login-toast',
+                },
+                {
+                  severity: severity,
+                  summary: '',
+                  detail: detail,
+                  life: life,
+                  className: 'login-toast',
+                },
+              ])
+              setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+            })
+      }
     }
   }, [
     checkCount,
@@ -202,6 +271,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     failureCount,
     referenceDocData,
     returnText,
+    logDataIn,
+    attachmentUrlArr,
   ])
 
   useEffect(() => {
@@ -1281,6 +1352,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               comments: comments,
               attachmentUrl: null,
             }
+            setLogDataIn({ ...logData })
             if (referenceDocData.length > 0) {
               setFailureCount(referenceDocData.length)
               setCheckCount(referenceDocData.length)
@@ -1291,8 +1363,14 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   postFileAttachmentAPI &&
                   postFileAttachmentAPI(formdata1, employeeID)
                     .then((res) => {
-                      logData.attachmentUrl = res.data.attachmentUrl
-                      postTasklog(logData)
+                      // logData.attachmentUrl = res.data.attachmentUrl
+                      setAttachmentUrlArr((prevState) => [
+                        ...prevState,
+                        res.data.attachmentUrl,
+                      ])
+                      setFailureCount((prevState) => prevState - 1)
+                      setCheckCount((prevState) => prevState - 1)
+                      // postTasklog(logData)
                     })
                     .catch((err) => {
                       setCheckCount((prevState) => prevState - 1)
@@ -1495,6 +1573,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               comments: comments,
               attachmentUrl: null,
             }
+            setLogDataIn({ ...logData })
             if (referenceDocData.length > 0) {
               setFailureCount(referenceDocData.length)
               setCheckCount(referenceDocData.length)
@@ -1505,8 +1584,14 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   postFileAttachmentAPI &&
                   postFileAttachmentAPI(formdata1, employeeID)
                     .then((res) => {
-                      logData.attachmentUrl = res.data.attachmentUrl
-                      postTasklog(logData)
+                      // logData.attachmentUrl = res.data.attachmentUrl
+                      setAttachmentUrlArr((prevState) => [
+                        ...prevState,
+                        res.data.attachmentUrl,
+                      ])
+                      setFailureCount((prevState) => prevState - 1)
+                      setCheckCount((prevState) => prevState - 1)
+                      // postTasklog(logData)
                     })
                     .catch((err) => {
                       setCheckCount((prevState) => prevState - 1)
