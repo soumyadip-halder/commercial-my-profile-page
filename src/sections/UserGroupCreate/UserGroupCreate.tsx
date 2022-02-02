@@ -778,12 +778,13 @@ function UserGroupCreate() {
             navigator.clipboard.writeText(
               res.data.message.split('groupId:')[1].trim()
             )
-          } else {
-            ;(window as any).clipboardData.setData(
-              'text/plain',
-              res.data.message.split('groupId:')[1].trim()
-            )
           }
+          // else {
+          //   ;(window as any).clipboardData.setData(
+          //     'text/plain',
+          //     res.data.message.split('groupId:')[1].trim()
+          //   )
+          // }
           toast.current.show({
             severity: 'success',
             summary: '',
