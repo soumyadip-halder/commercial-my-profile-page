@@ -2466,6 +2466,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 onChange={(e) => {
                   setComments(e.target.value)
                 }}
+                value={comments}
               />
             </Typography>
           </Box>
