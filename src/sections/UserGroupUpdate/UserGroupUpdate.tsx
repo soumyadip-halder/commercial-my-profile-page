@@ -117,7 +117,13 @@ function UserGroupUpdate(props: any) {
           }
         })
       )
-      setStatus(selectGroupID.status)
+      // setStatus(selectGroupID.status)
+      setStatus(
+        constants.groupstatuses
+          .filter((stat: any) => stat.text === selectGroupID.status)
+          .map((stat: any) => stat.statusID)
+          .toString()
+      )
       setPayload(
         selectGroupID.productHierarchy.map((product: any) => {
           return {
@@ -1160,7 +1166,13 @@ function UserGroupUpdate(props: any) {
                           </option> */}
                           {constants.groupstatuses.map((type) => {
                             return (
-                              <option value={type.statusID} key={type.statusID}>
+                              <option
+                                value={type.statusID}
+                                key={type.statusID}
+                                selected={
+                                  type.statusID === status ? true : false
+                                }
+                              >
                                 {type.text}
                               </option>
                             )
