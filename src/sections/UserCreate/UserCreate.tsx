@@ -352,6 +352,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     setGroupInput([])
     setGroups([])
     setColleagueData('')
+    setComments('')
+    setReferenceDocData([])
   }
 
   const handleFileUpload = (event: any) => {
@@ -1125,6 +1127,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 }
               })
             )
+            setComments('')
+            setReferenceDocData([])
             setErrorRoles('')
             setErrorGroups('')
             // setErrorRequestType('')
@@ -1159,6 +1163,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 setRoleNames([])
                 setGroupInput([])
                 setGroups([])
+                setComments('')
+                setReferenceDocData([])
                 //setStatus(userData.employee_status);
               })
               .catch((err) => {
