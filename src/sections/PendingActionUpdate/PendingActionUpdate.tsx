@@ -904,8 +904,10 @@ function PendingActionUpdate(props: any) {
     if (rowData.attachmentUrl) {
       const urls = rowData.attachmentUrl.split('#!#')
       for (let i = 0; i < urls.length; i++) {
+        const namepart = urls[i].substr(urls[i].lastIndexOf('/') + 1)
+        const part = namepart.split('-', 2).join('-').length
         values.push({
-          name: urls[i].substr(urls[i].lastIndexOf('/') + 1),
+          name: namepart.substr(part + 1),
           data: urls[i],
         })
       }
