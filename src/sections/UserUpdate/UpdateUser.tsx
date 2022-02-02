@@ -1303,6 +1303,14 @@ function UpdateUser(props: any) {
         .then((res) => {
           console.log(res)
           setReturnText(`${res.data.comments} with ID ${res.data.requestId}`)
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(res.data.requestId)
+          } else {
+            ;(window as any).clipboardData.setData(
+              'text/plain',
+              res.data.requestId
+            )
+          }
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
@@ -1531,6 +1539,14 @@ function UpdateUser(props: any) {
         .then((res) => {
           console.log(res)
           setReturnText(`${res.data.comments} with ID ${res.data.requestId}`)
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(res.data.requestId)
+          } else {
+            ;(window as any).clipboardData.setData(
+              'text/plain',
+              res.data.requestId
+            )
+          }
           const rolelog =
             userDetail &&
             userDetail.userdetails[0].roles
