@@ -1078,6 +1078,7 @@ function UserGroupCreate() {
                           defaultValue=""
                           onChange={onstatusChange}
                           required
+                          disabled
                         >
                           {/* <option
                             disabled
