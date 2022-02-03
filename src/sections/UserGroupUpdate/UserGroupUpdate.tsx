@@ -864,6 +864,9 @@ function UserGroupUpdate(props: any) {
           //console.log(res);
           //console.log(res.data.message);
           setIsProgressLoader(false)
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(groupId)
+          }
           toast.current.show({
             severity: 'success',
             summary: '',

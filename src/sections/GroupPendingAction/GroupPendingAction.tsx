@@ -212,64 +212,70 @@ function GroupPendingAction(props: any) {
                   p: 2,
                 }}
               >
-                {!active ? (
-                  <DataTable
-                    value={myGroupPendingActionDetails}
-                    rowHover
-                    paginator
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-                    rows={10}
-                    style={{
-                      width: '100%',
+                {/* {!active ? ( */}
+                <DataTable
+                  value={myGroupPendingActionDetails}
+                  rowHover
+                  paginator
+                  paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+                  currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                  stateStorage="session"
+                  stateKey="dt-state-demo-session-grouppendingaction"
+                  rows={10}
+                  style={{
+                    width: '100%',
+                  }}
+                  selection={unassignUser}
+                  onSelectionChange={(e) => setUnassignUser(e.value)}
+                  scrollable
+                  scrollHeight="flex"
+                  globalFilter={globalFilter}
+                  emptyMessage="No users found."
+                  showGridlines
+                  //loading={manageUserLoading}
+                >
+                  <Column
+                    selectionMode="multiple"
+                    headerStyle={{
+                      width: '3em',
+                      backgroundColor: teal[900],
+                      color: 'white',
                     }}
-                    selection={unassignUser}
-                    onSelectionChange={(e) => setUnassignUser(e.value)}
-                    scrollable
-                    scrollHeight="flex"
-                    globalFilter={globalFilter}
-                    emptyMessage="No users found."
-                    showGridlines
-                    //loading={manageUserLoading}
-                  >
-                    <Column
-                      selectionMode="multiple"
-                      headerStyle={{
-                        width: '3em',
-                        backgroundColor: teal[900],
-                        color: 'white',
-                      }}
-                    ></Column>
-                    {groupPendingActionTableHeaders.map((column) => {
-                      return (
-                        <Column
-                          key={column.field}
-                          field={column.field}
-                          header={column.headerName}
-                          bodyStyle={{
-                            fontSize: '12px',
-                            width: column.width,
-                            overflowX: 'auto',
-                          }}
-                          headerStyle={{
-                            fontSize: '12px',
-                            width: column.width,
-                            backgroundColor: teal[900],
-                            color: 'white',
-                          }}
-                          // body={
-                          //   column.field === 'requestedId' && requestIdTemplate
-                          // }
-                          // sortable
-                        />
-                      )
-                    })}
-                  </DataTable>
-                ) : (
+                  ></Column>
+                  {groupPendingActionTableHeaders.map((column) => {
+                    return (
+                      <Column
+                        key={column.field}
+                        field={column.field}
+                        header={column.headerName}
+                        bodyStyle={{
+                          fontSize: '12px',
+                          width: column.width,
+                          overflowX: 'auto',
+                        }}
+                        headerStyle={{
+                          fontSize: '12px',
+                          width: column.width,
+                          backgroundColor: teal[900],
+                          color: 'white',
+                        }}
+                        // body={
+                        //   column.field === 'requestedId' && requestIdTemplate
+                        // }
+                        // sortable
+                      />
+                    )
+                  })}
+                </DataTable>
+                {/* ) : (
                   <DataTable
                     value={myGroupPendingActionDetails}
                     rowHover
                     paginator
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+                    currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                    stateStorage="session"
+                    stateKey="dt-state-demo-session"
                     rows={10}
                     style={{
                       width: '100%',
@@ -316,7 +322,7 @@ function GroupPendingAction(props: any) {
                       )
                     })}
                   </DataTable>
-                )}
+                )} */}
               </Box>
               <Box
                 sx={{

@@ -1142,7 +1142,8 @@ function PendingActionUpdate(props: any) {
           <DataTable
             value={viewLogRows}
             paginator
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+            currentPageReportTemplate="{first} - {last} of {totalRecords}"
             rows={5}
             style={{
               fontSize: '12px',

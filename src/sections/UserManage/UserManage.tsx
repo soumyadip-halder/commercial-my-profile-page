@@ -188,12 +188,61 @@ function UserManage(props: any) {
                 p: 2,
               }}
             >
-              {!active ? (
+              {/* {!active ? ( */}
+              <DataTable
+                value={manageUserData}
+                rowHover
+                paginator
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+                currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                stateStorage="session"
+                stateKey="dt-state-demo-session-usermanage"
+                rows={10}
+                style={{
+                  width: '100%',
+                }}
+                scrollable
+                scrollHeight="flex"
+                globalFilter={globalFilter}
+                emptyMessage="No users found."
+                showGridlines
+                loading={manageUserLoading}
+              >
+                {userTableHeaders.map((column) => {
+                  return (
+                    <Column
+                      key={column.field}
+                      field={column.field}
+                      header={column.headerName}
+                      bodyStyle={{
+                        fontSize: '12px',
+                        width: column.width,
+                      }}
+                      headerStyle={{
+                        fontSize: '12px',
+                        width: column.width,
+                        backgroundColor: teal[900],
+                        color: 'white',
+                      }}
+                      body={
+                        (column.field === 'roles' && roleTemplate) ||
+                        (column.field === 'userId' && userIdTemplate) ||
+                        (column.field === 'usergroups' && groupTemplate)
+                      }
+                      sortable
+                    />
+                  )
+                })}
+              </DataTable>
+              {/* ) : (
                 <DataTable
                   value={manageUserData}
                   rowHover
                   paginator
-                  paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                  paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+                  currentPageReportTemplate="{first} - {last} of {totalRecords}"
+                  stateStorage="session"
+                  stateKey="dt-state-demo-session"
                   rows={10}
                   style={{
                     width: '100%',
@@ -231,50 +280,7 @@ function UserManage(props: any) {
                     )
                   })}
                 </DataTable>
-              ) : (
-                <DataTable
-                  value={manageUserData}
-                  rowHover
-                  paginator
-                  paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-                  rows={10}
-                  style={{
-                    width: '100%',
-                  }}
-                  scrollable
-                  scrollHeight="flex"
-                  globalFilter={globalFilter}
-                  emptyMessage="No users found."
-                  showGridlines
-                  loading={manageUserLoading}
-                >
-                  {userTableHeaders.map((column) => {
-                    return (
-                      <Column
-                        key={column.field}
-                        field={column.field}
-                        header={column.headerName}
-                        bodyStyle={{
-                          fontSize: '12px',
-                          width: column.width,
-                        }}
-                        headerStyle={{
-                          fontSize: '12px',
-                          width: column.width,
-                          backgroundColor: teal[900],
-                          color: 'white',
-                        }}
-                        body={
-                          (column.field === 'roles' && roleTemplate) ||
-                          (column.field === 'userId' && userIdTemplate) ||
-                          (column.field === 'usergroups' && groupTemplate)
-                        }
-                        sortable
-                      />
-                    )
-                  })}
-                </DataTable>
-              )}
+              )} */}
             </Box>
           </Grid>
         </Grid>

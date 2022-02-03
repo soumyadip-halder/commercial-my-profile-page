@@ -78,6 +78,7 @@ const Home = (props: any) => {
     localStorage.removeItem('_Gresponse')
     localStorage.removeItem('_GresponseV2')
     localStorage.removeItem('_Colresponse')
+    sessionStorage.clear()
     refreshRoles()
     refreshApps()
     resetUserdetails()

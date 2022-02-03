@@ -216,7 +216,8 @@ function UserGroupManage(props: any) {
             value={productData}
             rowHover
             paginator
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+            currentPageReportTemplate="{first} - {last} of {totalRecords}"
             rows={5}
             style={{
               fontSize: '12px',
@@ -327,7 +328,8 @@ function UserGroupManage(props: any) {
             value={locationData}
             rowHover
             paginator
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+            currentPageReportTemplate="{first} - {last} of {totalRecords}"
             rows={5}
             style={{
               fontSize: '12px',
@@ -505,7 +507,10 @@ function UserGroupManage(props: any) {
           value={userGroupsData}
           rowHover
           paginator
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+          currentPageReportTemplate="{first} - {last} of {totalRecords}"
+          stateStorage="session"
+          stateKey="dt-state-demo-session-groupmanage"
           rows={6}
           style={{
             // fontSize: "10px",
