@@ -228,7 +228,7 @@ export const pendingStatusDetails = {
       ],
     },
     {
-      details: 'myGroupUnassignedWorkflows',
+      details: 'myGroupUnnassignedTasks',
       count: '2',
       tasks: [
         {

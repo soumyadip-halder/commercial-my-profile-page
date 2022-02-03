@@ -146,7 +146,7 @@ function Dashboard(props: any) {
               pendingStatusDetails.status &&
               pendingStatusDetails.status.filter(
                 (item: any) =>
-                  item.details.toLowerCase() === 'mygroupunassignedworkflows'
+                  item.details.toLowerCase() === 'mygroupunnassignedtasks'
               )
 
             // console.log(pendingTasks)
