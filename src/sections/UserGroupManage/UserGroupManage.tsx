@@ -415,7 +415,7 @@ function UserGroupManage(props: any) {
                   type="text"
                   value={globalFilter}
                   onChange={(e) => setGlobalFilter(e.target.value)}
-                  placeholder={' Search User details '}
+                  placeholder={' Search Group details '}
                   style={{
                     width: '300px',
                   }}
