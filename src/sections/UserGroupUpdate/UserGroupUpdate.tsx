@@ -408,7 +408,7 @@ function UserGroupUpdate(props: any) {
 
   const handleHierarchyChange = (e: any) => {
     let values = []
-
+    setPayload('')
     for (let i = 0; i < e.length; i++) {
       values.push({
         value: e[i].label,
@@ -491,7 +491,7 @@ function UserGroupUpdate(props: any) {
         styles={productCustomStyles}
       /> */}
       <Select
-        closeMenuOnSelect={false}
+        closeMenuOnSelect={true}
         //components={animatedComponents}
         //defaultValue={[colourOptions[4], colourOptions[5]]}
         // components={{
@@ -501,11 +501,11 @@ function UserGroupUpdate(props: any) {
         isMulti
         hideSelectedOptions={true}
         options={selected}
-        value={payload}
+        // value={payload}
         onChange={handleHierarchyChange}
         className={classes.multiSelect}
         styles={productCustomStyles}
-        //value={payload !== "" ? payload.id : ""}
+        value={payload !== '' ? payload.hierarchyId : ''}
       />
     </>
   )
@@ -687,7 +687,7 @@ function UserGroupUpdate(props: any) {
           >
             <Box>
               <Typography variant="subtitle1" color="primary">
-                Search Hierrachies
+                Search Hierarchies
               </Typography>
             </Box>
             <Box

@@ -407,10 +407,17 @@ function PendingActionUpdate(props: any) {
             'i'
           ).test(event.target.files[i].name)
         : false
-      if (!checkextension && event.target.files[i]) {
+      if (
+        (!checkextension || event.target.files[i].size === 0) &&
+        event.target.files[i]
+      ) {
         setWrongExtn(true)
       }
-      if (event.target.files[i] && checkextension) {
+      if (
+        event.target.files[i] &&
+        checkextension &&
+        event.target.files[i].size !== 0
+      ) {
         // let reader = new FileReader();
         // reader.readAsDataURL(event.target.files[0]);
 

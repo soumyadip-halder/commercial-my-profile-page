@@ -315,7 +315,7 @@ function UserGroupCreate() {
 
   const handleHierarchyChange = (e: any) => {
     let values = []
-
+    setPayload('')
     for (let i = 0; i < e.length; i++) {
       values.push({
         value: e[i].label,
@@ -398,7 +398,7 @@ function UserGroupCreate() {
         styles={productCustomStyles}
       /> */}
       <Select
-        closeMenuOnSelect={false}
+        closeMenuOnSelect={true}
         //components={animatedComponents}
         //defaultValue={[colourOptions[4], colourOptions[5]]}
         // components={{
@@ -408,11 +408,11 @@ function UserGroupCreate() {
         isMulti
         hideSelectedOptions={true}
         options={selected}
-        value={payload}
+        // value={payload}
         onChange={handleHierarchyChange}
         className={classes.multiSelect}
         styles={productCustomStyles}
-        //value={payload !== "" ? payload.id : ""}
+        value={payload !== '' ? payload.hierarchyId : ''}
       />
     </>
   )
@@ -599,7 +599,7 @@ function UserGroupCreate() {
           >
             <Box>
               <Typography variant="subtitle1" color="primary">
-                Search Hierrachies
+                Search Hierarchies
               </Typography>
             </Box>
             <Box
