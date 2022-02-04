@@ -119,7 +119,7 @@ function UserGroupCreate(props: any) {
           break
       }
     }
-  }, [payload, hierLevel])
+  }, [payload])
 
   useEffect(() => {
     for (let d = 0; d < data.length; d++) {
@@ -307,6 +307,7 @@ function UserGroupCreate(props: any) {
 
   const handleChange = (e: any) => {
     setHierLevel(constants.mainvalues.filter((val) => val.value === e.value))
+    setPayload('')
     switch (e.value) {
       case 'division':
         setDisabled(false)
