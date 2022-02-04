@@ -2386,7 +2386,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             </Box>
           </Box>
         </Box>
-        {wrongExtn && referenceDocData.length > 0 ? (
+        {wrongExtn ? (
+          // && referenceDocData.length > 0
           <Box className={classes.eachRow}>
             <Box className={classes.inputLabel}></Box>
             <Box className={classes.inputFieldBox}>
@@ -2442,6 +2443,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                                 (dat) => dat.name !== p.name
                               )
                               setReferenceDocData([...newone])
+                              if (newone.length === 0) {
+                                setWrongExtn(false)
+                              }
                             }}
                             color="primary"
                             size="small"
