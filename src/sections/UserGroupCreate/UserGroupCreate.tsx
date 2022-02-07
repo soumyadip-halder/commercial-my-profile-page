@@ -266,6 +266,7 @@ function UserGroupCreate(props: any) {
       //   const start = new Date();
       while (nexturl !== '') {
         if (error !== '') {
+          setIsProgressLoader(false)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
@@ -300,10 +301,12 @@ function UserGroupCreate(props: any) {
             setError(e.message)
           })
       }
+      if (nexturl === '') setIsProgressLoader(false)
       // const end = new Date();
       // const timediff = end - start;
       // console.log("Time taken for api calls: ", timediff);
     }
+    setIsProgressLoader(true)
     handleClick()
   }, [BASE_URL_SIT, PRODUCT_HIERARCHY_GET, API_KEY, error])
 
