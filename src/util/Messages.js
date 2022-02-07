@@ -28,5 +28,7 @@ export const allMessages = {
     successPostAttach: 'All attached files uploaded and logged successfully',
     successAttach: 'All attached files uploaded successfully',
     successAssign: 'All tasks assigned successfully',
+    successCopy: 'RequestId has been autocopied to clipboard',
+    successGroupCopy: 'GroupId has been autocopied to clipboard',
   },
 }

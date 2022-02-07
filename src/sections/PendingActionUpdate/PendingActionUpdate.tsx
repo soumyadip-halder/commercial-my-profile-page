@@ -212,7 +212,7 @@ function PendingActionUpdate(props: any) {
           {
             severity: 'success',
             summary: '',
-            detail: returnText,
+            detail: `${returnText}.\n ${allMessages.success.successCopy}`,
             life: life,
             className: 'login-toast',
           },
@@ -250,7 +250,7 @@ function PendingActionUpdate(props: any) {
                 {
                   severity: 'success',
                   summary: '',
-                  detail: returnText,
+                  detail: `${returnText}.\n ${allMessages.success.successCopy}`,
                   life: life,
                   className: 'login-toast',
                 },
@@ -272,7 +272,7 @@ function PendingActionUpdate(props: any) {
                 {
                   severity: 'success',
                   summary: '',
-                  detail: returnText,
+                  detail: `${returnText}.\n ${allMessages.success.successCopy}`,
                   life: life,
                   className: 'login-toast',
                 },
@@ -2198,7 +2198,7 @@ function PendingActionUpdate(props: any) {
             flexGrow: 1,
           }}
         >
-          <Typography variant="h6">Pending Action - </Typography>
+          <Typography variant="h6">My Task {'>'} Pending - </Typography>
         </Box>
 
         <Box
@@ -3195,7 +3195,13 @@ function PendingActionUpdate(props: any) {
   )
   return (
     <>
-      <Toast ref={toast} position="bottom-left" />
+      <Toast
+        ref={toast}
+        position="bottom-left"
+        onRemove={() => {
+          history.push(`${DEFAULT}${DASHBOARD}`)
+        }}
+      />
       <Paper className={classes.root} elevation={0}>
         <Box sx={{ flexGrow: 1, p: 1, display: 'flex' }}>
           {/* <Grid container spacing={1}> */}

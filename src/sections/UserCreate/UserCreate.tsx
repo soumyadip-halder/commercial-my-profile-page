@@ -187,7 +187,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           {
             severity: 'success',
             summary: '',
-            detail: returnText,
+            detail: `${returnText}\n${allMessages.success.successCopy}`,
             life: life,
             className: 'login-toast',
           },
@@ -225,7 +225,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 {
                   severity: 'success',
                   summary: '',
-                  detail: returnText,
+                  detail: `${returnText}.\n ${allMessages.success.successCopy}`,
                   life: life,
                   className: 'login-toast',
                 },
@@ -247,7 +247,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 {
                   severity: 'success',
                   summary: '',
-                  detail: returnText,
+                  detail: `${returnText}.\n ${allMessages.success.successCopy}`,
                   life: life,
                   className: 'login-toast',
                 },
@@ -2619,7 +2619,13 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   return (
     <>
-      <Toast ref={toast} position="bottom-left" />
+      <Toast
+        ref={toast}
+        position="bottom-left"
+        onRemove={() => {
+          history.push(`${DEFAULT}${DASHBOARD}`)
+        }}
+      />
       <Paper className={classes.root} elevation={0}>
         <Box sx={{ flexGrow: 1, p: 1, display: 'flex' }}>
           {/* <Grid container spacing={1}> */}

@@ -206,7 +206,7 @@ function UpdateUser(props: any) {
           {
             severity: 'success',
             summary: '',
-            detail: returnText,
+            detail: `${returnText}.\n ${allMessages.success.successCopy}`,
             life: life,
             className: 'login-toast',
           },
@@ -219,7 +219,8 @@ function UpdateUser(props: any) {
           },
         ])
         setTimeout(
-          () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
+          // () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
+          () => history.push(`${DEFAULT}${DASHBOARD}`),
           life
         )
       }
@@ -247,7 +248,7 @@ function UpdateUser(props: any) {
                 {
                   severity: 'success',
                   summary: '',
-                  detail: returnText,
+                  detail: `${returnText}.\n ${allMessages.success.successCopy}`,
                   life: life,
                   className: 'login-toast',
                 },
@@ -260,7 +261,8 @@ function UpdateUser(props: any) {
                 },
               ])
               setTimeout(
-                () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
+                // () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
+                () => history.push(`${DEFAULT}${DASHBOARD}`),
                 life
               )
             })
@@ -272,7 +274,7 @@ function UpdateUser(props: any) {
                 {
                   severity: 'success',
                   summary: '',
-                  detail: returnText,
+                  detail: `${returnText}.\n ${allMessages.success.successCopy}`,
                   life: life,
                   className: 'login-toast',
                 },
@@ -285,7 +287,8 @@ function UpdateUser(props: any) {
                 },
               ])
               setTimeout(
-                () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
+                // () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
+                () => history.push(`${DEFAULT}${DASHBOARD}`),
                 life
               )
             })
@@ -293,7 +296,7 @@ function UpdateUser(props: any) {
     }
   }, [
     checkCount,
-    USERCONFIG_USERMANAGE,
+    // USERCONFIG_USERMANAGE,
     DEFAULT,
     history,
     failureCount,
@@ -301,6 +304,7 @@ function UpdateUser(props: any) {
     returnText,
     logDataIn,
     attachmentUrlArr,
+    DASHBOARD,
   ])
 
   useEffect(() => {
@@ -2614,7 +2618,13 @@ function UpdateUser(props: any) {
 
   return (
     <>
-      <Toast ref={toast} position="bottom-left" />
+      <Toast
+        ref={toast}
+        position="bottom-left"
+        onRemove={() => {
+          history.push(`${DEFAULT}${DASHBOARD}`)
+        }}
+      />
       <Paper className={classes.root} elevation={0}>
         <Box sx={{ flexGrow: 1, p: 1, display: 'flex' }}>
           {/* <Grid container spacing={1}> */}

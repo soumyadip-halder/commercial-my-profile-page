@@ -930,7 +930,7 @@ function UserGroupCreate(props: any) {
           toast.current.show({
             severity: 'success',
             summary: '',
-            detail: res.data.message,
+            detail: `${res.data.message}.\n ${allMessages.success.successGroupCopy}`,
             life: life,
             className: 'login-toast',
           })
@@ -1022,7 +1022,13 @@ function UserGroupCreate(props: any) {
 
   return (
     <>
-      <Toast ref={toast} position="bottom-left" />
+      <Toast
+        ref={toast}
+        position="bottom-left"
+        onRemove={() => {
+          history.push(`${DEFAULT}${USERCONFIG_USERGROUP}`)
+        }}
+      />
       <Paper className={classes.root} elevation={0}>
         <Box
           sx={{ flexGrow: 1, p: 1, display: 'flex' }}
