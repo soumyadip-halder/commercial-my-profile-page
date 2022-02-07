@@ -582,7 +582,7 @@ function UpdateUser(props: any) {
           }
         })
       )
-      setComments(selectEmployeeID.comments)
+      // setComments(selectEmployeeID.comments)
     } else {
       setEmployeeID('')
       setFirstName('')

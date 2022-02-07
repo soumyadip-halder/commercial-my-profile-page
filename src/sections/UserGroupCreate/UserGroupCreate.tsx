@@ -95,8 +95,10 @@ function UserGroupCreate(props: any) {
   //product changes start...........................................
 
   useEffect(() => {
-    if (hierLevel && hierLevel.length > 0) {
-      switch (hierLevel[0].value) {
+    // if (hierLevel && hierLevel.length > 0) {
+    //   switch (hierLevel[0].value) {
+    if (payload && payload.length > 0) {
+      switch (payload[0].hierarchyLevel) {
         case 'division':
           setDivpay([...payload])
           break
@@ -306,8 +308,9 @@ function UserGroupCreate(props: any) {
   }, [BASE_URL_SIT, PRODUCT_HIERARCHY_GET, API_KEY, error])
 
   const handleChange = (e: any) => {
+    // setPayload('')
     setHierLevel(constants.mainvalues.filter((val) => val.value === e.value))
-    setPayload('')
+    //setPayload('')
     switch (e.value) {
       case 'division':
         setDisabled(false)
@@ -450,16 +453,16 @@ function UserGroupCreate(props: any) {
         // components={{
         //   Option,
         // }}
-        defaultValue={payload}
+        // defaultValue={payload}
         isDisabled={disabled}
         isMulti
         hideSelectedOptions={true}
         options={selected}
-        // value={payload}
+        value={payload}
         onChange={handleHierarchyChange}
         className={classes.multiSelect}
         styles={productCustomStyles}
-        value={payload !== '' ? payload.hierarchyId : ''}
+        // value={payload !== '' ? payload.hierarchyId : ''}
       />
     </>
   )
@@ -551,13 +554,11 @@ function UserGroupCreate(props: any) {
       case 'division':
         // setDisabled(false)
         // setPayload('')
-        console.log('div')
         setSelected([...uniquedivobj])
         break
       case 'group':
         // setDisabled(false)
         // setPayload('')
-        console.log('grp')
         setSelected([...uniquegrpobj])
         break
       case 'category':
