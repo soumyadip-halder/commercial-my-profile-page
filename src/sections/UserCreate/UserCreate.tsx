@@ -2494,7 +2494,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 cols={10}
                 rows={5}
                 className={classes.textArea}
-                placeholder="Some Comments....."
+                placeholder="Please provide comments"
                 onChange={(e) => {
                   setComments(e.target.value)
                 }}

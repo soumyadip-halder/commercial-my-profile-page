@@ -502,9 +502,9 @@ function UserGroupCreate(props: any) {
     history.push(`${DEFAULT}${USERCONFIG_USERGROUP}`)
   }
 
-  const ongroupIDChange = (e: any) => {
-    setGroupId(e.target.value)
-  }
+  // const ongroupIDChange = (e: any) => {
+  //   setGroupId(e.target.value)
+  // }
   const ongroupnameChange = (e: any) => {
     setErrorGroupName('')
     setGroupname(e.target.value)
@@ -1089,7 +1089,7 @@ function UserGroupCreate(props: any) {
                   </Box>
                 </Box>
                 <form onSubmit={handleCreateGroup}>
-                  <Box
+                  {/* <Box
                     sx={{
                       display: 'flex',
                       flexDirection: !active ? 'row' : 'column',
@@ -1128,7 +1128,7 @@ function UserGroupCreate(props: any) {
                         />
                       </Typography>
                     </Box>
-                  </Box>
+                  </Box> */}
                   <Box className={classes.eachRow}>
                     <Box
                       className={classes.inputLabel}
