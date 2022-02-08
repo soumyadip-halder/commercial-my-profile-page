@@ -218,11 +218,11 @@ function UpdateUser(props: any) {
             className: 'login-toast',
           },
         ])
-        setTimeout(
-          // () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
-          () => history.push(`${DEFAULT}${DASHBOARD}`),
-          life
-        )
+        // setTimeout(
+        //   // () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
+        //   () => history.push(`${DEFAULT}${DASHBOARD}`),
+        //   life
+        // )
       }
     } else {
       if (checkCount === 0) {
@@ -260,11 +260,11 @@ function UpdateUser(props: any) {
                   className: 'login-toast',
                 },
               ])
-              setTimeout(
-                // () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
-                () => history.push(`${DEFAULT}${DASHBOARD}`),
-                life
-              )
+              // setTimeout(
+              //   // () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
+              //   () => history.push(`${DEFAULT}${DASHBOARD}`),
+              //   life
+              // )
             })
             .catch((err) => {
               detail = allMessages.error.logpostFailureSingle
@@ -286,11 +286,11 @@ function UpdateUser(props: any) {
                   className: 'login-toast',
                 },
               ])
-              setTimeout(
-                // () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
-                () => history.push(`${DEFAULT}${DASHBOARD}`),
-                life
-              )
+              // setTimeout(
+              //   // () => history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`),
+              //   () => history.push(`${DEFAULT}${DASHBOARD}`),
+              //   life
+              // )
             })
       }
     }

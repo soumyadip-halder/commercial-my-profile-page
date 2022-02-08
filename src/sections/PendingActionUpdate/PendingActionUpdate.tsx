@@ -224,7 +224,7 @@ function PendingActionUpdate(props: any) {
             className: 'login-toast',
           },
         ])
-        setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+        // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
       }
     } else {
       if (checkCount === 0) {
@@ -262,7 +262,7 @@ function PendingActionUpdate(props: any) {
                   className: 'login-toast',
                 },
               ])
-              setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+              // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
             })
             .catch((err) => {
               detail = allMessages.error.logpostFailureSingle
@@ -284,7 +284,7 @@ function PendingActionUpdate(props: any) {
                   className: 'login-toast',
                 },
               ])
-              setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+              // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
             })
       }
     }

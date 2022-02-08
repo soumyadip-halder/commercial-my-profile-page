@@ -934,7 +934,7 @@ function UserGroupCreate(props: any) {
             life: life,
             className: 'login-toast',
           })
-          setTimeout(() => goBack(), life)
+          // setTimeout(() => goBack(), life)
         })
         .catch((err) => {
           setDisabled1(false)

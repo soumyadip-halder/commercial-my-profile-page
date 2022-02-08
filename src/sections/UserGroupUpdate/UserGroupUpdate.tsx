@@ -1006,6 +1006,7 @@ function UserGroupUpdate(props: any) {
   //   </Dialog>
   // )
   const goBack = () => {
+    console.log('Called')
     reset_groupID()
     history.push(`${DEFAULT}${USERCONFIG_USERGROUP}`)
   }
@@ -1093,7 +1094,7 @@ function UserGroupUpdate(props: any) {
             life: life,
             className: 'login-toast',
           })
-          setTimeout(() => goBack(), life)
+          // timeit = setTimeout(() => goBack(), life)
         })
         .catch((err) => {
           setDisabled1(false)

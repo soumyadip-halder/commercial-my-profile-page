@@ -199,7 +199,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             className: 'login-toast',
           },
         ])
-        setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+        // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
       }
     } else {
       if (checkCount === 0) {
@@ -237,7 +237,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   className: 'login-toast',
                 },
               ])
-              setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+              // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
             })
             .catch((err) => {
               detail = allMessages.error.logpostFailureSingle
@@ -259,7 +259,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   className: 'login-toast',
                 },
               ])
-              setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
+              // setTimeout(() => history.push(`${DEFAULT}${DASHBOARD}`), life)
             })
       }
     }
