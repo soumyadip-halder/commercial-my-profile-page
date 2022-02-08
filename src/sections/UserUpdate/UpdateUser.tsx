@@ -33,6 +33,7 @@ import { fieldWidth, useStyles } from './Styles'
 import {
   getColleagueAPI,
   getUserGroupAPI,
+  getUserGroupActiveAPI,
   putUserDetailsAPI,
   putUserDetailsCamundaAPI,
   postTaskLogsAPI,
@@ -148,8 +149,10 @@ function UpdateUser(props: any) {
         console.log(rolesValues)
       }
 
-      getUserGroupAPI &&
-        getUserGroupAPI()
+      // getUserGroupAPI &&
+      //   getUserGroupAPI()
+      getUserGroupActiveAPI &&
+        getUserGroupActiveAPI()
           .then((res) => {
             const groupValues = res.data.usergroups.map((group: any) => {
               return {
@@ -430,13 +433,13 @@ function UpdateUser(props: any) {
       // setStatus('W')
       setRoleAccess('mod_role')
       setGroupAccess('mod_group')
-      setStatus('A')
+      // setStatus('A')
     }
     if (e.target.value.toLowerCase() === 'remove') {
       // setStatus('W')
       setRoleAccess('rem_role')
       setGroupAccess('rem_group')
-      setStatus('A')
+      // setStatus('A')
     }
     setRequestType(e.target.value)
   }

@@ -34,6 +34,7 @@ import { connect } from 'react-redux'
 import {
   getColleagueAPI,
   getUserGroupAPI,
+  getUserGroupActiveAPI,
   postTaskLogsAPI,
   putUserDetailsAPI,
   putUserDetailsCamundaAPI,
@@ -136,8 +137,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   useEffect(() => {
     focusRequestType.current.focus()
-    getUserGroupAPI &&
-      getUserGroupAPI()
+    // getUserGroupAPI &&
+    //   getUserGroupAPI()
+    getUserGroupActiveAPI &&
+      getUserGroupActiveAPI()
         .then((res) => {
           console.log(res.data)
           const groupValues = res.data.usergroups.map((group: any) => {
@@ -417,13 +420,13 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       // setStatus('W')
       setRoleAccess('mod_role')
       setGroupAccess('mod_group')
-      setStatus('A')
+      // setStatus('A')
     }
     if (e.target.value.toLowerCase() === 'remove') {
       // setStatus('W')
       setRoleAccess('rem_role')
       setGroupAccess('rem_group')
-      setStatus('A')
+      // setStatus('A')
     }
     setRequestType(e.target.value)
     checkIt(e.target.value, emplAvailable)

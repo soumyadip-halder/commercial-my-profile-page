@@ -22,6 +22,8 @@ export const allMessages = {
     invalidExtension:
       'Empty Files and,or Files with invalid extensions omitted.',
     errorAssign: 'tasks failed to assign due to service error',
+    errorGroupDelInac:
+      'Cannot delete groups which are already assigned to existing users',
   },
   success: {
     successPost: 'Log posted successfully',

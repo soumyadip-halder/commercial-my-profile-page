@@ -23,6 +23,7 @@ import { taskList } from '../../util/Constants'
 import {
   getColleagueAPI,
   getUserGroupAPI,
+  getUserGroupActiveAPI,
   putUserDetailsAPI,
   putUserDetailsCamundaAPI,
   postTaskLogsAPI,
@@ -158,8 +159,10 @@ function PendingActionUpdate(props: any) {
         console.log(rolesValues)
       }
 
-      getUserGroupAPI &&
-        getUserGroupAPI()
+      // getUserGroupAPI &&
+      //   getUserGroupAPI()
+      getUserGroupActiveAPI &&
+        getUserGroupActiveAPI()
           .then((res) => {
             const groupValues = res.data.usergroups.map((group: any) => {
               return {
@@ -390,11 +393,11 @@ function PendingActionUpdate(props: any) {
     } else if (requestType.toLowerCase() === 'modify') {
       setGroupAccess('mod_group')
       setRoleAccess('mod_role')
-      setStatus('A')
+      // setStatus('A')
     } else if (requestType.toLowerCase() === 'remove') {
       setGroupAccess('rem_group')
       setRoleAccess('rem_role')
-      setStatus('A')
+      // setStatus('A')
     }
   }, [requestType])
   const handleFileUpload = (event: any) => {
