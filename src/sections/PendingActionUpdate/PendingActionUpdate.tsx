@@ -2703,7 +2703,9 @@ function PendingActionUpdate(props: any) {
                     '8',
                     appFuncList ? appFuncList : [],
                     'status'
-                  ) || requestType === 'new'
+                  ) ||
+                  requestType === 'new' ||
+                  requestType === 'remove'
                 }
               >
                 {/* <option disabled value="" className={classes.selectOptions}>
