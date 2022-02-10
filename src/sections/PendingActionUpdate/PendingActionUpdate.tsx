@@ -97,6 +97,7 @@ function PendingActionUpdate(props: any) {
   const [cancelOpenSubmit, setCancelOpenSubmit] = React.useState(false)
   const [cancelOpenReassign, setCancelOpenReassign] = React.useState(false)
   const [cancelOpenReject, setCancelOpenReject] = React.useState(false)
+  const [back, setBack] = React.useState(false)
   const [additionalInfo, setAdditionalInfo] = React.useState('')
   const [openAdditional, setOpenAdditional] = React.useState(false)
   const [colleagueData, setColleagueData] = React.useState('')
@@ -1234,6 +1235,11 @@ function PendingActionUpdate(props: any) {
     setCancelOpenSubmit((p) => !p)
   }
 
+  const handleBack = (e: any) => {
+    e.preventDefault()
+    setBack((p) => !p)
+  }
+
   const handleCancelReassign = (e: any) => {
     // let text = 'are you really want to go back? All your Data will be lost.'
     // if (window.confirm(text) === true) {
@@ -1307,6 +1313,10 @@ function PendingActionUpdate(props: any) {
     e.preventDefault()
     checkForm('approve')
     // canSubmit && shoutOut === '' && setCancelOpenApprove(true)
+  }
+  const handleBackAfterDialog = (e: any) => {
+    e.preventDefault()
+    setBack(true)
   }
 
   const handleSubmitAfterDialog = (e: any) => {
@@ -2170,6 +2180,16 @@ function PendingActionUpdate(props: any) {
     />
   )
 
+  const viewConfirmBack = (
+    <ConfirmBox
+      cancelOpen={back}
+      handleCancel={handleBack}
+      handleProceed={goBack}
+      label1="Sure to go Back?"
+      label2="All your data will be lost"
+    />
+  )
+
   const viewConfirmReassign = (
     <ConfirmBox
       cancelOpen={cancelOpenReassign}
@@ -2267,7 +2287,8 @@ function PendingActionUpdate(props: any) {
           >
             <button
               className={classes.backButton}
-              onClick={goBack}
+              // onClick={goBack}
+              onClick={handleBackAfterDialog}
               type="button"
             >
               Back
@@ -3280,6 +3301,7 @@ function PendingActionUpdate(props: any) {
             {viewConfirmSubmit}
             {viewConfirmReassign}
             {viewConfirmReject}
+            {viewConfirmBack}
           </Grid>
           {/* </Grid> */}
         </Box>

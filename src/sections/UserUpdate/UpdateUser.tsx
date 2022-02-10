@@ -87,6 +87,7 @@ function UpdateUser(props: any) {
   const [groupOpen, setGroupOpen] = React.useState(false)
   const [cancelOpenApprove, setCancelOpenApprove] = React.useState(false)
   const [cancelOpenSubmit, setCancelOpenSubmit] = React.useState(false)
+  const [back, setBack] = React.useState(false)
   const [additionalInfo, setAdditionalInfo] = React.useState('')
   const [openAdditional, setOpenAdditional] = React.useState(false)
   const [colleagueData, setColleagueData] = React.useState('')
@@ -1203,6 +1204,11 @@ function UpdateUser(props: any) {
     setCancelOpenSubmit((p) => !p)
   }
 
+  const handleBack = (e: any) => {
+    e.preventDefault()
+    setBack((p) => !p)
+  }
+
   const checkForm = (btnName: string) => {
     let flag = 1
     if (errorRequestType !== '') {
@@ -1254,6 +1260,10 @@ function UpdateUser(props: any) {
     e.preventDefault()
     checkForm('approve')
     // canSubmit && shoutOut === '' && setCancelOpenApprove(true)
+  }
+  const handleBackAfterDialog = (e: any) => {
+    e.preventDefault()
+    setBack(true)
   }
 
   const handleSubmitAfterDialog = (e: any) => {
@@ -1751,6 +1761,16 @@ function UpdateUser(props: any) {
       label2="Please click Ok to proceed"
     />
   )
+
+  const viewConfirmBack = (
+    <ConfirmBox
+      cancelOpen={back}
+      handleCancel={handleBack}
+      handleProceed={goBack}
+      label1="Sure to go Back?"
+      label2="All your data will be lost"
+    />
+  )
   const createForm = (
     <Box
       sx={{
@@ -1828,7 +1848,8 @@ function UpdateUser(props: any) {
           >
             <button
               className={classes.backButton}
-              onClick={goBack}
+              // onClick={goBack}
+              onClick={handleBackAfterDialog}
               type="button"
             >
               Back
@@ -2689,6 +2710,7 @@ function UpdateUser(props: any) {
             {viewAdditionalInfo}
             {viewConfirmApprove}
             {viewConfirmSubmit}
+            {viewConfirmBack}
           </Grid>
           {/* </Grid> */}
         </Box>

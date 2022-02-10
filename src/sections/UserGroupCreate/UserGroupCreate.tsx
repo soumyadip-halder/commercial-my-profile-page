@@ -51,6 +51,7 @@ function UserGroupCreate(props: any) {
   const [locationNames, setLocationNames] = useState([])
   const [viewLocationEl, setViewLocationEl] = useState(null)
   const toast = useRef<any>(null)
+  const [back, setBack] = React.useState(false)
   //
   const [isProgressLoader, setIsProgressLoader] = React.useState(false)
   //
@@ -774,6 +775,11 @@ function UserGroupCreate(props: any) {
       </Box>
     </Dialog>
   )
+
+  const handleBack = (e: any) => {
+    e.preventDefault()
+    setBack((p) => !p)
+  }
   // const viewLocation = (
   //   <Dialog
   //     id="basic-menu"
@@ -859,6 +865,11 @@ function UserGroupCreate(props: any) {
   //   //console.log(startdate);
   //   setCurrentDate(startdate)
   // }, [locationNames])
+
+  const handleBackAfterDialog = (e: any) => {
+    e.preventDefault()
+    setBack(true)
+  }
 
   const handleCreateGroup = () => {
     // e.preventDefault()
@@ -1011,6 +1022,16 @@ function UserGroupCreate(props: any) {
     />
   )
 
+  const viewConfirmBack = (
+    <ConfirmBox
+      cancelOpen={back}
+      handleCancel={handleBack}
+      handleProceed={goBack}
+      label1="Sure to go Back?"
+      label2="All your data will be lost"
+    />
+  )
+
   const viewConfirmReset = (
     <ConfirmBox
       cancelOpen={cancelOpenReset}
@@ -1081,7 +1102,8 @@ function UserGroupCreate(props: any) {
                     >
                       <Link
                         to="#"
-                        onClick={goBack}
+                        // onClick={goBack}
+                        onClick={handleBackAfterDialog}
                         className={classes.backButton}
                       >
                         Back
@@ -1418,6 +1440,7 @@ function UserGroupCreate(props: any) {
       </Paper>
       {viewConfirmReset}
       {viewConfirmSubmit}
+      {viewConfirmBack}
     </>
   )
 }

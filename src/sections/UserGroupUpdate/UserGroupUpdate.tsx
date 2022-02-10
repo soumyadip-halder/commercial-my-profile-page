@@ -56,6 +56,7 @@ function UserGroupUpdate(props: any) {
   const [locationNames, setLocationNames] = useState([])
   const [viewLocationEl, setViewLocationEl] = useState(null)
   const toast = useRef<any>(null)
+  const [back, setBack] = React.useState(false)
   //product changes start.............................................
   // const BASE = "https://pre-api.morrisons.com";
   const [error, setError] = useState('')
@@ -945,6 +946,11 @@ function UserGroupUpdate(props: any) {
       </Box>
     </Dialog>
   )
+
+  const handleBack = (e: any) => {
+    e.preventDefault()
+    setBack((p) => !p)
+  }
   // const viewLocation = (
   //   <Dialog
   //     id="basic-menu"
@@ -1034,6 +1040,11 @@ function UserGroupUpdate(props: any) {
   //   //console.log(startdate);
   //   setCurrentDate(startdate)
   // }, [locationNames])
+
+  const handleBackAfterDialog = (e: any) => {
+    e.preventDefault()
+    setBack(true)
+  }
 
   const handleCreateGroup = () => {
     // e.preventDefault()
@@ -1295,6 +1306,15 @@ function UserGroupUpdate(props: any) {
     />
   )
 
+  const viewConfirmBack = (
+    <ConfirmBox
+      cancelOpen={back}
+      handleCancel={handleBack}
+      handleProceed={goBack}
+      label1="Sure to go Back?"
+      label2="All your data will be lost"
+    />
+  )
   const viewConfirmReset = (
     <ConfirmBox
       cancelOpen={cancelOpenReset}
@@ -1365,7 +1385,8 @@ function UserGroupUpdate(props: any) {
                     >
                       <Link
                         to="#"
-                        onClick={goBack}
+                        // onClick={goBack}
+                        onClick={handleBackAfterDialog}
                         className={classes.backButton}
                       >
                         Back
@@ -1707,6 +1728,7 @@ function UserGroupUpdate(props: any) {
       </Paper>
       {viewConfirmReset}
       {viewConfirmSubmit}
+      {viewConfirmBack}
     </>
   )
 }

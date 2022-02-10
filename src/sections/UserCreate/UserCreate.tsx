@@ -88,6 +88,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const [groupOpen, setGroupOpen] = React.useState(false)
   const [cancelOpenApprove, setCancelOpenApprove] = React.useState(false)
   const [cancelOpenSubmit, setCancelOpenSubmit] = React.useState(false)
+  const [back, setBack] = React.useState(false)
   const [openAdditional, setOpenAdditional] = useState(false)
   const [colleagueData, setColleagueData] = React.useState('')
   const [submitFn, setSubmitFn] = React.useState<any>()
@@ -977,6 +978,11 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     setCancelOpenSubmit((p) => !p)
   }
 
+  const handleBack = (e: any) => {
+    e.preventDefault()
+    setBack((p) => !p)
+  }
+
   // const viewCancel = (
   //   <Dialog open={cancelOpen} onClose={handleCancel}>
   //     <Box
@@ -1283,7 +1289,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     checkForm('approve')
     // canSubmit && shoutOut === '' && setCancelOpenApprove(true)
   }
-
+  const handleBackAfterDialog = (e: any) => {
+    e.preventDefault()
+    setBack(true)
+  }
   const handleSubmitAfterDialog = (e: any) => {
     e.preventDefault()
     checkForm('submit')
@@ -1768,6 +1777,16 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     />
   )
 
+  const viewConfirmBack = (
+    <ConfirmBox
+      cancelOpen={back}
+      handleCancel={handleBack}
+      handleProceed={goBack}
+      label1="Sure to go Back?"
+      label2="All your data will be lost"
+    />
+  )
+
   const createForm = (
     <Box
       sx={{
@@ -1831,7 +1850,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           >
             <button
               className={classes.backButton}
-              onClick={goBack}
+              // onClick={goBack}
+              onClick={handleBackAfterDialog}
               type="button"
             >
               Back
@@ -2694,6 +2714,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             {viewAdditionalInfo}
             {viewConfirmApprove}
             {viewConfirmSubmit}
+            {viewConfirmBack}
           </Grid>
           {/* </Grid> */}
         </Box>
