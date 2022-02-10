@@ -129,6 +129,11 @@ function PendingActionUpdate(props: any) {
   const focusStatus = useRef<any>(null)
   const focusRole = useRef<any>(null)
   const focusGroup = useRef<any>(null)
+  //
+  const [requestorEmailId, setRequestorEmailId] = React.useState('')
+  const [requestorUserId, setRequestorUserId] = React.useState('')
+  const [requestorRoles, setRequestorRoles] = React.useState<Array<any>>([])
+  //
 
   useEffect(() => {
     return () => reset_pendingAction()
@@ -377,6 +382,13 @@ function PendingActionUpdate(props: any) {
       setErrorStatus('')
       setErrorRequestType('')
     }
+    if (e.target.value === 'D') {
+      setRoleAccess('rem_role')
+      setGroupAccess('rem_group')
+    } else {
+      setRoleAccess('mod_role')
+      setGroupAccess('mod_group')
+    }
   }
   const onrequestTypeChange = (e: any) => {
     if (e.target.value !== '') {
@@ -533,6 +545,16 @@ function PendingActionUpdate(props: any) {
             setMiddleName(res.data.tasklists[0].requestData.user.middleName)
             setLastName(res.data.tasklists[0].requestData.user.lastName)
             setEmail(res.data.tasklists[0].requestData.user.emailId)
+            setRequestorUserId(
+              res.data.tasklists[0].requestData.camunda.requestorDetails
+                .requestBy
+            )
+            setRequestorEmailId(
+              res.data.tasklists[0].requestData.camunda.requestorDetails.emailId
+            )
+            setRequestorRoles(
+              res.data.tasklists[0].requestData.camunda.requestorRoles
+            )
             // setAdditionalInfo(
             //   res.data.tasklists[0].requestData.user.additionalInfo
             // )
@@ -690,6 +712,7 @@ function PendingActionUpdate(props: any) {
               }}
             >
               <button
+                type="button"
                 style={{
                   border: 0,
                   padding: 0,
@@ -741,7 +764,7 @@ function PendingActionUpdate(props: any) {
           className={classes.inputFieldBox}
         >
           <Button
-            type="submit"
+            // type="submit"
             variant="contained"
             color="primary"
             onClick={updateGroups}
@@ -823,6 +846,7 @@ function PendingActionUpdate(props: any) {
               }}
             >
               <button
+                type="button"
                 style={{
                   border: 0,
                   padding: 0,
@@ -995,6 +1019,7 @@ function PendingActionUpdate(props: any) {
             }}
           >
             <button
+              type="button"
               style={{
                 border: 0,
                 padding: 0,
@@ -1117,6 +1142,7 @@ function PendingActionUpdate(props: any) {
             }}
           >
             <button
+              type="button"
               style={{
                 border: 0,
                 padding: 0,
@@ -1884,19 +1910,22 @@ function PendingActionUpdate(props: any) {
     setDisabled(true)
     const formData = {
       requestorDetails: {
-        emailId: userDetail && userDetail.userdetails[0].user.emailId,
-        requestBy: userDetail && userDetail.userdetails[0].user.userId,
+        //emailId: userDetail && userDetail.userdetails[0].user.emailId,
+        emailId: requestorEmailId,
+        //requestBy: userDetail && userDetail.userdetails[0].user.userId,
+        requestBy: requestorUserId,
         requestDate: new Date().toISOString().split('T')[0],
         // requestType: requestType,
         requestType: 'Reassign',
       },
-      requestorRoles:
-        userDetail &&
-        userDetail.userdetails[0].roles.map((role: any) => {
-          return {
-            roleId: role.roleId,
-          }
-        }),
+      // requestorRoles:
+      //   userDetail &&
+      //   userDetail.userdetails[0].roles.map((role: any) => {
+      //     return {
+      //       roleId: role.roleId,
+      //     }
+      //   }),
+      requestorRoles: requestorRoles,
       // submitFlag: 'Reassign',
     }
     console.log(formData)
@@ -2216,6 +2245,7 @@ function PendingActionUpdate(props: any) {
             }}
           >
             <button
+              type="button"
               className={classes.backButton}
               onClick={handleOpenViewLog}
               disabled={viewLogRows.length > 0 ? false : true}
@@ -2235,7 +2265,11 @@ function PendingActionUpdate(props: any) {
               paddingLeft: 5,
             }}
           >
-            <button className={classes.backButton} onClick={goBack}>
+            <button
+              className={classes.backButton}
+              onClick={goBack}
+              type="button"
+            >
               Back
             </button>
           </Box>
@@ -2244,7 +2278,11 @@ function PendingActionUpdate(props: any) {
       <Box sx={{ overflow: 'auto' }} className={classes.inputLabelHead}>
         <Typography variant="subtitle1">{requestedId}</Typography>
       </Box>
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+        }}
+      >
         <Box className={classes.eachRow}>
           <Box
             sx={{
@@ -2636,6 +2674,7 @@ function PendingActionUpdate(props: any) {
               }}
             >
               <button
+                type="button"
                 className={
                   UtilityFunctions.isHidden(
                     '8',
@@ -2645,7 +2684,17 @@ function PendingActionUpdate(props: any) {
                     ? classes.hideit
                     : classes.backButton
                 }
-                disabled={colleagueData || additionalInfo ? false : true}
+                disabled={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'addl_data'
+                  )
+                    ? true
+                    : colleagueData || additionalInfo
+                    ? false
+                    : true
+                }
                 onClick={(e) => {
                   e.preventDefault()
                   setOpenAdditional((prevState) => !prevState)
@@ -2827,6 +2876,7 @@ function PendingActionUpdate(props: any) {
             {groups ? (
               groups.length > 0 ? (
                 <button
+                  type="button"
                   className={classes.backButton}
                   onClick={handleOpenGroups}
                   ref={focusGroup}
@@ -2844,6 +2894,7 @@ function PendingActionUpdate(props: any) {
                   //     ? classes.hideit
                   //     : classes.backButton
                   // }
+                  type="button"
                   className={classes.backButton}
                   disabled={UtilityFunctions.isHidden(
                     '8',
@@ -2858,6 +2909,7 @@ function PendingActionUpdate(props: any) {
               )
             ) : (
               <button
+                type="button"
                 className={classes.backButton}
                 onClick={handleOpenGroups}
                 ref={focusGroup}
@@ -2876,6 +2928,7 @@ function PendingActionUpdate(props: any) {
               //     ? classes.hideit
               //     : classes.backButton
               // }
+              type="button"
               className={classes.hideit}
               onClick={handleOpenTasks}
             >
@@ -3131,7 +3184,7 @@ function PendingActionUpdate(props: any) {
             }}
           >
             <Button
-              type="submit"
+              // type="submit"
               variant="contained"
               color="primary"
               className={
@@ -3172,7 +3225,7 @@ function PendingActionUpdate(props: any) {
             </Button>
 
             <Button
-              type="submit"
+              // type="submit"
               variant="contained"
               color="primary"
               className={

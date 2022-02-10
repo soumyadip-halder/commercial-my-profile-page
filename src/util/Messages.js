@@ -7,8 +7,8 @@ export const allMessages = {
     noRoles: 'Please select atleast one role',
     noGroups: 'Please select atleast one group',
     invalidEmployee: 'Invalid Employee ID',
-    existingEmp: 'Cannot create an already existing Employee',
-    modifyEmp: 'Cannot modify for a non existing Employee',
+    existingEmp: 'User already exists in webapp',
+    modifyEmp: 'User does not exist in webapp',
     inprogressError:
       'Only New request can be raised for user status Inprogress. Either change Status or the Request Type',
     inactiveError:
@@ -23,7 +23,7 @@ export const allMessages = {
       'Empty Files and,or Files with invalid extensions omitted.',
     errorAssign: 'tasks failed to assign due to service error',
     errorGroupDelInac:
-      'Cannot delete groups which are already assigned to existing users',
+      'Cannot Inactive/Delete groups which are already assigned to existing users',
   },
   success: {
     successPost: 'Log posted successfully',

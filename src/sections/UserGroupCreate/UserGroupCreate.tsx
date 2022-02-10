@@ -662,6 +662,7 @@ function UserGroupCreate(props: any) {
               }}
             >
               <button
+                type="button"
                 style={{
                   border: 0,
                   padding: 0,
@@ -761,7 +762,7 @@ function UserGroupCreate(props: any) {
           className={classes.inputFieldBox}
         >
           <Button
-            type="submit"
+            // type="submit"
             variant="contained"
             color="primary"
             onClick={updateHierarchy}
@@ -1376,7 +1377,7 @@ function UserGroupCreate(props: any) {
                       }}
                     >
                       <Button
-                        type="reset"
+                        // type="reset"
                         variant="contained"
                         className={classes.whiteButton}
                         // onClick={handleReset}
@@ -1395,7 +1396,7 @@ function UserGroupCreate(props: any) {
                       <Button
                         variant="contained"
                         color="primary"
-                        type="submit"
+                        // type="submit"
                         className={classes.buttons}
                         // onClick={handleCreateGroup}
                         onClick={handleCreateGroupAfterDialog}

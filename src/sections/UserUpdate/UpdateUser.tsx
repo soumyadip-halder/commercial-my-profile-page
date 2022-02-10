@@ -418,6 +418,13 @@ function UpdateUser(props: any) {
       setErrorStatus('')
       setErrorRequestType('')
     }
+    if (e.target.value === 'D') {
+      setRoleAccess('rem_role')
+      setGroupAccess('rem_group')
+    } else {
+      setRoleAccess('mod_role')
+      setGroupAccess('mod_group')
+    }
   }
   const onrequestTypeChange = (e: any) => {
     if (e.target.value !== '') {
@@ -431,8 +438,14 @@ function UpdateUser(props: any) {
     }
     if (e.target.value.toLowerCase() === 'modify') {
       // setStatus('W')
-      setRoleAccess('mod_role')
-      setGroupAccess('mod_group')
+      if (status === 'D') {
+        setRoleAccess('rem_role')
+        setGroupAccess('rem_group')
+      } else {
+        setRoleAccess('mod_role')
+        setGroupAccess('mod_group')
+      }
+
       // setStatus('A')
     }
     if (e.target.value.toLowerCase() === 'remove') {
@@ -667,6 +680,7 @@ function UpdateUser(props: any) {
               }}
             >
               <button
+                type="button"
                 style={{
                   border: 0,
                   padding: 0,
@@ -718,7 +732,7 @@ function UpdateUser(props: any) {
           className={classes.inputFieldBox}
         >
           <Button
-            type="submit"
+            // type="submit"
             variant="contained"
             color="primary"
             onClick={updateGroups}
@@ -801,6 +815,7 @@ function UpdateUser(props: any) {
               }}
             >
               <button
+                type="button"
                 style={{
                   border: 0,
                   padding: 0,
@@ -973,6 +988,7 @@ function UpdateUser(props: any) {
             }}
           >
             <button
+              type="button"
               style={{
                 border: 0,
                 padding: 0,
@@ -1095,6 +1111,7 @@ function UpdateUser(props: any) {
             }}
           >
             <button
+              type="button"
               style={{
                 border: 0,
                 padding: 0,
@@ -1789,6 +1806,7 @@ function UpdateUser(props: any) {
             }}
           >
             <button
+              type="button"
               className={classes.backButton}
               onClick={handleOpenViewLog}
               disabled={viewLogRows.length > 0 ? false : true}
@@ -1808,13 +1826,21 @@ function UpdateUser(props: any) {
               paddingLeft: 5,
             }}
           >
-            <button className={classes.backButton} onClick={goBack}>
+            <button
+              className={classes.backButton}
+              onClick={goBack}
+              type="button"
+            >
               Back
             </button>
           </Box>
         </Box>
       </Box>
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -2063,6 +2089,7 @@ function UpdateUser(props: any) {
               }}
             >
               <button
+                type="button"
                 className={
                   UtilityFunctions.isHidden(
                     '8',
@@ -2072,7 +2099,17 @@ function UpdateUser(props: any) {
                     ? classes.hideit
                     : classes.backButton
                 }
-                disabled={colleagueData || additionalInfo ? false : true}
+                disabled={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'addl_data'
+                  )
+                    ? true
+                    : colleagueData || additionalInfo
+                    ? false
+                    : true
+                }
                 onClick={(e) => {
                   e.preventDefault()
                   setOpenAdditional((prevState) => !prevState)
@@ -2254,6 +2291,7 @@ function UpdateUser(props: any) {
             {groups ? (
               groups.length > 0 ? (
                 <button
+                  type="button"
                   className={classes.backButton}
                   onClick={handleOpenGroups}
                   ref={focusGroup}
@@ -2271,6 +2309,7 @@ function UpdateUser(props: any) {
                   //     ? classes.hideit
                   //     : classes.backButton
                   // }
+                  type="button"
                   className={classes.backButton}
                   disabled={UtilityFunctions.isHidden(
                     '8',
@@ -2285,6 +2324,7 @@ function UpdateUser(props: any) {
               )
             ) : (
               <button
+                type="button"
                 className={classes.backButton}
                 onClick={handleOpenGroups}
                 ref={focusGroup}
@@ -2294,6 +2334,7 @@ function UpdateUser(props: any) {
             )}
             &nbsp;&nbsp; &nbsp;&nbsp;
             <button
+              type="button"
               // className={
               //   UtilityFunctions.isHidden(
               //     '8',
@@ -2556,7 +2597,7 @@ function UpdateUser(props: any) {
             }}
           >
             <Button
-              type="submit"
+              // type="submit"
               variant="contained"
               color="primary"
               className={
@@ -2595,7 +2636,7 @@ function UpdateUser(props: any) {
             </Button>
 
             <Button
-              type="submit"
+              // type="submit"
               variant="contained"
               color="primary"
               className={
@@ -2627,7 +2668,7 @@ function UpdateUser(props: any) {
         ref={toast}
         position="bottom-left"
         onRemove={() => {
-          history.push(`${DEFAULT}${DASHBOARD}`)
+          history.push(`${DEFAULT}${USERCONFIG_USERMANAGE}`)
         }}
       />
       <Paper className={classes.root} elevation={0}>

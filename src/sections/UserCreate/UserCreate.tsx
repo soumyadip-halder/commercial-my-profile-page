@@ -405,6 +405,13 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       setErrorStatus('')
       setErrorRequestType('')
     }
+    if (e.target.value === 'D') {
+      setRoleAccess('rem_role')
+      setGroupAccess('rem_group')
+    } else {
+      setRoleAccess('mod_role')
+      setGroupAccess('mod_group')
+    }
   }
   const onrequestTypeChange = (e: any) => {
     if (e.target.value !== '') {
@@ -418,8 +425,14 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     }
     if (e.target.value.toLowerCase() === 'modify') {
       // setStatus('W')
-      setRoleAccess('mod_role')
-      setGroupAccess('mod_group')
+      if (status === 'D') {
+        setRoleAccess('rem_role')
+        setGroupAccess('rem_group')
+      } else {
+        setRoleAccess('mod_role')
+        setGroupAccess('mod_group')
+      }
+
       // setStatus('A')
     }
     if (e.target.value.toLowerCase() === 'remove') {
@@ -431,6 +444,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     setRequestType(e.target.value)
     checkIt(e.target.value, emplAvailable)
   }
+  useEffect(() => {
+    console.log(status)
+  }, [status])
 
   const checkIt = (type: string, empAvail: boolean) => {
     if (empIdInput !== '' && type.toLowerCase() === 'new' && empAvail) {
@@ -577,6 +593,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               }}
             >
               <button
+                type="button"
                 style={{
                   border: 0,
                   padding: 0,
@@ -629,7 +646,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           className={classes.inputFieldBox}
         >
           <Button
-            type="submit"
+            // type="submit"
             variant="contained"
             color="primary"
             onClick={updateGroups}
@@ -750,6 +767,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             }}
           >
             <button
+              type="button"
               style={{
                 border: 0,
                 padding: 0,
@@ -868,6 +886,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             }}
           >
             <button
+              type="button"
               style={{
                 border: 0,
                 padding: 0,
@@ -1071,7 +1090,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   //   return startdate
   // }
 
-  const handleSearchEmployee = () => {
+  const handleSearchEmployee = (e: any) => {
+    e.preventDefault()
+    setOpenAdditional(false)
     // let selectedEmp = userData.filter((user: any) => {
     //   return user.user.userId === empIdInput
     // })
@@ -1808,13 +1829,21 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               paddingLeft: 5,
             }}
           >
-            <button className={classes.backButton} onClick={goBack}>
+            <button
+              className={classes.backButton}
+              onClick={goBack}
+              type="button"
+            >
               Back
             </button>
           </Box>
         </Box>
       </Box>
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -1908,6 +1937,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               <OutlinedInput
                 value={empIdInput}
                 inputRef={focusEmpId}
+                onKeyPress={(e) => {}}
                 onChange={(e) => {
                   // if (e.target.value === '') {
                   setEmpAvailable(false)
@@ -1919,6 +1949,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   setEmail('')
                   setDesignation('')
                   setErrorEmployeeId('')
+                  setOpenAdditional(false)
                 }}
                 className={classes.inputFields}
                 style={{ backgroundColor: 'white' }}
@@ -2092,6 +2123,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               }}
             >
               <button
+                type="button"
                 className={
                   UtilityFunctions.isHidden(
                     '8',
@@ -2101,11 +2133,22 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                     ? classes.hideit
                     : classes.backButton
                 }
-                disabled={colleagueData || additionalInfo ? false : true}
+                disabled={
+                  UtilityFunctions.isHidden(
+                    '8',
+                    appFuncList ? appFuncList : [],
+                    'addl_data'
+                  )
+                    ? true
+                    : colleagueData || additionalInfo
+                    ? false
+                    : true
+                }
                 onClick={(e) => {
                   e.preventDefault()
                   setOpenAdditional((prevState) => !prevState)
                 }}
+                // size="small"
               >
                 Additional Data
               </button>
@@ -2266,6 +2309,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             {groups ? (
               groups.length > 0 ? (
                 <button
+                  type="button"
                   className={classes.backButton}
                   onClick={handleOpenGroups}
                   ref={focusGroup}
@@ -2283,6 +2327,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   //     ? classes.hideit
                   //     : classes.backButton
                   // }
+                  type="button"
                   className={classes.backButton}
                   disabled={UtilityFunctions.isHidden(
                     '8',
@@ -2297,6 +2342,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               )
             ) : (
               <button
+                type="button"
                 className={classes.backButton}
                 onClick={handleOpenGroups}
                 ref={focusGroup}
@@ -2553,7 +2599,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             }}
           >
             <Button
-              type="submit"
+              // type="submit"
               variant="contained"
               color="primary"
               className={
@@ -2595,7 +2641,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             </Button>
 
             <Button
-              type="submit"
+              // type="submit"
               variant="contained"
               color="primary"
               className={

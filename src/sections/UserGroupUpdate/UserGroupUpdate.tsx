@@ -833,6 +833,7 @@ function UserGroupUpdate(props: any) {
               }}
             >
               <button
+                type="button"
                 style={{
                   border: 0,
                   padding: 0,
@@ -932,7 +933,7 @@ function UserGroupUpdate(props: any) {
           className={classes.inputFieldBox}
         >
           <Button
-            type="submit"
+            // type="submit"
             variant="contained"
             color="primary"
             onClick={updateHierarchy}
@@ -1012,7 +1013,6 @@ function UserGroupUpdate(props: any) {
   //   </Dialog>
   // )
   const goBack = () => {
-    console.log('Called')
     reset_groupID()
     history.push(`${DEFAULT}${USERCONFIG_USERGROUP}`)
   }
@@ -1666,7 +1666,7 @@ function UserGroupUpdate(props: any) {
                       }}
                     >
                       <Button
-                        type="reset"
+                        // type="reset"
                         variant="contained"
                         className={classes.whiteButton}
                         // onClick={handleReset}
@@ -1685,7 +1685,7 @@ function UserGroupUpdate(props: any) {
                       <Button
                         variant="contained"
                         color="primary"
-                        type="submit"
+                        // type="submit"
                         className={classes.buttons}
                         // onClick={handleCreateGroup}
                         onClick={handleCreateGroupAfterDialog}
