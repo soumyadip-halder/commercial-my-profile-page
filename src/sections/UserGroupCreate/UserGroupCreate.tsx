@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core'
 import React, { useRef, useState } from 'react'
 import Select, { StylesConfig } from 'react-select'
-import { Link } from 'react-router-dom'
+import { Link, Prompt } from 'react-router-dom'
 import { components } from 'react-select'
 import CloseIcon from '@material-ui/icons/Close'
 import { TextareaAutosize } from '@material-ui/core'
@@ -91,6 +91,7 @@ function UserGroupCreate(props: any) {
   const [errorGroupName, setErrorGroupName] = useState('')
   const [errorStatus, setErrorStatus] = useState('')
   const focusGroupName = useRef<any>(null)
+  const [isPageModified, setIsPageModified] = React.useState(false)
   //product changes end ................................................
 
   //product changes start...........................................
@@ -367,6 +368,7 @@ function UserGroupCreate(props: any) {
   }
 
   const handleHierarchyChange = (e: any) => {
+    setIsPageModified(true)
     let values = []
 
     for (let i = 0; i < e.length; i++) {
@@ -405,6 +407,7 @@ function UserGroupCreate(props: any) {
   // const viewProductOpen = Boolean(viewProductEl)
   // const viewLocationOpen = Boolean(viewLocationEl)
   const handleLocationChange = (selected: any) => {
+    setIsPageModified(true)
     setLocationNames(selected)
     // console.log(selected);
   }
@@ -507,13 +510,16 @@ function UserGroupCreate(props: any) {
   //   setGroupId(e.target.value)
   // }
   const ongroupnameChange = (e: any) => {
+    setIsPageModified(true)
     setErrorGroupName('')
     setGroupname(e.target.value)
   }
   const ondescriptionChange = (e: any) => {
+    setIsPageModified(true)
     setDescription(e.target.value)
   }
   const onstatusChange = (e: any) => {
+    setIsPageModified(true)
     setErrorStatus('')
     setStatus(e.target.value)
   }
@@ -1044,6 +1050,10 @@ function UserGroupCreate(props: any) {
 
   return (
     <>
+      <Prompt
+        when={isPageModified}
+        message={allMessages.success.promptMessage}
+      />
       <Toast
         ref={toast}
         position="bottom-left"
@@ -1100,14 +1110,14 @@ function UserGroupCreate(props: any) {
                         paddingLeft: 5,
                       }}
                     >
-                      <Link
-                        to="#"
-                        // onClick={goBack}
-                        onClick={handleBackAfterDialog}
+                      <button
+                        type="button"
+                        onClick={goBack}
+                        //onClick={handleBackAfterDialog}
                         className={classes.backButton}
                       >
                         Back
-                      </Link>
+                      </button>
                     </Box>
                   </Box>
                 </Box>

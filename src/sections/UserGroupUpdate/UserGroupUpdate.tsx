@@ -11,7 +11,7 @@ import {
 import React, { useRef, useState } from 'react'
 import Select, { StylesConfig } from 'react-select'
 import { Link } from 'react-router-dom'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Prompt } from 'react-router-dom'
 import { components } from 'react-select'
 import CloseIcon from '@material-ui/icons/Close'
 import { TextareaAutosize } from '@material-ui/core'
@@ -95,6 +95,7 @@ function UserGroupUpdate(props: any) {
   const [errorStatus, setErrorStatus] = useState('')
   //
   const [isProgressLoader, setIsProgressLoader] = React.useState(false)
+  const [isPageModified, setIsPageModified] = React.useState(false)
   //
   //product changes end ................................................
 
@@ -543,6 +544,7 @@ function UserGroupUpdate(props: any) {
   }
 
   const handleHierarchyChange = (e: any) => {
+    setIsPageModified(true)
     let values = []
 
     for (let i = 0; i < e.length; i++) {
@@ -581,6 +583,7 @@ function UserGroupUpdate(props: any) {
   // const viewProductOpen = Boolean(viewProductEl)
   // const viewLocationOpen = Boolean(viewLocationEl)
   const handleLocationChange = (selected: any) => {
+    setIsPageModified(true)
     setLocationNames(selected)
     // console.log(selected);
   }
@@ -682,9 +685,11 @@ function UserGroupUpdate(props: any) {
     setGroupname(e.target.value)
   }
   const ondescriptionChange = (e: any) => {
+    setIsPageModified(true)
     setDescription(e.target.value)
   }
   const onstatusChange = (e: any) => {
+    setIsPageModified(true)
     setErrorStatus('')
     setStatus(e.target.value)
   }
@@ -1327,6 +1332,10 @@ function UserGroupUpdate(props: any) {
 
   return (
     <>
+      <Prompt
+        when={isPageModified}
+        message={allMessages.success.promptMessage}
+      />
       <Toast
         ref={toast}
         position="bottom-left"
@@ -1383,14 +1392,14 @@ function UserGroupUpdate(props: any) {
                         paddingLeft: 5,
                       }}
                     >
-                      <Link
-                        to="#"
-                        // onClick={goBack}
-                        onClick={handleBackAfterDialog}
+                      <button
+                        type="button"
+                        onClick={goBack}
+                        //onClick={handleBackAfterDialog}
                         className={classes.backButton}
                       >
                         Back
-                      </Link>
+                      </button>
                     </Box>
                   </Box>
                 </Box>

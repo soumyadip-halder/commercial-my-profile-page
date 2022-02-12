@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 import { styled } from '@material-ui/styles'
 import React from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Prompt } from 'react-router-dom'
 import Select from 'react-select'
 import { useState, useEffect, useRef } from 'react'
 import { components } from 'react-select'
@@ -55,7 +55,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const classes = useStyles()
   const history = useHistory()
   const theme = useTheme()
-  const { DEFAULT, DASHBOARD } = routes
+  const { DEFAULT, DASHBOARD, USERCONFIG_USERCREATE } = routes
   const active = useMediaQuery(theme.breakpoints.down(750))
   const forbutton = useMediaQuery(theme.breakpoints.down(400))
   const width = useMediaQuery(theme.breakpoints.up('md'))
@@ -107,6 +107,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     []
   )
   const [logDataIn, setLogDataIn] = React.useState({})
+  const [isPageModified, setIsPageModified] = React.useState(false)
   //
   //integration changes start
   const [roles, setRoles] = useState([])
@@ -387,6 +388,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
         // reader.onload = (e: any) => {
         //   console.log(e.target.result);
+        setIsPageModified(true)
         setReferenceDocData((prevState) => [
           ...prevState,
           {
@@ -401,6 +403,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     }
   }
   const onstatusChange = (e: any) => {
+    setIsPageModified(true)
     setStatus(e.target.value)
     if (e.target.value !== '') {
       setErrorStatus('')
@@ -415,6 +418,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     }
   }
   const onrequestTypeChange = (e: any) => {
+    setIsPageModified(true)
     if (e.target.value !== '') {
       setErrorRequestType('')
       setErrorStatus('')
@@ -469,6 +473,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   }, [requestType])
 
   const handleRoleChange1 = (selected: any) => {
+    setIsPageModified(true)
     console.log(selected)
     setRoleNames(selected)
     if (selected.length > 0) setErrorRoles('')
@@ -545,6 +550,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   const handleGroupsInput = (selected: any) => {
     console.log(selected)
+    setIsPageModified(true)
     setGroupInput(selected)
     if (selected.length > 0) setErrorGroups('')
   }
@@ -1293,6 +1299,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     e.preventDefault()
     setBack(true)
   }
+
   const handleSubmitAfterDialog = (e: any) => {
     e.preventDefault()
     checkForm('submit')
@@ -1850,8 +1857,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
           >
             <button
               className={classes.backButton}
-              // onClick={goBack}
-              onClick={handleBackAfterDialog}
+              onClick={goBack}
+              // onClick={handleBackAfterDialog}
               type="button"
             >
               Back
@@ -1962,6 +1969,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   // if (e.target.value === '') {
                   setEmpAvailable(false)
                   // }
+                  setIsPageModified(true)
                   setEmpIdInput(e.target.value)
                   setFirstName('')
                   setMiddleName('')
@@ -2567,6 +2575,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 className={classes.textArea}
                 placeholder="Please provide comments"
                 onChange={(e) => {
+                  setIsPageModified(true)
                   setComments(e.target.value)
                 }}
                 value={comments}
@@ -2690,6 +2699,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
   return (
     <>
+      <Prompt
+        when={isPageModified}
+        message={allMessages.success.promptMessage}
+      />
       <Toast
         ref={toast}
         position="bottom-left"

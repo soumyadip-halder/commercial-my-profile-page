@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core'
 import { styled } from '@material-ui/styles'
 import React, { useRef } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Prompt } from 'react-router-dom'
 // import SideBar from '../Layout/SideBar'
 import Select from 'react-select'
 import { components } from 'react-select'
@@ -115,6 +115,7 @@ function UpdateUser(props: any) {
     []
   )
   const [logDataIn, setLogDataIn] = React.useState({})
+  const [isPageModified, setIsPageModified] = React.useState(false)
   //
   const focusRequestType = useRef<any>(null)
   const focusEmpId = useRef<any>(null)
@@ -399,6 +400,7 @@ function UpdateUser(props: any) {
 
         // reader.onload = (e: any) => {
         //   console.log(e.target.result);
+        setIsPageModified(true)
         setReferenceDocData((prevState) => [
           ...prevState,
           {
@@ -414,6 +416,7 @@ function UpdateUser(props: any) {
   }
   // };
   const onstatusChange = (e: any) => {
+    setIsPageModified(true)
     setStatus(e.target.value)
     if (e.target.value !== '') {
       setErrorStatus('')
@@ -428,6 +431,7 @@ function UpdateUser(props: any) {
     }
   }
   const onrequestTypeChange = (e: any) => {
+    setIsPageModified(true)
     if (e.target.value !== '') {
       setErrorRequestType('')
       setErrorStatus('')
@@ -477,6 +481,7 @@ function UpdateUser(props: any) {
   }
 
   const handleRoleChange1 = (selected: any) => {
+    setIsPageModified(true)
     console.log(selected)
     setRoleNames(selected)
     if (selected.length > 0) setErrorRoles('')
@@ -633,6 +638,7 @@ function UpdateUser(props: any) {
   }
 
   const handleGroupsInput = (selected: any) => {
+    setIsPageModified(true)
     setGroupInput(selected)
     if (selected.length > 0) setErrorGroups('')
   }
@@ -1848,8 +1854,8 @@ function UpdateUser(props: any) {
           >
             <button
               className={classes.backButton}
-              // onClick={goBack}
-              onClick={handleBackAfterDialog}
+              onClick={goBack}
+              // onClick={handleBackAfterDialog}
               type="button"
             >
               Back
@@ -2567,6 +2573,7 @@ function UpdateUser(props: any) {
                 className={classes.textArea}
                 placeholder="Please provide comments"
                 onChange={(e) => {
+                  setIsPageModified(true)
                   setComments(e.target.value)
                 }}
                 value={comments}
@@ -2685,6 +2692,10 @@ function UpdateUser(props: any) {
 
   return (
     <>
+      <Prompt
+        when={isPageModified}
+        message={allMessages.success.promptMessage}
+      />
       <Toast
         ref={toast}
         position="bottom-left"

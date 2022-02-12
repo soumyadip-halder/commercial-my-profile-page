@@ -15,7 +15,7 @@ import { connect } from 'react-redux'
 import { teal } from '@material-ui/core/colors'
 import { Toast } from 'primereact/toast'
 import React, { useRef, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Prompt } from 'react-router-dom'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { fieldWidth, useStyles } from './Styles'
@@ -124,6 +124,7 @@ function PendingActionUpdate(props: any) {
     []
   )
   const [logDataIn, setLogDataIn] = React.useState({})
+  const [isPageModified, setIsPageModified] = React.useState(false)
   //
   const focusRequestType = useRef<any>(null)
   const focusEmpId = useRef<any>(null)
@@ -378,6 +379,7 @@ function PendingActionUpdate(props: any) {
     }),
   }
   const onstatusChange = (e: any) => {
+    setIsPageModified(true)
     setStatus(e.target.value)
     if (e.target.value !== '') {
       setErrorStatus('')
@@ -439,6 +441,7 @@ function PendingActionUpdate(props: any) {
 
         // reader.onload = (e: any) => {
         //   console.log(e.target.result);
+        setIsPageModified(true)
         setReferenceDocData((prevState) => [
           ...prevState,
           {
@@ -468,6 +471,7 @@ function PendingActionUpdate(props: any) {
   }
 
   const handleRoleChange1 = (selected: any) => {
+    setIsPageModified(true)
     console.log(selected)
     setRoleNames(selected)
     if (selected.length > 0) setErrorRoles('')
@@ -666,6 +670,7 @@ function PendingActionUpdate(props: any) {
   }
 
   const handleGroupsInput = (selected: any) => {
+    setIsPageModified(true)
     setGroupInput(selected)
     if (selected.length > 0) setErrorGroups('')
   }
@@ -1926,7 +1931,7 @@ function PendingActionUpdate(props: any) {
         requestBy: requestorUserId,
         requestDate: new Date().toISOString().split('T')[0],
         // requestType: requestType,
-        requestType: 'Reassign',
+        requestType: 'moreinfo',
       },
       // requestorRoles:
       //   userDetail &&
@@ -1943,6 +1948,7 @@ function PendingActionUpdate(props: any) {
     pendingActionDetails &&
       putClaimTaskAPI &&
       putClaimTaskAPI(formData, pendingActionDetails[0].taskId)
+        // putClaimTaskAPI(formData, `${pendingActionDetails[0].taskId}moreinfo`)
         .then((res) => {
           console.log(res)
           setReturnText(res.data.comments)
@@ -2287,8 +2293,8 @@ function PendingActionUpdate(props: any) {
           >
             <button
               className={classes.backButton}
-              // onClick={goBack}
-              onClick={handleBackAfterDialog}
+              onClick={goBack}
+              // onClick={handleBackAfterDialog}
               type="button"
             >
               Back
@@ -3152,6 +3158,7 @@ function PendingActionUpdate(props: any) {
                 className={classes.textArea}
                 placeholder={comments1}
                 onChange={(e) => {
+                  setIsPageModified(true)
                   setComments(e.target.value)
                 }}
                 // value={comments}
@@ -3274,6 +3281,10 @@ function PendingActionUpdate(props: any) {
   )
   return (
     <>
+      <Prompt
+        when={isPageModified}
+        message={allMessages.success.promptMessage}
+      />
       <Toast
         ref={toast}
         position="bottom-left"
