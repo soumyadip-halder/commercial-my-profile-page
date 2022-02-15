@@ -1685,14 +1685,12 @@ function PendingActionUpdate(props: any) {
                 const timepart = time.split('T')[1].split('.')[0]
                 const logData = {
                   // requestId: userDetail && userDetail.userdetails[0].user.userId,
-                  requestId: res.data.requestId,
+                  requestId: pendingActionDetails[0].requestId,
                   // timestamp: `${datepart} ${timepart}`,
                   timestamp: `${datepart}`,
                   userId: userDetail && userDetail.userdetails[0].user.userId,
                   role: rolelog,
-                  camundaRequestId: res.data.businessKey
-                    ? res.data.businessKey
-                    : '',
+                  camundaRequestId: pendingActionDetails[0].businessKey,
                   actionTaken: 'Submitted',
                   comments: comments,
                   attachmentUrl: null,
@@ -2001,7 +1999,7 @@ function PendingActionUpdate(props: any) {
                   userId: userDetail && userDetail.userdetails[0].user.userId,
                   role: rolelog,
                   camundaRequestId: pendingActionDetails[0].businessKey,
-                  actionTaken: 'Reassign',
+                  actionTaken: 'Reassigned',
                   comments: comments,
                   attachmentUrl: null,
                 }
@@ -2130,7 +2128,7 @@ function PendingActionUpdate(props: any) {
                   userId: userDetail && userDetail.userdetails[0].user.userId,
                   role: rolelog,
                   camundaRequestId: pendingActionDetails[0].businessKey,
-                  actionTaken: 'Reject',
+                  actionTaken: 'Rejected',
                   comments: comments,
                   attachmentUrl: null,
                 }
