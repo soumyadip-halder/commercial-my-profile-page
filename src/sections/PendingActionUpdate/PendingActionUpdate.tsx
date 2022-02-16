@@ -621,8 +621,13 @@ function PendingActionUpdate(props: any) {
             )
             setGroups(
               res.data.tasklists[0].requestData.usergroups.map((group: any) => {
+                const groupName =
+                  groupData &&
+                  groupData
+                    .filter((grpA: any) => grpA.groupId === group.groupId)
+                    .map((g: any) => g.groupName)
                 return {
-                  label: group.groupId,
+                  label: groupName,
                   value: group.groupId,
                   status: group.status,
                 }
