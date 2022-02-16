@@ -73,11 +73,11 @@ export const inprogressTaskTableHeaders = [
     headerName: 'Action',
     width: 200,
   },
-  {
-    field: 'comments',
-    headerName: 'Comments',
-    width: 200,
-  },
+  // {
+  //   field: 'comments',
+  //   headerName: 'Comments',
+  //   width: 200,
+  // },
   {
     field: 'userFirstName',
     headerName: 'First Name',

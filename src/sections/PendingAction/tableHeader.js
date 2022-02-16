@@ -59,11 +59,11 @@ export const pendingActionTableHeaders = [
     headerName: 'Action',
     width: 200,
   },
-  {
-    field: 'comments',
-    headerName: 'Comments',
-    width: 200,
-  },
+  // {
+  //   field: 'comments',
+  //   headerName: 'Comments',
+  //   width: 200,
+  // },
   {
     field: 'userFirstName',
     headerName: 'First Name',

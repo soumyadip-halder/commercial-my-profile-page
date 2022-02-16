@@ -116,6 +116,8 @@ function PendingActionUpdate(props: any) {
   const [taskSelected, setTaskSelected] = React.useState<any>('')
   const [taskOpen, setTaskOpen] = React.useState(false)
   const [viewLogRows, setViewLogRows] = React.useState<Array<any>>([])
+  const [pendingActionDetailsTemp, setPendingActionDetailsTemp] =
+    React.useState<Array<any>>([])
   const toast = useRef<any>(null)
   //
   const [isProgressLoader, setIsProgressLoader] = React.useState(false)
@@ -149,6 +151,7 @@ function PendingActionUpdate(props: any) {
       console.log(pendingActionDetails[0])
       setSelectEmployeeID(pendingActionDetails[0])
       setTasks(taskList)
+      setPendingActionDetailsTemp(pendingActionDetails)
 
       if (rolesArray) {
         const rolesArrayCopy = JSON.parse(JSON.stringify(rolesArray))
@@ -327,6 +330,12 @@ function PendingActionUpdate(props: any) {
             commentStr =
               res.data.tasklogs[res.data.tasklogs.length - 1].comments
             setComments1(commentStr)
+            setPendingActionDetailsTemp(
+              pendingActionDetailsTemp &&
+                pendingActionDetailsTemp.map(
+                  (item: any) => (item.comments = commentStr)
+                )
+            )
           })
           .catch((err) => {
             setViewLogRows([])
@@ -404,8 +413,10 @@ function PendingActionUpdate(props: any) {
   useEffect(() => {
     console.log(requestType)
     if (requestType.toLowerCase() === 'new') {
-      setGroupAccess('mod_group')
-      setRoleAccess('mod_role')
+      // setGroupAccess('mod_group')
+      // setRoleAccess('mod_role')
+      setGroupAccess('new_group')
+      setRoleAccess('new_role')
     } else if (requestType.toLowerCase() === 'modify') {
       setGroupAccess('mod_group')
       setRoleAccess('mod_role')
@@ -2081,7 +2092,8 @@ function PendingActionUpdate(props: any) {
             {active ? (
               forbutton ? (
                 <DataTable
-                  value={pendingActionDetails}
+                  // value={pendingActionDetails}
+                  value={pendingActionDetailsTemp}
                   //paginator
                   //paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   //rows={1}
