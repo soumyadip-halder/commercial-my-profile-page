@@ -54,9 +54,10 @@ export const inprogressTaskTableHeaders = [
     width: 100,
   },
   {
-    field: 'assignedTimeStamp',
+    // field: 'assignedTimeStamp',
+    field: 'requestTimestamp',
     headerName: 'timestamp',
-    width: 100,
+    width: 150,
   },
   {
     field: 'requestorFullName',
