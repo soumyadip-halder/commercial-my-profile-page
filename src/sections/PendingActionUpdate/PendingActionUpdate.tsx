@@ -1809,21 +1809,21 @@ function PendingActionUpdate(props: any) {
     setDisabled(true)
     setIsProgressLoader(true)
     const formData = {
+      // requestorDetails: {
       requestorDetails: {
-        requestorDetails: {
-          emailId: userDetail && userDetail.userdetails[0].user.emailId,
-          requestBy: userDetail && userDetail.userdetails[0].user.userId,
-          requestDate: new Date().toISOString().split('T')[0],
-          requestType: 'Reject',
-        },
-        requestorRoles:
-          userDetail &&
-          userDetail.userdetails[0].roles.map((role: any) => {
-            return {
-              roleId: role.roleId,
-            }
-          }),
+        emailId: userDetail && userDetail.userdetails[0].user.emailId,
+        requestBy: userDetail && userDetail.userdetails[0].user.userId,
+        requestDate: new Date().toISOString().split('T')[0],
+        requestType: 'Reject',
       },
+      requestorRoles:
+        userDetail &&
+        userDetail.userdetails[0].roles.map((role: any) => {
+          return {
+            roleId: role.roleId,
+          }
+        }),
+      // },
       taskId: pendingActionDetails[0].taskId,
     }
     console.log(formData)
