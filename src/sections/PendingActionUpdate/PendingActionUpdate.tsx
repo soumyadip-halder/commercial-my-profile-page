@@ -435,8 +435,9 @@ function PendingActionUpdate(props: any) {
             'i'
           ).test(event.target.files[i].name)
         : false
+      const fileSize = event.target.files[i].size / 1024 / 1024
       if (
-        (!checkextension || event.target.files[i].size === 0) &&
+        (!checkextension || event.target.files[i].size === 0 || fileSize > 5) &&
         event.target.files[i]
       ) {
         setWrongExtn(true)
@@ -444,7 +445,8 @@ function PendingActionUpdate(props: any) {
       if (
         event.target.files[i] &&
         checkextension &&
-        event.target.files[i].size !== 0
+        event.target.files[i].size !== 0 &&
+        fileSize <= 5
       ) {
         // let reader = new FileReader();
         // reader.readAsDataURL(event.target.files[0]);
@@ -1305,6 +1307,7 @@ function PendingActionUpdate(props: any) {
     if (status === '') {
       focusStatus.current.focus()
       setErrorStatus(allMessages.error.noStatus)
+      flag = 0
     }
     if (roleNames.length === 0) {
       focusRole.current.focus()
@@ -1315,6 +1318,20 @@ function PendingActionUpdate(props: any) {
       focusGroup.current.focus()
       setErrorGroups(allMessages.error.noGroups)
       flag = 0
+    }
+    if ((status === 'D' || status === 'I') && btnName === 'reassign') {
+      focusStatus.current.focus()
+      setErrorStatus(allMessages.error.errorReassign)
+      flag = 0
+    } else if ((status === 'D' || status === 'I') && btnName === 'approve') {
+      setErrorStatus('')
+      flag = 1
+    } else if ((status === 'D' || status === 'I') && btnName === 'submit') {
+      setErrorStatus('')
+      flag = 1
+    } else if ((status === 'D' || status === 'I') && btnName === 'reject') {
+      setErrorStatus('')
+      flag = 1
     }
     if (flag === 1 && btnName === 'approve') {
       setCancelOpenApprove(true)
