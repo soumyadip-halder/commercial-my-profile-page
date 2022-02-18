@@ -413,10 +413,8 @@ function PendingActionUpdate(props: any) {
   useEffect(() => {
     console.log(requestType)
     if (requestType.toLowerCase() === 'new') {
-      // setGroupAccess('mod_group')
-      // setRoleAccess('mod_role')
-      setGroupAccess('new_group')
-      setRoleAccess('new_role')
+      setGroupAccess('mod_group')
+      setRoleAccess('mod_role')
     } else if (requestType.toLowerCase() === 'modify') {
       setGroupAccess('mod_group')
       setRoleAccess('mod_role')
