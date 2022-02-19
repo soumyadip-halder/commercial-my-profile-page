@@ -1323,17 +1323,20 @@ function PendingActionUpdate(props: any) {
       flag = 0
     }
     if (btnName === 'reassign') {
+      setIsProgressLoader(true)
       setDisabled(true)
       requestorUserId &&
         getUserIdAPI &&
         getUserIdAPI(requestorUserId)
           .then((res: any) => {
             setErrorReassign(allMessages.error.errorReassign)
+            setIsProgressLoader(false)
             setDisabled(false)
             window.scrollTo(0, 0)
           })
           .catch((err: any) => {
             setErrorReassign('')
+            setIsProgressLoader(false)
             setDisabled(false)
             setCancelOpenReassign(true)
           })
