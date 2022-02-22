@@ -95,6 +95,7 @@ function UserGroupUpdate(props: any) {
   const [errorStatus, setErrorStatus] = useState('')
   //
   const [isProgressLoader, setIsProgressLoader] = React.useState(false)
+  const [loaded, setLoaded] = useState(false)
   const [isPageModified, setIsPageModified] = React.useState(false)
   const [isSuccessCall, setIsSuccessCall] = React.useState(true)
   //
@@ -438,14 +439,15 @@ function UserGroupUpdate(props: any) {
       setUniqueDep([])
       setUniqueCls([])
       setUniqueScls([])
-      setIsProgressLoader(true)
+      // setIsProgressLoader(true)
       setDisabled(true)
       let nexturl = `${BASE_URL_SIT}${PRODUCT_HIERARCHY_GET}?apikey=${API_KEY}`
       // let nexturl = `${BASE}/product/v1/hierarchies/reporting?apikey=ArAaZlvKV09DlZst4aGqxicONzvtGbpI&offset=0`;
       //   const start = new Date();
       while (nexturl !== '') {
         if (error !== '') {
-          setIsProgressLoader(false)
+          // setIsProgressLoader(false)
+          setLoaded(true)
           toast.current.show({
             severity: 'error',
             summary: 'Error!',
@@ -480,12 +482,16 @@ function UserGroupUpdate(props: any) {
             setError(e.message)
           })
       }
-      if (nexturl === '') setIsProgressLoader(false)
+      if (nexturl === '') {
+        setIsProgressLoader(false)
+        setLoaded(true)
+      }
       // const end = new Date();
       // const timediff = end - start;
       // console.log("Time taken for api calls: ", timediff);
     }
-    setIsProgressLoader(true)
+    // setIsProgressLoader(true)
+    setLoaded(false)
     handleClick()
   }, [BASE_URL_SIT, PRODUCT_HIERARCHY_GET, API_KEY, error])
 
@@ -698,46 +704,50 @@ function UserGroupUpdate(props: any) {
   //   setViewProductEl(e.currentTarget)
   // }
   const handleOpenViewProduct = () => {
-    if (hierLevel.length > 0) {
-      switch (hierLevel[0].value) {
-        case 'division':
-          // setDisabled(false)
-          // setPayload('')
-          setSelected([...uniquedivobj])
-          break
-        case 'group':
-          // setDisabled(false)
-          // setPayload('')
-          setSelected([...uniquegrpobj])
-          break
-        case 'category':
-          // setDisabled(false)
-          // setPayload('')
-          setSelected([...uniquecatobj])
-          break
-        case 'department':
-          // setDisabled(false)
-          // setPayload('')
-          setSelected([...uniquedepobj])
-          break
-        case 'class':
-          // setDisabled(false)
-          // setPayload('')
-          setSelected([...uniqueclsobj])
-          break
-        case 'subclass':
-          // setDisabled(false)
-          // setPayload('')
-          setSelected([...uniquesclsobj])
-          break
-        default:
-          // setDisabled(true)
-          // setPayload('')
-          setSelected([])
-          break
+    setViewProductEl(true)
+    setIsProgressLoader(true)
+    if (loaded) {
+      setIsProgressLoader(false)
+      if (hierLevel.length > 0) {
+        switch (hierLevel[0].value) {
+          case 'division':
+            // setDisabled(false)
+            // setPayload('')
+            setSelected([...uniquedivobj])
+            break
+          case 'group':
+            // setDisabled(false)
+            // setPayload('')
+            setSelected([...uniquegrpobj])
+            break
+          case 'category':
+            // setDisabled(false)
+            // setPayload('')
+            setSelected([...uniquecatobj])
+            break
+          case 'department':
+            // setDisabled(false)
+            // setPayload('')
+            setSelected([...uniquedepobj])
+            break
+          case 'class':
+            // setDisabled(false)
+            // setPayload('')
+            setSelected([...uniqueclsobj])
+            break
+          case 'subclass':
+            // setDisabled(false)
+            // setPayload('')
+            setSelected([...uniquesclsobj])
+            break
+          default:
+            // setDisabled(true)
+            // setPayload('')
+            setSelected([])
+            break
+        }
       }
     }
-    setViewProductEl(true)
   }
   const handleCloseViewProduct = () => {
     // setViewProductEl(null)
