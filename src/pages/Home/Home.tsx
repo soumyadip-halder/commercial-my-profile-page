@@ -40,6 +40,7 @@ const Home = (props: any) => {
     reset_all,
     increment,
     incrementD,
+    logoutClicked,
   } = props
   // let role = userDetail && userDetail.role;
   const [open, setOpen] = useState(false)
@@ -86,16 +87,20 @@ const Home = (props: any) => {
     refreshApps()
     resetUserdetails()
     reset_all()
-    history.push('/login')
     logoutUser()
+    // history.push('/login')
   }, [
-    history,
+    // history,
     logoutUser,
     refreshRoles,
     refreshApps,
     resetUserdetails,
     reset_all,
   ])
+
+  useEffect(() => {
+    logoutClicked && history.push('/login')
+  }, [logoutClicked, history])
 
   useEffect(() => {
     if (isTokenExpired) {
@@ -164,6 +169,7 @@ const mapDispatchToProps = (dispatch: any) => {
 const mapStateToProps = (state: any) => {
   return {
     userDetail: state.loginReducer.userDetail,
+    logoutClicked: state.loginReducer.logoutClicked,
     isTokenExpired: state.loginReducer.isTokenExpired,
     error: state.loginReducer.error,
     increment: state.loginReducer.value,

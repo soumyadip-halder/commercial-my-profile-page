@@ -1149,6 +1149,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               .catch((err) => setColleagueData(''))
             // }
             setStatus(res.data.userdetails[0].user.status)
+            if (res.data.userdetails[0].user.status === 'D') {
+              setRoleAccess('rem_role')
+              setGroupAccess('rem_group')
+            }
             setRoleNames(
               res.data.userdetails[0].roles.map((role: any) => {
                 return {

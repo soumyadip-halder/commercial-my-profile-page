@@ -48,6 +48,7 @@ function UnassignWorkflow(props: any) {
   }
   useEffect(() => {
     return () => {
+      sessionStorage.removeItem('dt-state-demo-session-unassignworkflow')
       reset_mygroupunassignAction()
     }
   }, [])

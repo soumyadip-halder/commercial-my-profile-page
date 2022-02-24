@@ -1523,6 +1523,51 @@ function PendingActionUpdate(props: any) {
           }
         }),
     }
+    // const formData = {
+    //   routing: 'moreinfo',
+    //   camunda: {
+    //     requestorDetails: {
+    //       emailId: userDetail && userDetail.userdetails[0].user.emailId,
+    //       requestBy: userDetail && userDetail.userdetails[0].user.userId,
+    //       requestDate: new Date().toISOString().split('T')[0],
+    //       requestType: requestType,
+    //       comments: comments,
+    //     },
+    //     requestorRoles:
+    //       userDetail &&
+    //       userDetail.userdetails[0].roles.map((role: any) => {
+    //         return {
+    //           roleId: role.roleId,
+    //         }
+    //       }),
+    //   },
+    //   user: {
+    //     employeeId: employeeID,
+    //     firstName: firstName,
+    //     middleName: middleName,
+    //     lastName: lastName,
+    //     emailId: email,
+    //     additionalInfo: '',
+    //     // colleagueData !== '' ? colleaguestring : additionalInfo,
+    //     designation: designation.toUpperCase(),
+    //     status: status,
+    //   },
+    //   roles: roleNames
+    //     ? roleNames.map((role: any) => {
+    //         return {
+    //           roleId: role.value,
+    //         }
+    //       })
+    //     : [],
+    //   usergroups: groups
+    //     ? groups.map((group: any) => {
+    //         return {
+    //           groupId: group.value,
+    //           status: group.status,
+    //         }
+    //       })
+    //     : [],
+    // }
     setReturnText('')
     pendingActionDetails &&
       putCompleteTaskAPI &&
@@ -1616,6 +1661,50 @@ function PendingActionUpdate(props: any) {
           }
         }),
     }
+    // const formData = {
+    //   routing: 'Approved',
+    //   camunda: {
+    //     requestorDetails: {
+    //       emailId: userDetail && userDetail.userdetails[0].user.emailId,
+    //       requestBy: userDetail && userDetail.userdetails[0].user.userId,
+    //       requestDate: new Date().toISOString().split('T')[0],
+    //       requestType: requestType,
+    //       comments: comments,
+    //     },
+    //     requestorRoles:
+    //       userDetail &&
+    //       userDetail.userdetails[0].roles.map((role: any) => {
+    //         return {
+    //           roleId: role.roleId,
+    //         }
+    //       }),
+    //   },
+    //   user: {
+    //     employeeId: employeeID,
+    //     firstName: firstName,
+    //     middleName: middleName,
+    //     lastName: lastName,
+    //     emailId: email,
+    //     additionalInfo: '',
+    //     designation: designation.toUpperCase(),
+    //     status: status,
+    //   },
+    //   roles: roleNames
+    //     ? roleNames.map((role: any) => {
+    //         return {
+    //           roleId: role.value,
+    //         }
+    //       })
+    //     : [],
+    //   usergroups: groups
+    //     ? groups.map((group: any) => {
+    //         return {
+    //           groupId: group.value,
+    //           status: group.status,
+    //         }
+    //       })
+    //     : [],
+    // }
     setReturnText('')
     pendingActionDetails &&
       putCompleteTaskAPI &&
@@ -1741,6 +1830,50 @@ function PendingActionUpdate(props: any) {
                 }
               }),
           }
+          // const formData2 = {
+          //   routing: 'Approved',
+          //   camunda: {
+          //     requestorDetails: {
+          //       emailId: userDetail && userDetail.userdetails[0].user.emailId,
+          //       requestBy: userDetail && userDetail.userdetails[0].user.userId,
+          //       requestDate: new Date().toISOString().split('T')[0],
+          //       requestType: requestType,
+          //       comments: comments,
+          //     },
+          //     requestorRoles:
+          //       userDetail &&
+          //       userDetail.userdetails[0].roles.map((role: any) => {
+          //         return {
+          //           roleId: role.roleId,
+          //         }
+          //       }),
+          //   },
+          //   user: {
+          //     employeeId: employeeID,
+          //     firstName: firstName,
+          //     middleName: middleName,
+          //     lastName: lastName,
+          //     emailId: email,
+          //     additionalInfo: '',
+          //     designation: designation.toUpperCase(),
+          //     status: status,
+          //   },
+          //   roles: roleNames
+          //     ? roleNames.map((role: any) => {
+          //         return {
+          //           roleId: role.value,
+          //         }
+          //       })
+          //     : [],
+          //   usergroups: groups
+          //     ? groups.map((group: any) => {
+          //         return {
+          //           groupId: group.value,
+          //           status: group.status,
+          //         }
+          //       })
+          //     : [],
+          // }
           pendingActionDetails &&
             putCompleteTaskAPI &&
             putCompleteTaskAPI(formData2, pendingActionDetails[0].taskId)
@@ -1847,10 +1980,57 @@ function PendingActionUpdate(props: any) {
       // },
       taskId: pendingActionDetails[0].taskId,
     }
+    // const formData = {
+    //   routing: 'Rejected',
+    //   camunda: {
+    //     requestorDetails: {
+    //       emailId: userDetail && userDetail.userdetails[0].user.emailId,
+    //       requestBy: userDetail && userDetail.userdetails[0].user.userId,
+    //       requestDate: new Date().toISOString().split('T')[0],
+    //       requestType: requestType,
+    //       comments: comments,
+    //     },
+    //     requestorRoles:
+    //       userDetail &&
+    //       userDetail.userdetails[0].roles.map((role: any) => {
+    //         return {
+    //           roleId: role.roleId,
+    //         }
+    //       }),
+    //   },
+    //   user: {
+    //     employeeId: employeeID,
+    //     firstName: firstName,
+    //     middleName: middleName,
+    //     lastName: lastName,
+    //     emailId: email,
+    //     additionalInfo: '',
+    //     // colleagueData !== '' ? colleaguestring : additionalInfo,
+    //     designation: designation.toUpperCase(),
+    //     status: status,
+    //   },
+    //   roles: roleNames
+    //     ? roleNames.map((role: any) => {
+    //         return {
+    //           roleId: role.value,
+    //         }
+    //       })
+    //     : [],
+    //   usergroups: groups
+    //     ? groups.map((group: any) => {
+    //         return {
+    //           groupId: group.value,
+    //           status: group.status,
+    //         }
+    //       })
+    //     : [],
+    // }
     setReturnText('')
     pendingActionDetails &&
       putRejectTaskAPI &&
       putRejectTaskAPI(formData, pendingActionDetails[0].businessKey)
+        // putCompleteTaskAPI &&
+        // putCompleteTaskAPI(formData, pendingActionDetails[0].taskId)
         .then((res) => {
           console.log(res)
           setIsSuccessCall(false)

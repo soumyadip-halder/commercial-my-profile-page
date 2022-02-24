@@ -48,6 +48,7 @@ function GroupPendingAction(props: any) {
   }
   useEffect(() => {
     return () => {
+      sessionStorage.removeItem('dt-state-demo-session-grouppendingaction')
       reset_mygrouppendingAction()
     }
   }, [])
