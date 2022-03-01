@@ -232,7 +232,6 @@ export const getAppsArray = (userdetails: Array<any>) => (dispatch: any) => {
         dispatch(getAppsError(`appsGetAllNotFound: ${error.response.status}`))
       } else {
         dispatch(
-          // getAppsError(`appsGetAllServiceUnavailable: ${error.response.status}`)
           getAppsError(`appsGetAllServiceUnavailable: ${error.response.status}`)
         )
       }

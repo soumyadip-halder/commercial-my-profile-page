@@ -1314,11 +1314,12 @@ function PendingActionUpdate(props: any) {
     }
     if (roleNames.length === 0) {
       if (
-        btnName === 'reject' &&
-        requestorRoles
-          .map((item: any) => item.roleId)
-          .toString()
-          .includes('JML')
+        btnName === 'reject'
+        // &&
+        // requestorRoles
+        //   .map((item: any) => item.roleId)
+        //   .toString()
+        //   .includes('JML')
       ) {
       } else {
         focusRole.current.focus()
@@ -1328,11 +1329,12 @@ function PendingActionUpdate(props: any) {
     }
     if (groups.length === 0) {
       if (
-        btnName === 'reject' &&
-        requestorRoles
-          .map((item: any) => item.roleId)
-          .toString()
-          .includes('JML')
+        btnName === 'reject'
+        // &&
+        // requestorRoles
+        //   .map((item: any) => item.roleId)
+        //   .toString()
+        //   .includes('JML')
       ) {
       } else {
         focusGroup.current.focus()
