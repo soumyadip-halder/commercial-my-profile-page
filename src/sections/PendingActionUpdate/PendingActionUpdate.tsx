@@ -1313,16 +1313,34 @@ function PendingActionUpdate(props: any) {
       flag = 0
     }
     if (roleNames.length === 0) {
-      focusRole.current.focus()
-      setErrorRoles(allMessages.error.noRoles)
-      flag = 0
+      if (
+        btnName === 'reject' &&
+        requestorRoles
+          .map((item: any) => item.roleId)
+          .toString()
+          .includes('JML')
+      ) {
+      } else {
+        focusRole.current.focus()
+        setErrorRoles(allMessages.error.noRoles)
+        flag = 0
+      }
     }
     if (groups.length === 0) {
-      focusGroup.current.focus()
-      setErrorGroups(allMessages.error.noGroups)
-      flag = 0
+      if (
+        btnName === 'reject' &&
+        requestorRoles
+          .map((item: any) => item.roleId)
+          .toString()
+          .includes('JML')
+      ) {
+      } else {
+        focusGroup.current.focus()
+        setErrorGroups(allMessages.error.noGroups)
+        flag = 0
+      }
     }
-    if (btnName === 'reassign') {
+    if (btnName === 'reassign' && flag === 1) {
       setIsProgressLoader(true)
       setDisabled(true)
       requestorUserId &&
@@ -3196,7 +3214,14 @@ function PendingActionUpdate(props: any) {
               size="small"
               // onClick={handleReassign}
               onClick={handleReassignAfterDialog}
-              disabled={disabled}
+              disabled={
+                requestorRoles
+                  .map((item: any) => item.roleId)
+                  .toString()
+                  .includes('JML')
+                  ? true
+                  : disabled
+              }
             >
               Reassign
             </Button>
