@@ -46,6 +46,7 @@ import { routes, extensions, life } from '../../util/Constants'
 import ConfirmBox from '../../components/ConfirmBox/ConfirmBox'
 import LoadingComponent from '../../components/LoadingComponent/LoadingComponent'
 import { allMessages } from '../../util/Messages'
+import { admins } from '../../util/Constants'
 
 const Input = styled('input')({
   display: 'none',
@@ -136,18 +137,40 @@ function UpdateUser(props: any) {
       setTasks(taskList)
 
       if (rolesArray) {
+        const rolelist =
+          userDetail &&
+          userDetail.userdetails &&
+          userDetail.userdetails[0].roles.map((rl: any) => rl.roleId)
+        let adminqn = false
+        for (let ad = 0; ad < admins.length; ad++) {
+          if (rolelist.includes(admins[ad])) {
+            adminqn = true
+            break
+          }
+        }
         const rolesArrayCopy = JSON.parse(JSON.stringify(rolesArray))
         const rolesValues =
-          rolesArrayCopy &&
-          rolesArrayCopy.roles.map((role: any) => {
-            return {
-              label: role.roleName,
-              value: role.roleId,
-              roleId: role.roleId,
-              roleName: role.roleName,
-              roleDesc: role.roleDesc,
-            }
-          })
+          rolesArrayCopy && adminqn
+            ? rolesArrayCopy.roles.map((role: any) => {
+                return {
+                  label: role.roleName,
+                  value: role.roleId,
+                  roleId: role.roleId,
+                  roleName: role.roleName,
+                  roleDesc: role.roleDesc,
+                }
+              })
+            : rolesArrayCopy.roles
+                .filter((role: any) => !admins.includes(role.roleId))
+                .map((role: any) => {
+                  return {
+                    label: role.roleName,
+                    value: role.roleId,
+                    roleId: role.roleId,
+                    roleName: role.roleName,
+                    roleDesc: role.roleDesc,
+                  }
+                })
         setRoles(rolesValues)
         console.log(rolesValues)
       }
@@ -183,7 +206,14 @@ function UpdateUser(props: any) {
             setViewLogRows([])
           })
     }
-  }, [rolesArray, empDetails, history, USERCONFIG_USERMANAGE, DEFAULT])
+  }, [
+    rolesArray,
+    empDetails,
+    history,
+    USERCONFIG_USERMANAGE,
+    DEFAULT,
+    userDetail,
+  ])
 
   useEffect(() => {
     // console.log('Check count: ', checkCount)
