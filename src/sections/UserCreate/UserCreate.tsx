@@ -319,7 +319,6 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                   roleDesc: role.roleDesc,
                 }
               })
-      console.log(rolesValues)
       setRoles(rolesValues)
       console.log(rolesValues)
     }

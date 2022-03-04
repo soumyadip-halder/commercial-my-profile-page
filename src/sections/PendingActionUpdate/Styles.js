@@ -70,20 +70,20 @@ export const useStyles = makeStyles((theme) => {
       },
     },
     inputFieldBox: {
-      // [theme.breakpoints.up("sm")]: {
-      //   width: 392,
-      // },
-      // [theme.breakpoints.down("sm")]: {
-      //   width: fieldWidth,
-      // },
       width: 400,
       [theme.breakpoints.down(750)]: {
         width: 400,
       },
-      [theme.breakpoints.down(450)]: {
-        width: 350,
+      [theme.breakpoints.down(500)]: {
+        width: 300,
       },
       [theme.breakpoints.down(400)]: {
+        width: 250,
+      },
+      [theme.breakpoints.down(350)]: {
+        width: 230,
+      },
+      [theme.breakpoints.down(300)]: {
         width: 200,
       },
     },
