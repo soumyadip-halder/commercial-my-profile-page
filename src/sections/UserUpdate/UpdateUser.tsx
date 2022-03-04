@@ -690,7 +690,7 @@ function UpdateUser(props: any) {
         }}
       >
         <Box
-          className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -769,7 +769,7 @@ function UpdateUser(props: any) {
             display: 'flex',
             justifyContent: 'end',
           }}
-          className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
         >
           <Button
             // type="submit"
@@ -825,7 +825,7 @@ function UpdateUser(props: any) {
         }}
       >
         <Box
-          className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
           sx={{
             display: 'flex',
             flexDirection: 'column',

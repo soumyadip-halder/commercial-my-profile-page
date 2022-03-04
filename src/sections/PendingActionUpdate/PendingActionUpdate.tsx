@@ -732,7 +732,7 @@ function PendingActionUpdate(props: any) {
         }}
       >
         <Box
-          className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -811,7 +811,7 @@ function PendingActionUpdate(props: any) {
             display: 'flex',
             justifyContent: 'end',
           }}
-          className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
         >
           <Button
             // type="submit"
@@ -866,7 +866,7 @@ function PendingActionUpdate(props: any) {
         }}
       >
         <Box
-          className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
           sx={{
             display: 'flex',
             flexDirection: 'column',

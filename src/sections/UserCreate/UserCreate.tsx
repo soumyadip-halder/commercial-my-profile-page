@@ -596,7 +596,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
         }}
       >
         <Box
-          className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -677,7 +677,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             display: 'flex',
             justifyContent: 'end',
           }}
-          className={classes.inputFieldBox}
+          className={classes.inputFieldBoxPop}
         >
           <Button
             // type="submit"
