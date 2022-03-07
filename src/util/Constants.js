@@ -46,6 +46,9 @@ routes = {
   USERCONFIG_GROUPCREATE: `/userconfig/groupcreate`,
   USERCONFIG_GROUPUPDATE: `/userconfig/groupupdate`,
   USERCONFIG_USERUPDATE: `/userconfig/userupdate`,
+  RANGEAMEND_EVENTDASH: '/rangeamend/evntdashboard',
+  RANGEAMEND_MANAGE: '/rangeamend/manageevent',
+  RANGEAMEND_DELIST: '/rangeamend/delistltr',
 }
 
 export const extensions = [

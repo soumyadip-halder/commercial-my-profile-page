@@ -10,6 +10,9 @@ const {
   SUPPLIERPORT,
   PRODUCTPORT,
   USERCONFIG,
+  RANGEAMEND_EVENTDASH,
+  RANGEAMEND_MANAGE,
+  RANGEAMEND_DELIST,
 } = routes
 export const apps = [
   {
@@ -37,7 +40,7 @@ export const apps = [
   {
     appMenuId: 3,
     appCode: 'COMRANGE',
-    appName: 'Range Amendment',
+    appName: 'Range Change Management',
     menu1Code: null,
     menu1Desc: null,
     menu2Code: null,
@@ -120,6 +123,39 @@ export const apps = [
     menu2Code: null,
     menu2Desc: null,
     url: USERCONFIG_USERGROUP,
+    more: [],
+  },
+  {
+    appMenuId: 11,
+    appCode: 'COMRANGE',
+    appName: 'Range Change Management',
+    menu1Code: 'EMD',
+    menu1Desc: 'Event Management Dashboard',
+    menu2Code: null,
+    menu2Desc: null,
+    url: RANGEAMEND_EVENTDASH,
+    more: [],
+  },
+  {
+    appMenuId: 12,
+    appCode: 'COMRANGE',
+    appName: 'Range Change Management',
+    menu1Code: 'ME',
+    menu1Desc: 'Manage Event',
+    menu2Code: null,
+    menu2Desc: null,
+    url: RANGEAMEND_MANAGE,
+    more: [],
+  },
+  {
+    appMenuId: 13,
+    appCode: 'COMRANGE',
+    appName: 'Range Change Management',
+    menu1Code: 'DLL',
+    menu1Desc: 'De-List Letter',
+    menu2Code: null,
+    menu2Desc: null,
+    url: RANGEAMEND_DELIST,
     more: [],
   },
 ]

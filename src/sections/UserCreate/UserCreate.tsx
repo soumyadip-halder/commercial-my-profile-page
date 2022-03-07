@@ -84,9 +84,10 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const [emplAvailable, setEmpAvailable] = React.useState(false)
   const [roleAccess, setRoleAccess] = React.useState('')
   const [groupAccess, setGroupAccess] = React.useState('')
-  const [groups, setGroups] = React.useState<any>('')
-  const [groupInput, setGroupInput] = React.useState<any>()
-  const [groupOpen, setGroupOpen] = React.useState(false)
+  // const [groups, setGroups] = React.useState<any>('')
+  // const [groupInput, setGroupInput] = React.useState<any>()
+  const [groupInput, setGroupInput] = React.useState<any>([])
+  // const [groupOpen, setGroupOpen] = React.useState(false)
   const [cancelOpenApprove, setCancelOpenApprove] = React.useState(false)
   const [cancelOpenSubmit, setCancelOpenSubmit] = React.useState(false)
   const [back, setBack] = React.useState(false)
@@ -121,9 +122,9 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   const focusRole = useRef<any>(null)
   const focusGroup = useRef<any>(null)
   //integration changes start
-  useEffect(() => {
-    setGroupInput(groups)
-  }, [groups])
+  // useEffect(() => {
+  //   setGroupInput(groups)
+  // }, [groups])
 
   const customStyles = {
     option: (provided: any, state: any) => ({
@@ -380,7 +381,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     setStatus('A')
     setRoleNames([])
     setGroupInput([])
-    setGroups([])
+    // setGroups([])
     setColleagueData('')
     setComments('')
     setReferenceDocData([])
@@ -561,19 +562,19 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     />
   )
 
-  const handleOpenGroups = (e: any) => {
-    e.preventDefault()
-    setGroupOpen(true)
-  }
-  const handleCloseGroups = (e: any) => {
-    e.preventDefault()
-    setGroupInput(groups)
-    setGroupOpen(false)
-  }
-  const updateGroups = () => {
-    setGroups(groupInput)
-    setGroupOpen(false)
-  }
+  // const handleOpenGroups = (e: any) => {
+  //   e.preventDefault()
+  //   setGroupOpen(true)
+  // }
+  // const handleCloseGroups = (e: any) => {
+  //   e.preventDefault()
+  //   setGroupInput(groups)
+  //   setGroupOpen(false)
+  // }
+  // const updateGroups = () => {
+  //   setGroups(groupInput)
+  //   setGroupOpen(false)
+  // }
 
   const handleGroupsInput = (selected: any) => {
     console.log(selected)
@@ -582,124 +583,151 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
     if (selected.length > 0) setErrorGroups('')
   }
 
-  const viewGroups = (
-    <Dialog onClose={handleCloseGroups} open={groupOpen}>
-      <Box
-        sx={{
-          height: 450,
-          // width: dialogwidth,
-          width: 'auto',
-          p: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Box
-          className={classes.inputFieldBoxPop}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          {/* <Box> */}
-          <Box
-            sx={{
-              display: 'flex',
-              height: 30,
-              flexDirection: 'row',
-            }}
-            className={classes.viewLogTitle}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                flexGrow: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Typography variant="subtitle1">Add Groups</Typography>
-            </Box>
-            <Box
-              sx={{
-                paddingRight: 2,
-              }}
-            >
-              <button
-                type="button"
-                style={{
-                  border: 0,
-                  padding: 0,
-                  height: 22,
-                  width: 22,
-                }}
-                className={classes.closeViewLog}
-                onClick={handleCloseGroups}
-              >
-                <b>X</b>
-              </button>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              alignItems: 'flex-start',
-              marginTop: '30px',
-            }}
-          >
-            <Select
-              // options={groupTypes}
-              options={groupsData}
-              isMulti
-              onChange={handleGroupsInput}
-              components={{
-                Option,
-              }}
-              value={groupInput}
-              closeMenuOnSelect={false}
-              hideSelectedOptions={false}
-              className={classes.multiSelect}
-              styles={customStyles}
-              isDisabled={
-                UtilityFunctions.isHidden(
-                  '8',
-                  appFuncList ? appFuncList : [],
-                  groupAccess
-                )
-                  ? true
-                  : false
-              }
-            />
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'end',
-          }}
-          className={classes.inputFieldBoxPop}
-        >
-          <Button
-            // type="submit"
-            variant="contained"
-            color="primary"
-            onClick={updateGroups}
-            disabled={
-              UtilityFunctions.isHidden(
-                '8',
-                appFuncList ? appFuncList : [],
-                groupAccess
-              )
-                ? true
-                : false
-            }
-          >
-            Save
-          </Button>
-        </Box>
-      </Box>
-    </Dialog>
+  const groupSelect = (
+    <Select
+      // options={groupTypes}
+      options={groupsData}
+      isMulti
+      ref={focusGroup}
+      onChange={handleGroupsInput}
+      components={{
+        Option,
+      }}
+      value={groupInput}
+      closeMenuOnSelect={false}
+      hideSelectedOptions={false}
+      className={classes.multiSelect}
+      styles={customStyles}
+      isDisabled={
+        UtilityFunctions.isHidden(
+          '8',
+          appFuncList ? appFuncList : [],
+          groupAccess
+        )
+          ? true
+          : false
+      }
+    />
   )
+
+  // const viewGroups = (
+  //   <Dialog onClose={handleCloseGroups} open={groupOpen}>
+  //     <Box
+  //       sx={{
+  //         height: 450,
+  //         // width: dialogwidth,
+  //         width: 'auto',
+  //         p: 2,
+  //         display: 'flex',
+  //         flexDirection: 'column',
+  //         justifyContent: 'space-between',
+  //       }}
+  //     >
+  //       <Box
+  //         className={classes.inputFieldBoxPop}
+  //         sx={{
+  //           display: 'flex',
+  //           flexDirection: 'column',
+  //         }}
+  //       >
+  //         {/* <Box> */}
+  //         <Box
+  //           sx={{
+  //             display: 'flex',
+  //             height: 30,
+  //             flexDirection: 'row',
+  //           }}
+  //           className={classes.viewLogTitle}
+  //         >
+  //           <Box
+  //             sx={{
+  //               display: 'flex',
+  //               flexGrow: 1,
+  //               justifyContent: 'center',
+  //               alignItems: 'center',
+  //             }}
+  //           >
+  //             <Typography variant="subtitle1">Add Groups</Typography>
+  //           </Box>
+  //           <Box
+  //             sx={{
+  //               paddingRight: 2,
+  //             }}
+  //           >
+  //             <button
+  //               type="button"
+  //               style={{
+  //                 border: 0,
+  //                 padding: 0,
+  //                 height: 22,
+  //                 width: 22,
+  //               }}
+  //               className={classes.closeViewLog}
+  //               onClick={handleCloseGroups}
+  //             >
+  //               <b>X</b>
+  //             </button>
+  //           </Box>
+  //         </Box>
+  //         <Box
+  //           sx={{
+  //             alignItems: 'flex-start',
+  //             marginTop: '30px',
+  //           }}
+  //         >
+  //           <Select
+  //             // options={groupTypes}
+  //             options={groupsData}
+  //             isMulti
+  //             onChange={handleGroupsInput}
+  //             components={{
+  //               Option,
+  //             }}
+  //             value={groupInput}
+  //             closeMenuOnSelect={false}
+  //             hideSelectedOptions={false}
+  //             className={classes.multiSelect}
+  //             styles={customStyles}
+  //             isDisabled={
+  //               UtilityFunctions.isHidden(
+  //                 '8',
+  //                 appFuncList ? appFuncList : [],
+  //                 groupAccess
+  //               )
+  //                 ? true
+  //                 : false
+  //             }
+  //           />
+  //         </Box>
+  //       </Box>
+  //       <Box
+  //         sx={{
+  //           display: 'flex',
+  //           justifyContent: 'end',
+  //         }}
+  //         className={classes.inputFieldBoxPop}
+  //       >
+  //         <Button
+  //           // type="submit"
+  //           variant="contained"
+  //           color="primary"
+  //           onClick={updateGroups}
+  //           disabled={
+  //             UtilityFunctions.isHidden(
+  //               '8',
+  //               appFuncList ? appFuncList : [],
+  //               groupAccess
+  //             )
+  //               ? true
+  //               : false
+  //           }
+  //         >
+  //           Save
+  //         </Button>
+  //       </Box>
+  //     </Box>
+  //   </Dialog>
+  // )
 
   // useEffect(() => {
   //   if (selectEmployeeID) {
@@ -1193,15 +1221,15 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 }
               })
             )
-            setGroups(
-              res.data.userdetails[0].usergroups.map((group: any) => {
-                return {
-                  label: group.groupName,
-                  value: group.groupId,
-                  status: group.status,
-                }
-              })
-            )
+            // setGroups(
+            //   res.data.userdetails[0].usergroups.map((group: any) => {
+            //     return {
+            //       label: group.groupName,
+            //       value: group.groupId,
+            //       status: group.status,
+            //     }
+            //   })
+            // )
             setComments('')
             setReferenceDocData([])
             setErrorRoles('')
@@ -1237,7 +1265,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                 // setStatus('W')
                 setRoleNames([])
                 setGroupInput([])
-                setGroups([])
+                // setGroups([])
                 setComments('')
                 setReferenceDocData([])
                 //setStatus(userData.employee_status);
@@ -1307,7 +1335,8 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
       setErrorRoles(allMessages.error.noRoles)
       flag = 0
     }
-    if (groups.length === 0) {
+    // if (groups.length === 0) {
+    if (groupInput.length === 0) {
       focusGroup.current.focus()
       setErrorGroups(allMessages.error.noGroups)
       flag = 0
@@ -1385,8 +1414,16 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               }
             })
           : [],
-        usergroups: groups
-          ? groups.map((group: any) => {
+        // usergroups: groups
+        //   ? groups.map((group: any) => {
+        //       return {
+        //         groupId: group.value,
+        //         status: group.status,
+        //       }
+        //     })
+        //   : [],
+        usergroups: groupInput
+          ? groupInput.map((group: any) => {
               return {
                 groupId: group.value,
                 status: group.status,
@@ -1617,8 +1654,16 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               }
             })
           : [],
-        usergroups: groups
-          ? groups.map((group: any) => {
+        // usergroups: groups
+        //   ? groups.map((group: any) => {
+        //       return {
+        //         groupId: group.value,
+        //         status: group.status,
+        //       }
+        //     })
+        //   : [],
+        usergroups: groupInput
+          ? groupInput.map((group: any) => {
               return {
                 groupId: group.value,
                 status: group.status,
@@ -1959,7 +2004,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             </Typography>
           </Box>
         </Box>
-        {shoutOut !== '' && (
+        {/* {shoutOut !== '' && (
           <Box className={classes.eachRow}>
             <Box className={classes.inputLabel}></Box>
             <Box className={classes.inputFieldBox} justifyContent="center">
@@ -1968,7 +2013,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               </Typography>
             </Box>
           </Box>
-        )}
+        )} */}
         {errorRequestType !== '' && (
           <Box className={classes.eachRow}>
             <Box className={classes.inputLabel}></Box>
@@ -2035,6 +2080,16 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             <Box className={classes.inputFieldBox} justifyContent="center">
               <Typography variant="subtitle2" color="error">
                 {errorEmployeeId}
+              </Typography>
+            </Box>
+          </Box>
+        )}
+        {shoutOut !== '' && (
+          <Box className={classes.eachRow}>
+            <Box className={classes.inputLabel}></Box>
+            <Box className={classes.inputFieldBox} justifyContent="center">
+              <Typography variant="subtitle2" color="error">
+                {shoutOut}
               </Typography>
             </Box>
           </Box>
@@ -2369,7 +2424,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
 
           <Box className={classes.inputFieldBox}>
             {/* <Typography variant="subtitle1"> */}
-            {groups ? (
+            {/* {groups ? (
               groups.length > 0 ? (
                 <button
                   type="button"
@@ -2412,11 +2467,13 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
               >
                 Add
               </button>
-            )}
+            )} */}
             {/* </Typography> */}
+            {groupSelect}
           </Box>
         </Box>
-        {groups.length === 0 && errorGroups !== '' && (
+        {/* {groups.length === 0 && errorGroups !== '' && ( */}
+        {groupInput.length === 0 && errorGroups !== '' && (
           <Box className={classes.eachRow}>
             <Box className={classes.inputLabel}></Box>
             <Box className={classes.inputFieldBox} justifyContent="center">
@@ -2760,7 +2817,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
             justifyContent="center"
           >
             {createForm}
-            {viewGroups}
+            {/* {viewGroups} */}
             {viewLog}
             {viewAdditionalInfo}
             {viewConfirmApprove}
