@@ -108,6 +108,7 @@ function Dashboard(props: any) {
   const classes = useStyles()
 
   useEffect(() => {
+    console.log('Basic token is: ', process.env.REACT_APP_BASIC)
     setIsProgressLoader(true)
     let pendingTasks: Array<any> = []
     let inprogressTasks: Array<any> = []

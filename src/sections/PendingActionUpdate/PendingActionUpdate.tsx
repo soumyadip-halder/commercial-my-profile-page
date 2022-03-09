@@ -155,7 +155,9 @@ function PendingActionUpdate(props: any) {
       console.log(pendingActionDetails[0])
       setSelectEmployeeID(pendingActionDetails[0])
       setTasks(taskList)
-      setPendingActionDetailsTemp(pendingActionDetails)
+      setPendingActionDetailsTemp(
+        JSON.parse(JSON.stringify(pendingActionDetails))
+      )
 
       if (rolesArray) {
         const rolelist =
@@ -359,9 +361,10 @@ function PendingActionUpdate(props: any) {
             setComments1(commentStr)
             setPendingActionDetailsTemp(
               pendingActionDetailsTemp &&
-                pendingActionDetailsTemp.map(
-                  (item: any) => (item.comments = commentStr)
-                )
+                pendingActionDetailsTemp.map((item: any) => {
+                  item.comments = commentStr
+                  return item
+                })
             )
           })
           .catch((err) => {
@@ -2415,7 +2418,8 @@ function PendingActionUpdate(props: any) {
                 </DataTable>
               ) : (
                 <DataTable
-                  value={pendingActionDetails}
+                  // value={pendingActionDetails}
+                  value={pendingActionDetailsTemp}
                   //paginator
                   //paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                   //rows={1}
@@ -2459,7 +2463,8 @@ function PendingActionUpdate(props: any) {
               )
             ) : (
               <DataTable
-                value={pendingActionDetails}
+                // value={pendingActionDetails}
+                value={pendingActionDetailsTemp}
                 //paginator
                 //paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                 //rows={1}
