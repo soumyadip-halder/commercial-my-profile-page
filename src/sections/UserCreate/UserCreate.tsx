@@ -141,7 +141,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
   //integration changes start
 
   useEffect(() => {
-    focusRequestType.current.focus()
+    // focusRequestType.current.focus()
     // getUserGroupAPI &&
     //   getUserGroupAPI()
     getUserGroupActiveAPI &&
