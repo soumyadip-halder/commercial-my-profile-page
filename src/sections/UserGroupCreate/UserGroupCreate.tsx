@@ -487,6 +487,15 @@ function UserGroupCreate(props: any) {
     }),
   }
 
+  const customStyles = {
+    option: (provided: any, state: any) => ({
+      ...provided,
+      borderColor: teal[900],
+      backgroundColor: state.isSelected ? teal[900] : 'white',
+      color: state.isSelected ? 'white' : teal[900],
+    }),
+  }
+
   // const viewProductOpen = Boolean(viewProductEl)
   // const viewLocationOpen = Boolean(viewLocationEl)
   const handleLocationChange = (selected: any) => {
@@ -604,7 +613,8 @@ function UserGroupCreate(props: any) {
   const onstatusChange = (e: any) => {
     setIsPageModified(true)
     setErrorStatus('')
-    setStatus(e.target.value)
+    // setStatus(e.target.value)
+    setStatus(e.value)
   }
   // const handleOpenViewProduct = (e: any) => {
   //   setViewProductEl(e.currentTarget)
@@ -1342,7 +1352,7 @@ function UserGroupCreate(props: any) {
                     </Box>
                     <Box className={classes.inputFieldBox}>
                       <Typography variant="subtitle2">
-                        <select
+                        {/* <select
                           name="status"
                           id="status"
                           className={classes.selectField}
@@ -1351,13 +1361,6 @@ function UserGroupCreate(props: any) {
                           required
                           disabled
                         >
-                          {/* <option
-                            disabled
-                            value=""
-                            className={classes.selectOptions}
-                          >
-                            None
-                          </option> */}
                           {constants.groupstatuses.map((type) => {
                             return (
                               <option value={type.statusID} key={type.statusID}>
@@ -1365,7 +1368,26 @@ function UserGroupCreate(props: any) {
                               </option>
                             )
                           })}
-                        </select>
+                        </select> */}
+                        <Select
+                          value={constants.groupstatuses.filter(
+                            (i) => i.value === 'A'
+                          )}
+                          isDisabled={true}
+                          isLoading={false}
+                          // components={{
+                          //   Option,
+                          // }}
+                          // ref={focusStatus}
+                          isRtl={false}
+                          isSearchable={true}
+                          name="color"
+                          options={constants.groupstatuses}
+                          onChange={onstatusChange}
+                          className={classes.multiSelect}
+                          styles={customStyles}
+                          //value={hierLevel}
+                        />
                       </Typography>
                     </Box>
                   </Box>

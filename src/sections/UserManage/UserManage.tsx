@@ -58,8 +58,10 @@ function UserManage(props: any) {
               additionalInfo: user.user.additionalInfo,
               designation: user.user.designation,
               status: constants.statuses
-                .filter((stat: any) => stat.statusID === user.user.status)
-                .map((stat: any) => stat.text)
+                // .filter((stat: any) => stat.statusID === user.user.status)
+                .filter((stat: any) => stat.value === user.user.status)
+                // .map((stat: any) => stat.text)
+                .map((stat: any) => stat.label)
                 .toString(),
               // status: user.user.status,
               roles: user.roles,
