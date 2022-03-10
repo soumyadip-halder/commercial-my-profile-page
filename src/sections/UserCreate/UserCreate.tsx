@@ -899,6 +899,7 @@ function UserCreate({ rolesArray, appFuncList, userDetail }: any) {
                     fontSize: '12px',
                     width: column.width,
                     overflowX: 'auto',
+                    height: '100px',
                   }}
                   headerStyle={{
                     fontSize: '12px',
